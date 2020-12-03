@@ -18,21 +18,24 @@
       <menus>
         <Menu mnemonicParsing="false" text="Game">
           <items>
-            <MenuItem mnemonicParsing="false" text="New Game" />
-            <MenuItem mnemonicParsing="false" text="Open…" />
+            <MenuItem fx:id="newGameMenuItem" mnemonicParsing="false" onAction="#newGameMenuItemOnAction" text="New Game" />
+            <MenuItem fx:id="openMenuItem" mnemonicParsing="false" onAction="#openMenuItemOnAction" text="Open…" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Close" />
-            <MenuItem mnemonicParsing="false" text="Save" />
-            <MenuItem mnemonicParsing="false" text="Save As…" />
+                  <MenuItem fx:id="continueMenuItem" mnemonicParsing="false" onAction="#continueMenuItemOnAction" text="Continue" />
+            <MenuItem fx:id="pauseMenuItem" mnemonicParsing="false" onAction="#pauseMenuItemOnAction" text="Pause" />
+                  <MenuItem fx:id="stopMenuItem" mnemonicParsing="false" onAction="#stopMenuItemOnAction" text="Stop" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#saveMenuItemOnAction" text="Save" />
+            <MenuItem fx:id="saveAsMenuItem" mnemonicParsing="false" onAction="#saveAsMenuItemOnAction" text="Save As…" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Quit" />
+            <MenuItem fx:id="quitMenuItem" mnemonicParsing="false" onAction="#quitMenuItemOnAction" text="Quit" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
           <items>
-                  <MenuItem mnemonicParsing="false" text="Instructions" />
+                  <MenuItem fx:id="instructionsMenuItem" mnemonicParsing="false" onAction="#instructionsMenuItemOnAction" text="Instructions" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="About CalabashKids VS Monsters" />
+            <MenuItem fx:id="aboutMenuItem" mnemonicParsing="false" onAction="#aboutMenuItemOnAction" text="About CalabashKids VS Monsters" />
           </items>
         </Menu>
       </menus>

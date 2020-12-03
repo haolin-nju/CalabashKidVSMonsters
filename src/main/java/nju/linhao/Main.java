@@ -1,35 +1,23 @@
 package main.java.nju.linhao;
 
 import javafx.application.Application;
-import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
-import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         Class<?> curClass = this.getClass();
-        Parent parent = FXMLLoader.load(curClass.getResource("/MainWindow.fxml"));
+        FXMLLoader loader = new FXMLLoader(curClass.getResource("/MainWindow.fxml"));
+        Parent parent = loader.load();
         Scene scene = new Scene(parent);
+
+        Controller controller = loader.getController();
+        controller.setHostController(getHostServices());
 
         primaryStage.setTitle("CalabashKids VS Monsters");
         primaryStage.getIcons()
