@@ -5,6 +5,8 @@ import main.java.nju.linhao.creature.Creature;
 import main.java.nju.linhao.creature.Grandpa;
 import main.java.nju.linhao.enums.GameStatus;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 public class GameController{
     private static GameStatus currStatus;
     private static HostServices hostServices;

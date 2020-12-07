@@ -5,6 +5,7 @@ import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -12,6 +13,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import main.java.nju.linhao.battlefield.Battlefield;
 import main.java.nju.linhao.enums.GameStatus;
 import main.java.nju.linhao.io.Restorer;
 import main.java.nju.linhao.controller.WindowController;
@@ -31,6 +33,8 @@ public class Main extends Application {
         HostServices hostServices = this.getHostServices();
 
         WindowController.init(hostServices);
+
+        Battlefield battlefield = new Battlefield();
 
         GameController.init(hostServices);
 

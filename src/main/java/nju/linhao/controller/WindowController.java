@@ -59,15 +59,11 @@ public class WindowController{
     @FXML // fx:id="aboutMenuItem"
     private MenuItem aboutMenuItem; // Value injected by FXMLLoader
 
-    @FXML // fx:id="mainCanvas"
-    private Canvas mainCanvas; // Value injected by FXMLLoader
-
     @FXML // fx:id="startButton"
     private Button startButton; // Value injected by FXMLLoader
 
     @FXML // fx:id="loadButton"
     private Button loadButton; // Value injected by FXMLLoader
-
 
     @FXML
     void startButtonClicked(MouseEvent event) {
@@ -166,7 +162,6 @@ public class WindowController{
         assert quitMenuItem != null : "fx:id=\"quitMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert instructionsMenuItem != null : "fx:id=\"instructionsMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert aboutMenuItem != null : "fx:id=\"aboutMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert mainCanvas != null : "fx:id=\"mainCanvas\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert startButton != null : "fx:id=\"startButton\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert loadButton != null : "fx:id=\"loadButton\" was not injected: check your FXML file 'MainWindow.fxml'.";
 
@@ -174,10 +169,5 @@ public class WindowController{
         pauseMenuItem.setDisable(true);
         stopMenuItem.setDisable(true);
 
-        final Image img = new Image(getClass().getResourceAsStream("/pictures/background.jpg"));
-        GraphicsContext graphicsContext = mainCanvas.getGraphicsContext2D();
-        graphicsContext.save();
-        graphicsContext.drawImage(img, 0, 0,480,360);
-        graphicsContext.restore();
     }
 }

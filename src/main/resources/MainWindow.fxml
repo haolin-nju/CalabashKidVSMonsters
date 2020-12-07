@@ -12,7 +12,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="420.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.nju.linhao.controller.WindowController">
+<VBox prefHeight="420.0" prefWidth="600.0"
+      xmlns="http://javafx.com/javafx/8.0.171"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="main.java.nju.linhao.controller.WindowController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -44,7 +47,7 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="424.0" prefWidth="438.0">
                <children>
-                  <Canvas fx:id="mainCanvas" height="360.0" width="480.0" />
+                  <fx:include fx:id="forCanvas" source="Canvas.fxml"/>
                   <HBox layoutY="364.0" prefHeight="30.0" prefWidth="480.0" spacing="55.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="140.0" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="364.0">
                      <children>
                         <Button fx:id="startButton" mnemonicParsing="false" onMouseClicked="#startButtonClicked" text="开始游戏" />
