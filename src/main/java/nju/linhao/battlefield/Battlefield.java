@@ -4,25 +4,42 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import main.java.nju.linhao.enums.Formation;
+import main.java.nju.linhao.enums.GridEnum;
+
+import java.util.ArrayList;
 
 public class Battlefield {
-    private static int width;
-    private static int height;
-
-    @FXML
-    private Canvas mainCanvas;
+    private static int columns;
+    private static int rows;
+    private static GridEnum [][] grids;
 
     public Battlefield(){
-        width = 20;
-        height = 15;
+        this(20, 15);
     }
 
-    @FXML
-    void initialize() {
-        final Image img = new Image(getClass().getResourceAsStream("/pictures/background.jpg"));
-        GraphicsContext graphicsContext = mainCanvas.getGraphicsContext2D();
-        graphicsContext.save();
-        graphicsContext.drawImage(img, 0, 0,480,360);
-        graphicsContext.restore();
+    public Battlefield(int columns, int rows){
+        this.columns = columns;
+        this.rows = rows;
+        grids = new GridEnum[this.rows][this.columns];
+    }
+
+    public void setGrids(int[] column, int[] row, GridEnum gridEnum){
+        try{
+            for(int i=0;i<column.length;++i){
+                grids[row[i]][column[i]] = gridEnum;
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void setGrid(int column, int row, GridEnum gridEnum){
+        try{
+            grids[row][column] = gridEnum;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 }
