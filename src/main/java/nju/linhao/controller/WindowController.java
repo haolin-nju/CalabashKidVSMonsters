@@ -1,4 +1,4 @@
-package main.java.nju.linhao;
+package main.java.nju.linhao.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -16,13 +16,12 @@ import javafx.scene.input.MouseEvent;
 
 import main.java.nju.linhao.io.Restorer;
 
-public class WindowController {
+public class WindowController{
+    private static HostServices hostServices;
 
-    public void setHostController(HostServices hostServices)    {
-        this.hostServices = hostServices;
+    public static void init(HostServices mainHostServices)    {
+        hostServices = mainHostServices;
     }
-
-    private HostServices hostServices;
 
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -80,8 +79,7 @@ public class WindowController {
 
     @FXML
     void loadButtonClicked(MouseEvent event) {
-        Restorer restorer = new Restorer();
-        restorer.restore();
+        Restorer.restore();
     }
 
     @FXML
@@ -106,26 +104,25 @@ public class WindowController {
         continueMenuItem.setDisable(true);
         pauseMenuItem.setDisable(false);
         stopMenuItem.setDisable(false);
-        System.out.println("开始新游戏！");
+        GameController.startNewGame();
     }
 
     @FXML
     void openMenuItemOnAction(ActionEvent event) {
-        Restorer restorer = new Restorer();
-        restorer.restore();
+        Restorer.restore();
     }
 
     @FXML
     void continueMenuItemOnAction(ActionEvent event) {
         pauseMenuItem.setDisable(false);
-        System.out.println("继续游戏");
+        GameController.continueGame();
         continueMenuItem.setDisable(true);
     }
 
     @FXML
     void pauseMenuItemOnAction(ActionEvent event) {
         continueMenuItem.setDisable(false);
-        System.out.println("暂停游戏");
+        GameController.pauseGame();
         pauseMenuItem.setDisable(true);
     }
 
@@ -149,7 +146,7 @@ public class WindowController {
         continueMenuItem.setDisable(true);
         pauseMenuItem.setDisable(true);
         stopMenuItem.setDisable(true);
-        System.out.println("停止游戏");
+        GameController.endGame();
     }
 
     

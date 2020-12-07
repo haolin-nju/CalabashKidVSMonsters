@@ -1,6 +1,7 @@
 package main.java.nju.linhao;
 
 import javafx.application.Application;
+import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -9,10 +10,14 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
 import javafx.stage.Window;
+
 import main.java.nju.linhao.enums.GameStatus;
 import main.java.nju.linhao.io.Restorer;
+import main.java.nju.linhao.controller.WindowController;
+import main.java.nju.linhao.controller.GameController;
+import main.java.nju.linhao.controller.NetworkController;
+
 
 import java.io.File;
 
@@ -23,6 +28,11 @@ public class Main extends Application {
         Class<?> curClass = this.getClass();
         FXMLLoader loader = new FXMLLoader(curClass.getResource("/MainWindow.fxml"));
         Parent parent = loader.load();
+        HostServices hostServices = this.getHostServices();
+
+        WindowController.init(hostServices);
+
+        GameController.init(hostServices);
 
         Scene scene = new Scene(parent);
         scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
@@ -42,9 +52,6 @@ public class Main extends Application {
 
             }
         });
-
-        WindowController controller = loader.getController();
-        controller.setHostController(getHostServices());
 
         primaryStage.setTitle("CalabashKids VS Monsters");
         primaryStage.getIcons()
