@@ -5,16 +5,16 @@ import javafx.stage.FileChooser;
 import java.io.File;
 
 public class Restorer {
-    private FileChooser fileChooser;
+    private static final FileChooser fileChooser = new FileChooser();
 
-    public Restorer(){
-        fileChooser = new FileChooser();
-    };
-
-    public boolean restore(){
+    static {
+        fileChooser.setInitialDirectory(new File("./"));
         fileChooser.setTitle("打开战斗记录");
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+    }
+
+    public static File restore(){
         File loadedFile = fileChooser.showOpenDialog(null);
-        return true;
+        return loadedFile;
     }
 }

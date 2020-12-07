@@ -5,7 +5,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import javafx.stage.Window;
+import main.java.nju.linhao.enums.GameStatus;
+import main.java.nju.linhao.io.Restorer;
+
+import java.io.File;
 
 public class Main extends Application {
 
@@ -14,9 +23,27 @@ public class Main extends Application {
         Class<?> curClass = this.getClass();
         FXMLLoader loader = new FXMLLoader(curClass.getResource("/MainWindow.fxml"));
         Parent parent = loader.load();
-        Scene scene = new Scene(parent);
 
-        Controller controller = loader.getController();
+        Scene scene = new Scene(parent);
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if(event.getCode() == KeyCode.SPACE){
+                if(GameController.getCurrentStatus() == GameStatus.END){
+                    GameController.resetGame();
+                }
+                else if(GameController.getCurrentStatus() == GameStatus.READY){
+                    GameController.startNewGame();
+                }
+            }
+            if(event.getCode() == KeyCode.L){
+                if(GameController.getCurrentStatus() == GameStatus.END
+                        || GameController.getCurrentStatus() == GameStatus.READY){
+                    Restorer.restore();
+                }
+
+            }
+        });
+
+        WindowController controller = loader.getController();
         controller.setHostController(getHostServices());
 
         primaryStage.setTitle("CalabashKids VS Monsters");

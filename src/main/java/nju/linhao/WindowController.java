@@ -1,7 +1,5 @@
 package main.java.nju.linhao;
 
-import java.io.File;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -15,12 +13,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 
 import main.java.nju.linhao.io.Restorer;
 
-public class Controller {
+public class WindowController {
 
     public void setHostController(HostServices hostServices)    {
         this.hostServices = hostServices;
