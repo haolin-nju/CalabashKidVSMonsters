@@ -12,6 +12,6 @@ public class MonsterTeam {
                        ScorpionEssence scorpionEssence,
                        CentipedeEssence centipedeEssence,
                        CopyOnWriteArrayList<Minion> minions){
-        
+
     }
 }
