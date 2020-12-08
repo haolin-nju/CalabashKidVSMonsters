@@ -1,24 +1,18 @@
 package main.java.nju.linhao.controller.logic;
 
-import com.sun.security.ntlm.Client;
 import javafx.application.HostServices;
-import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-import main.java.nju.linhao.battlefield.Battlefield;
 import main.java.nju.linhao.controller.window.BattlefieldController;
 import main.java.nju.linhao.controller.window.ClientWindowController;
 import main.java.nju.linhao.controller.window.MainWindowController;
 import main.java.nju.linhao.creature.Creature;
 import main.java.nju.linhao.enums.Formation;
+import main.java.nju.linhao.enums.FormationRequest;
 import main.java.nju.linhao.enums.LocalGameStatus;
 import main.java.nju.linhao.enums.Player;
 
-import java.io.IOException;
 
 public class LocalGameController {
     private static LocalGameStatus currStatus = LocalGameStatus.INIT;
@@ -105,11 +99,6 @@ public class LocalGameController {
         battlefieldController.setFormation(formation, player);
     }
 
-    public static void requestLogMessages(String log) {
-        mainWindowController.logMessages(log);
-    }
-
-
     // Client Server Logic
     private static void getReady() {
         Stage clientStage = new Stage();
@@ -119,13 +108,13 @@ public class LocalGameController {
         clientStage.setResizable(false);
         clientStage.setOnHidden(event -> {
             if (LocalGameController.getCurrentStatus() == LocalGameStatus.READY) {
-                mainWindowController.logMessages("已经准备好了！");
-                mainWindowController.logMessages("本机IP：" + NetworkController.getLocalIp());
+                mainWindowController.logMessages("已经准备好了！\n本机IP："+NetworkController.getLocalIp());
                 if (localPlayer == Player.PLAYER_1) {
                     mainWindowController.logMessages("本机阵营：人类阵营");
                 } else {
                     mainWindowController.logMessages("本机阵营：妖怪阵营");
                 }
+                mainWindowController.logMessages("选择您当前的阵型！（按'Q''E'键切换）");
             } else {
                 // TODO
             }
@@ -135,5 +124,27 @@ public class LocalGameController {
 
     public static void setLocalPlayer(Player player) {
         localPlayer = player;
+    }
+
+
+    // Requests following
+    public static void requestLogMessages(String log) {
+        mainWindowController.logMessages(log);
+    }
+
+    public static void requestSetFormation(FormationRequest formationRequest) {
+        // Bugs here
+        int curFormationIdx = battlefieldController.getFormationIdx();
+        Formation[] formations = Formation.values();
+        System.out.println(curFormationIdx);
+        if(formationRequest == FormationRequest.BACKWARD){
+            System.out.println(formations[(curFormationIdx + formations.length - 1) % formations.length]);
+            battlefieldController.setFormation(formations[(curFormationIdx + formations.length - 1) % formations.length], localPlayer);
+        }
+        else if(formationRequest == FormationRequest.FORWARD){
+            System.out.println(formations[(curFormationIdx + 1) % formations.length]);
+            battlefieldController.setFormation(formations[(curFormationIdx + 1) % formations.length], localPlayer);
+        }
+        mainWindowController.logMessages(battlefieldController.getFormation().toString());
     }
 }

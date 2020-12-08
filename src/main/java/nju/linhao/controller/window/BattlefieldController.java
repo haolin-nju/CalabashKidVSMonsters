@@ -15,18 +15,35 @@ import java.util.ArrayList;
 
 public class BattlefieldController {
     private static Battlefield battlefield;
+    private static Formation curFormation;
+    private static int curFormationIdx;
 
     public BattlefieldController() {
         battlefield = new Battlefield(20, 15);
+        curFormation = Formation.LONG_SNAKE_FORMATION;
+        curFormationIdx = 0;
+    }
+
+    public int getFormationIdx(){
+        return curFormationIdx;
+    }
+
+    public Formation getFormation(){
+        return curFormation;
     }
 
     public void setFormation(Formation formation, Player player) {
+        // TODO
         if (player == Player.PLAYER_1) {
             switch (formation) {
                 case LONG_SNAKE_FORMATION:
                     battlefield.setGrid(0, 7, GridEnum.GRANDPA);
                     battlefield.setGrid(0, 8, GridEnum.PANGOLIN);
                     battlefield.setGrids(new int[]{0, 0, 0, 0, 0, 0, 0}, new int[]{3, 4, 5, 6, 9, 10, 11}, GridEnum.CALABASH_KID);
+                    curFormationIdx = 0;
+                    break;
+                case FRONTAL_VECTOR_FORMATION:
+                    curFormationIdx = 1;
                     break;
                 default:
                     assert (false);
@@ -34,9 +51,17 @@ public class BattlefieldController {
         } else if (player == Player.PLAYER_2) {
             switch (formation) {
                 case LONG_SNAKE_FORMATION:
+                    curFormationIdx = 0;
+                    break;
+                case FRONTAL_VECTOR_FORMATION:
+                    curFormationIdx = 1;
+                    break;
 
+                default:
+                    assert(false);
             }
         }
+        curFormation = formation;
     }
 
     @FXML

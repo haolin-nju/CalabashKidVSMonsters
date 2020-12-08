@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 
 import main.java.nju.linhao.controller.window.*;
 import main.java.nju.linhao.controller.logic.*;
+import main.java.nju.linhao.enums.FormationRequest;
 import main.java.nju.linhao.enums.LocalGameStatus;
 import main.java.nju.linhao.io.Restorer;
 import sun.nio.ch.Net;
@@ -55,12 +56,17 @@ public class Main extends Application {
                     LocalGameController.newGame();
                 }
             }
-            if (event.getCode() == KeyCode.L) {
+            else if (event.getCode() == KeyCode.L) {
                 if (LocalGameController.getCurrentStatus() == LocalGameStatus.END
                         || LocalGameController.getCurrentStatus() == LocalGameStatus.READY) {
                     Restorer.restore();
                 }
-
+            }
+            else if (event.getCode() == KeyCode.Q && LocalGameController.getCurrentStatus() == LocalGameStatus.READY){
+                LocalGameController.requestSetFormation(FormationRequest.BACKWARD);
+            }
+            else if(event.getCode() == KeyCode.E && LocalGameController.getCurrentStatus() == LocalGameStatus.READY){
+                LocalGameController.requestSetFormation(FormationRequest.FORWARD);
             }
         });
 
