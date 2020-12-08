@@ -1,9 +1,11 @@
-package main.java.nju.linhao.controller;
+package main.java.nju.linhao.controller.window;
 
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import main.java.nju.linhao.battlefield.Battlefield;
 import main.java.nju.linhao.enums.Formation;
 import main.java.nju.linhao.enums.GridEnum;
@@ -12,7 +14,15 @@ import main.java.nju.linhao.enums.Player;
 import java.util.ArrayList;
 
 public class BattlefieldController {
-    private static Battlefield battlefield = new Battlefield(20, 15);
+    private static Battlefield battlefield;
+
+//    public BattlefieldController(){
+//        battlefield = new Battlefield(20, 15);
+//    }
+
+    public static void init(){
+        battlefield = new Battlefield(20, 15);
+    }
 
     public static void setFormation(Formation formation, Player player){
         if (player == Player.PLAYER_1){

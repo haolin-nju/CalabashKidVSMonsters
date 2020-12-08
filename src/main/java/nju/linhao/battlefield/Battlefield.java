@@ -24,19 +24,23 @@ public class Battlefield {
         grids = new GridEnum[this.rows][this.columns];
     }
 
-    public void setGrids(int[] column, int[] row, GridEnum gridEnum){
+    public static void setGrids(int[] column, int[] row, GridEnum gridEnum){
         try{
-            for(int i=0;i<column.length;++i){
-                grids[row[i]][column[i]] = gridEnum;
+            synchronized (grids) {
+                for (int i = 0; i < column.length; ++i) {
+                    grids[row[i]][column[i]] = gridEnum;
+                }
             }
         } catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    public void setGrid(int column, int row, GridEnum gridEnum){
+    public static void setGrid(int column, int row, GridEnum gridEnum){
         try{
-            grids[row][column] = gridEnum;
+            synchronized (grids) {
+                grids[row][column] = gridEnum;
+            }
         } catch (Exception e){
             e.printStackTrace();
         }

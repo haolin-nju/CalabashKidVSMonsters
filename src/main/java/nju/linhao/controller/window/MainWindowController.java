@@ -1,4 +1,4 @@
-package main.java.nju.linhao.controller;
+package main.java.nju.linhao.controller.window;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -9,13 +9,24 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.MenuItem;
 
+import javafx.scene.control.TextArea;
+import javafx.scene.input.InputMethodEvent;
+import main.java.nju.linhao.controller.logic.LocalGameController;
 import main.java.nju.linhao.io.Restorer;
 
 public class MainWindowController {
     private static HostServices hostServices;
 
-    public static void init(HostServices mainHostServices)    {
+//    public MainWindowController(HostServices mainHostServices){
+//        hostServices = mainHostServices;
+//    }
+
+    public static void init(HostServices mainHostServices){
         hostServices = mainHostServices;
+    }
+
+    public void logMessages(String log){
+        logTextArea.appendText(log);
     }
 
     @FXML // ResourceBundle that was given to the FXMLLoader
@@ -53,6 +64,9 @@ public class MainWindowController {
 
     @FXML // fx:id="aboutMenuItem"
     private MenuItem aboutMenuItem; // Value injected by FXMLLoader
+
+    @FXML // fx:id="logTextArea"
+    private TextArea logTextArea;
 
     @FXML
     void aboutMenuItemOnAction(ActionEvent event) {
@@ -121,11 +135,6 @@ public class MainWindowController {
         LocalGameController.endGame();
     }
 
-    
-    // Codes below are for init
-    private static final int CANVAS_WIDTH = 400;
-    private static final int CANVAS_HEIGHT = 300;
-
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert newGameMenuItem != null : "fx:id=\"newGameMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
@@ -138,10 +147,10 @@ public class MainWindowController {
         assert quitMenuItem != null : "fx:id=\"quitMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert instructionsMenuItem != null : "fx:id=\"instructionsMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert aboutMenuItem != null : "fx:id=\"aboutMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert logTextArea != null : "fx:id=\"logTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
 
         continueMenuItem.setDisable(true);
         pauseMenuItem.setDisable(true);
         stopMenuItem.setDisable(true);
-
     }
 }

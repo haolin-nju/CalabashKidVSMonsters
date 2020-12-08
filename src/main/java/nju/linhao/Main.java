@@ -10,9 +10,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
+import main.java.nju.linhao.controller.window.*;
+import main.java.nju.linhao.controller.logic.*;
 import main.java.nju.linhao.enums.LocalGameStatus;
 import main.java.nju.linhao.io.Restorer;
-import main.java.nju.linhao.controller.LocalGameController;
+import sun.nio.ch.Net;
 
 public class Main extends Application {
 
@@ -26,8 +28,21 @@ public class Main extends Application {
         Scene clientScene = new Scene(clientWindow);
 
         HostServices hostServices = this.getHostServices();
+//        MainWindowController mainWindowController = new MainWindowController(hostServices);
+//        NetworkController networkController = new NetworkController();
+//
+//        LocalGameController localGameController = new LocalGameController(
+//                new BattlefieldController(),
+//                mainWindowController,
+//                new ClientWindowController(networkController),
+//                networkController,
+//                clientScene,
+//                icon
+//        );
 
-        LocalGameController.init(hostServices, clientScene, icon);
+        MainWindowController.init(hostServices);
+
+        LocalGameController.init(clientScene, icon);
 
         scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if(event.getCode() == KeyCode.SPACE){
