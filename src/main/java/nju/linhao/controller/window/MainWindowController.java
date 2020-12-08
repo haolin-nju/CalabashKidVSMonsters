@@ -17,16 +17,12 @@ import main.java.nju.linhao.io.Restorer;
 public class MainWindowController {
     private static HostServices hostServices;
 
-//    public MainWindowController(HostServices mainHostServices){
-//        hostServices = mainHostServices;
-//    }
-
-    public static void init(HostServices mainHostServices){
+    public void setHostServices(HostServices mainHostServices) {
         hostServices = mainHostServices;
     }
 
-    public void logMessages(String log){
-        logTextArea.appendText(log);
+    public void logMessages(String log) {
+        logTextArea.appendText(log + "\n");
     }
 
     @FXML // ResourceBundle that was given to the FXMLLoader
@@ -114,17 +110,17 @@ public class MainWindowController {
 
     @FXML
     void quitMenuItemOnAction(ActionEvent event) {
-        System.out.println("退出游戏");
+        logMessages("退出游戏！");
     }
 
     @FXML
     void saveAsMenuItemOnAction(ActionEvent event) {
-        System.out.println("保存为");
+        logMessages("保存为");
     }
 
     @FXML
     void saveMenuItemOnAction(ActionEvent event) {
-        System.out.println("保存");
+        logMessages("保存");
     }
 
     @FXML
@@ -135,7 +131,8 @@ public class MainWindowController {
         LocalGameController.endGame();
     }
 
-    @FXML // This method is called by the FXMLLoader when initialization is complete
+    @FXML
+        // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert newGameMenuItem != null : "fx:id=\"newGameMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert openMenuItem != null : "fx:id=\"openMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";

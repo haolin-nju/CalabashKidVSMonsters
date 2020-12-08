@@ -16,28 +16,23 @@ import java.util.ArrayList;
 public class BattlefieldController {
     private static Battlefield battlefield;
 
-//    public BattlefieldController(){
-//        battlefield = new Battlefield(20, 15);
-//    }
-
-    public static void init(){
+    public BattlefieldController() {
         battlefield = new Battlefield(20, 15);
     }
 
-    public static void setFormation(Formation formation, Player player){
-        if (player == Player.PLAYER_1){
-            switch(formation){
+    public void setFormation(Formation formation, Player player) {
+        if (player == Player.PLAYER_1) {
+            switch (formation) {
                 case LONG_SNAKE_FORMATION:
                     battlefield.setGrid(0, 7, GridEnum.GRANDPA);
                     battlefield.setGrid(0, 8, GridEnum.PANGOLIN);
-                    battlefield.setGrids(new int[]{0,0,0,0,0,0,0}, new int[]{3,4,5,6,9,10,11}, GridEnum.CALABASH_KID);
+                    battlefield.setGrids(new int[]{0, 0, 0, 0, 0, 0, 0}, new int[]{3, 4, 5, 6, 9, 10, 11}, GridEnum.CALABASH_KID);
                     break;
                 default:
-                    assert(false);
+                    assert (false);
             }
-        }
-        else if (player == Player.PLAYER_2){
-            switch(formation){
+        } else if (player == Player.PLAYER_2) {
+            switch (formation) {
                 case LONG_SNAKE_FORMATION:
 
             }
@@ -53,10 +48,9 @@ public class BattlefieldController {
         final Image backgroundImg = new Image(getClass().getResourceAsStream("/pictures/background.jpg"));
         GraphicsContext graphicsContext = mainCanvas.getGraphicsContext2D();
         graphicsContext.save();
-        graphicsContext.drawImage(backgroundImg, 0, 0,768,532);
+        graphicsContext.drawImage(backgroundImg, 0, 0, 768, 532);
         graphicsContext.restore();
 
         // init creatures
-
     }
 }

@@ -13,8 +13,7 @@ public class Restorer {
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
     }
 
-    public static File restore(){
-        File loadedFile = fileChooser.showOpenDialog(null);
-        return loadedFile;
+    public static File restore() {
+        return fileChooser.showOpenDialog(null);
     }
 }

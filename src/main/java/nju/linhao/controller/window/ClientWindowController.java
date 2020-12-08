@@ -15,9 +15,10 @@ import main.java.nju.linhao.controller.logic.LocalGameController;
 import main.java.nju.linhao.controller.logic.NetworkController;
 import main.java.nju.linhao.enums.LocalGameStatus;
 import main.java.nju.linhao.enums.MessageType;
+import main.java.nju.linhao.enums.Player;
 
 public class ClientWindowController {
-    private final ToggleGroup group = new ToggleGroup();
+    private ToggleGroup group = new ToggleGroup();
 
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -42,12 +43,12 @@ public class ClientWindowController {
 
     @FXML
     void humanRadioButtonOnClicked(MouseEvent event) {
-
+        LocalGameController.setLocalPlayer(Player.PLAYER_1);
     }
 
     @FXML
     void monsterRadioButtonOnClicked(MouseEvent event) {
-
+        LocalGameController.setLocalPlayer(Player.PLAYER_2);
     }
 
     @FXML
@@ -69,7 +70,8 @@ public class ClientWindowController {
 
     }
 
-    @FXML // This method is called by the FXMLLoader when initialization is complete
+    @FXML
+        // This method is called by the FXMLLoader when initialization is complete
     void initialize() throws UnknownHostException {
         assert serverChoiceBox != null : "fx:id=\"serverChoiceBox\" was not injected: check your FXML file 'ClientWindow.fxml'.";
         assert humanRadioButton != null : "fx:id=\"humanRadioButton\" was not injected: check your FXML file 'ClientWindow.fxml'.";

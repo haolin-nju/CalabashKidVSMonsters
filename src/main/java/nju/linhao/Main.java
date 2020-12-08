@@ -21,41 +21,43 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Class<?> curClass = this.getClass();
-        Parent parent = FXMLLoader.load(curClass.getResource("/MainWindow.fxml"));
-        Parent clientWindow = FXMLLoader.load(curClass.getResource("/ClientWindow.fxml"));
-        Image icon = new Image(curClass.getResourceAsStream("/icon/CalabashKidsVSMonstersIcon.png"));
+
+        // load main window
+        FXMLLoader mainWindowLoader = new FXMLLoader(curClass.getResource("/MainWindow.fxml"));
+        Parent parent = mainWindowLoader.load();
         Scene scene = new Scene(parent);
+
+        // load client window
+        FXMLLoader clientWindowLoader = new FXMLLoader(curClass.getResource("/ClientWindow.fxml"));
+        Parent clientWindow = clientWindowLoader.load();
         Scene clientScene = new Scene(clientWindow);
 
+        FXMLLoader battlefieldLoader = new FXMLLoader(curClass.getResource("/Battlefield.fxml"));
+        Parent battlefieldCanvas = battlefieldLoader.load();
+        Scene battlefieldScene = new Scene(battlefieldCanvas);
+
         HostServices hostServices = this.getHostServices();
-//        MainWindowController mainWindowController = new MainWindowController(hostServices);
-//        NetworkController networkController = new NetworkController();
-//
-//        LocalGameController localGameController = new LocalGameController(
-//                new BattlefieldController(),
-//                mainWindowController,
-//                new ClientWindowController(networkController),
-//                networkController,
-//                clientScene,
-//                icon
-//        );
 
-        MainWindowController.init(hostServices);
-
-        LocalGameController.init(clientScene, icon);
+        Image icon = new Image(curClass.getResourceAsStream("/icon/CalabashKidsVSMonstersIcon.png"));
+        LocalGameController.init(
+                mainWindowLoader.getController(),
+                clientWindowLoader.getController(),
+                battlefieldLoader.getController(),
+                clientScene,
+                icon,
+                hostServices);
 
         scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if(event.getCode() == KeyCode.SPACE){
-                if(LocalGameController.getCurrentStatus() == LocalGameStatus.END){
+            if (event.getCode() == KeyCode.SPACE) {
+                if (LocalGameController.getCurrentStatus() == LocalGameStatus.END) {
                     LocalGameController.resetGame();
-                }
-                else if(LocalGameController.getCurrentStatus() == LocalGameStatus.INIT){
+                } else if (LocalGameController.getCurrentStatus() == LocalGameStatus.INIT) {
                     LocalGameController.newGame();
                 }
             }
-            if(event.getCode() == KeyCode.L){
-                if(LocalGameController.getCurrentStatus() == LocalGameStatus.END
-                        || LocalGameController.getCurrentStatus() == LocalGameStatus.READY){
+            if (event.getCode() == KeyCode.L) {
+                if (LocalGameController.getCurrentStatus() == LocalGameStatus.END
+                        || LocalGameController.getCurrentStatus() == LocalGameStatus.READY) {
                     Restorer.restore();
                 }
 
