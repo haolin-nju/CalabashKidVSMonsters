@@ -7,13 +7,11 @@ import javafx.application.HostServices;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.MouseEvent;
 
 import main.java.nju.linhao.io.Restorer;
 
-public class WindowController{
+public class MainWindowController {
     private static HostServices hostServices;
 
     public static void init(HostServices mainHostServices)    {
@@ -56,25 +54,6 @@ public class WindowController{
     @FXML // fx:id="aboutMenuItem"
     private MenuItem aboutMenuItem; // Value injected by FXMLLoader
 
-    @FXML // fx:id="startButton"
-    private Button startButton; // Value injected by FXMLLoader
-
-    @FXML // fx:id="loadButton"
-    private Button loadButton; // Value injected by FXMLLoader
-
-    @FXML
-    void startButtonClicked(MouseEvent event) {
-        continueMenuItem.setDisable(true);
-        pauseMenuItem.setDisable(false);
-        stopMenuItem.setDisable(false);
-        System.out.println("开始游戏！");
-    }
-
-    @FXML
-    void loadButtonClicked(MouseEvent event) {
-        Restorer.restore();
-    }
-
     @FXML
     void aboutMenuItemOnAction(ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -97,7 +76,7 @@ public class WindowController{
         continueMenuItem.setDisable(true);
         pauseMenuItem.setDisable(false);
         stopMenuItem.setDisable(false);
-        GameController.startNewGame();
+        LocalGameController.newGame();
     }
 
     @FXML
@@ -108,14 +87,14 @@ public class WindowController{
     @FXML
     void continueMenuItemOnAction(ActionEvent event) {
         pauseMenuItem.setDisable(false);
-        GameController.continueGame();
+        LocalGameController.continueGame();
         continueMenuItem.setDisable(true);
     }
 
     @FXML
     void pauseMenuItemOnAction(ActionEvent event) {
         continueMenuItem.setDisable(false);
-        GameController.pauseGame();
+        LocalGameController.pauseGame();
         pauseMenuItem.setDisable(true);
     }
 
@@ -139,7 +118,7 @@ public class WindowController{
         continueMenuItem.setDisable(true);
         pauseMenuItem.setDisable(true);
         stopMenuItem.setDisable(true);
-        GameController.endGame();
+        LocalGameController.endGame();
     }
 
     
@@ -159,8 +138,6 @@ public class WindowController{
         assert quitMenuItem != null : "fx:id=\"quitMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert instructionsMenuItem != null : "fx:id=\"instructionsMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert aboutMenuItem != null : "fx:id=\"aboutMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert startButton != null : "fx:id=\"startButton\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert loadButton != null : "fx:id=\"loadButton\" was not injected: check your FXML file 'MainWindow.fxml'.";
 
         continueMenuItem.setDisable(true);
         pauseMenuItem.setDisable(true);

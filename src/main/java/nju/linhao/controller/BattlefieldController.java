@@ -43,7 +43,7 @@ public class BattlefieldController {
         final Image backgroundImg = new Image(getClass().getResourceAsStream("/pictures/background.jpg"));
         GraphicsContext graphicsContext = mainCanvas.getGraphicsContext2D();
         graphicsContext.save();
-        graphicsContext.drawImage(backgroundImg, 0, 0,480,360);
+        graphicsContext.drawImage(backgroundImg, 0, 0,768,532);
         graphicsContext.restore();
 
         // init creatures

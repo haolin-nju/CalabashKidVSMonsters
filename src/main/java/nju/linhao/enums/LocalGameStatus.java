@@ -1,5 +1,5 @@
 package main.java.nju.linhao.enums;
 
-public enum GameStatus {
+public enum LocalGameStatus {
     INIT, READY, END, PAUSE, RUN
 }

@@ -1,21 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="420.0" prefWidth="600.0"
+<VBox prefHeight="540.0" prefWidth="960.0"
       xmlns="http://javafx.com/javafx/8.0.171"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="main.java.nju.linhao.controller.WindowController">
+      fx:controller="main.java.nju.linhao.controller.MainWindowController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -43,26 +39,14 @@
         </Menu>
       </menus>
     </MenuBar>
-      <SplitPane dividerPositions="0.8" prefHeight="426.0" prefWidth="600.0">
+      <SplitPane dividerPositions="0.8" prefHeight="532.0" prefWidth="960.0">
         <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="424.0" prefWidth="438.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0">
                <children>
-                  <fx:include fx:id="forCanvas" source="Canvas.fxml"/>
-                  <HBox layoutY="364.0" prefHeight="30.0" prefWidth="480.0" spacing="55.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="140.0" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="364.0">
-                     <children>
-                        <Button fx:id="startButton" mnemonicParsing="false" onMouseClicked="#startButtonClicked" text="开始游戏" />
-                        <Button fx:id="loadButton" mnemonicParsing="false" onMouseClicked="#loadButtonClicked" text="读取记录" />
-                     </children>
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets>
-                     <padding>
-                        <Insets bottom="5.0" top="5.0" />
-                     </padding>
-                  </HBox>
+                  <fx:include fx:id="forCanvas" source="Battlefield.fxml" />
                </children>
             </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
+          <AnchorPane minHeight="0.0" minWidth="0.0" />
         </items>
       </SplitPane>
   </children>
