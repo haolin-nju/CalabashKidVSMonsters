@@ -1,5 +1,5 @@
 package main.java.nju.linhao.enums;
 
 public enum Direction {
-    UP, RIGHT, DOWN, LEFT
+    NO_DIRECTION, UP, DOWN, LEFT, RIGHT
 }
