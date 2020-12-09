@@ -10,6 +10,7 @@ public class Configuration {
     public static double DEFAULT_DAMAGE;
     public static double DEFAULT_DEFENSE;
     public static double DEFAULT_CREATURE_SPEED;
+    public static long DEFAULT_SLEEP_TIME;
 
     // for Bullet
     public static double DEFAULT_BULLET_SPEED;

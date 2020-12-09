@@ -26,16 +26,16 @@ public class Main extends Application {
         Class<?> curClass = this.getClass();
 
         // load main window
-        FXMLLoader mainWindowLoader = new FXMLLoader(curClass.getResource("/MainWindow.fxml"));
+        FXMLLoader mainWindowLoader = new FXMLLoader(curClass.getResource("/fxml/MainWindow.fxml"));
         Parent parent = mainWindowLoader.load();
         Scene scene = new Scene(parent);
 
         // load client window
-        FXMLLoader clientWindowLoader = new FXMLLoader(curClass.getResource("/ClientWindow.fxml"));
+        FXMLLoader clientWindowLoader = new FXMLLoader(curClass.getResource("/fxml/ClientWindow.fxml"));
         Parent clientWindow = clientWindowLoader.load();
         Scene clientScene = new Scene(clientWindow);
 
-        FXMLLoader battlefieldLoader = new FXMLLoader(curClass.getResource("/BattlefieldView.fxml"));
+        FXMLLoader battlefieldLoader = new FXMLLoader(curClass.getResource("/fxml/BattlefieldView.fxml"));
         Parent battlefieldView = battlefieldLoader.load();
         Scene battlefieldScene = new Scene(battlefieldView);
 
@@ -45,7 +45,7 @@ public class Main extends Application {
         LocalGameController.init(
                 mainWindowLoader.getController(),
                 clientWindowLoader.getController(),
-                new BattlefieldController(new Battlefield(15, 20, 6), battlefieldLoader.getController()),
+                new BattlefieldController(new Battlefield(), battlefieldLoader.getController()),
                 clientScene,
                 icon,
                 hostServices);
@@ -72,6 +72,7 @@ public class Main extends Application {
             }
         });
 
+        scene.getStylesheets().add(Main.class.getResource("/css/Style.css").toExternalForm());
         primaryStage.setTitle("葫芦娃大战妖精");
         primaryStage.getIcons().add(icon);
         primaryStage.setResizable(false);

@@ -1,0 +1,5 @@
+#forCanvas {
+    -fx-background-image: url("/pictures/background.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+}

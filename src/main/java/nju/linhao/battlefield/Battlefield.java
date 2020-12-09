@@ -12,7 +12,7 @@ import main.java.nju.linhao.team.TeamBuilder;
 
 import java.util.ArrayList;
 
-public class Battlefield {
+public class Battlefield implements Runnable {
     private static int columns;
     private static int rows;
     private static GridEnum [][] grids;
@@ -35,7 +35,11 @@ public class Battlefield {
         monsterTeam = TeamBuilder.buildMonsterTeam(minionNum);
     }
 
-    public static void setGrids(int[] column, int[] row, GridEnum gridEnum){
+    public void clearGrids(){
+        grids = new GridEnum[this.rows][this.columns];
+    }
+
+    public void setGrids(int[] column, int[] row, GridEnum gridEnum){
         try{
             synchronized (grids) {
                 for (int i = 0; i < column.length; ++i) {
@@ -47,7 +51,7 @@ public class Battlefield {
         }
     }
 
-    public static void setGrid(int column, int row, GridEnum gridEnum){
+    public void setGrid(int column, int row, GridEnum gridEnum){
         try{
             synchronized (grids) {
                 grids[row][column] = gridEnum;
@@ -55,6 +59,10 @@ public class Battlefield {
         } catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void run() {
 
     }
 }

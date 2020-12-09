@@ -5,7 +5,8 @@ import main.java.nju.linhao.enums.GridEnum;
 
 import main.java.nju.linhao.utils.Configuration;
 
-public abstract class Creature {
+public abstract class Creature implements Runnable{
+
     public Creature(String name) {
         this(name,
                 Configuration.DEFAULT_HEALTH,
@@ -31,11 +32,11 @@ public abstract class Creature {
         this.speed = speed;
     }
 
-    public int getId() {
+    public int getCreatureId() {
         return id;
     }
 
-    public String getName() {
+    public String getCreatureName() {
         return name;
     }
 
@@ -94,6 +95,25 @@ public abstract class Creature {
 
     public void unselected(){
         this.selectionStatus = SelectionStatus.UNSELECTED;
+    }
+
+    @Override
+    public void run(){
+        while(this.creatureStatus == CreatureStatus.ALIVE && !Thread.interrupted()){
+            if(this.selectionStatus == SelectionStatus.SELECTED){
+                System.out.println(Thread.currentThread().getId() + " is being selected");
+            }
+            else if (this.selectionStatus == SelectionStatus.UNSELECTED){
+                try {
+                    Thread.sleep(Configuration.DEFAULT_SLEEP_TIME);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            else{
+                throw new NullPointerException("当前生物的选择状态不正确！");
+            }
+        }
     }
 
     private enum SelectionStatus {

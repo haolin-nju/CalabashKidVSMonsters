@@ -15,7 +15,7 @@ import main.java.nju.linhao.controller.logic.LocalGameController;
 import main.java.nju.linhao.io.Restorer;
 
 public class MainWindowView {
-    private static HostServices hostServices;
+    private HostServices hostServices;
 
     public void setHostServices(HostServices mainHostServices) {
         hostServices = mainHostServices;

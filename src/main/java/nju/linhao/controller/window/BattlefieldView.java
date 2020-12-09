@@ -4,9 +4,16 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import main.java.nju.linhao.battlefield.Battlefield;
+import main.java.nju.linhao.battlefield.BattlefieldController;
+import main.java.nju.linhao.enums.LocalGameStatus;
 
 public class BattlefieldView {
-    public void setMainCanvas(){
+    public void setMainCanvas(Battlefield battlefield){
+
+    }
+
+    public void refreshCanvas(){
 
     }
 
@@ -15,13 +22,7 @@ public class BattlefieldView {
 
     @FXML
     void initialize() {
-        // init background
-        final Image backgroundImg = new Image(getClass().getResourceAsStream("/pictures/background.jpg"));
-        GraphicsContext graphicsContext = mainCanvas.getGraphicsContext2D();
-        graphicsContext.save();
-        graphicsContext.drawImage(backgroundImg, 0, 0, 768, 532);
-        graphicsContext.restore();
 
-        // init creatures
     }
+
 }
