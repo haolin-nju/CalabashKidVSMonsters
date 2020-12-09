@@ -17,7 +17,7 @@ import main.java.nju.linhao.enums.LocalGameStatus;
 import main.java.nju.linhao.enums.MessageType;
 import main.java.nju.linhao.enums.Player;
 
-public class ClientWindowController {
+public class ClientWindowView {
     private ToggleGroup group = new ToggleGroup();
 
     @FXML // ResourceBundle that was given to the FXMLLoader
@@ -43,12 +43,12 @@ public class ClientWindowController {
 
     @FXML
     void humanRadioButtonOnClicked(MouseEvent event) {
-        LocalGameController.setLocalPlayer(Player.PLAYER_1);
+        LocalGameController.requestSetLocalPlayer(Player.PLAYER_1);
     }
 
     @FXML
     void monsterRadioButtonOnClicked(MouseEvent event) {
-        LocalGameController.setLocalPlayer(Player.PLAYER_2);
+        LocalGameController.requestSetLocalPlayer(Player.PLAYER_2);
     }
 
     @FXML

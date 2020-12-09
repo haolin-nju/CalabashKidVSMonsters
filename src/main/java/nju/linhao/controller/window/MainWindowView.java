@@ -14,7 +14,7 @@ import javafx.scene.input.InputMethodEvent;
 import main.java.nju.linhao.controller.logic.LocalGameController;
 import main.java.nju.linhao.io.Restorer;
 
-public class MainWindowController {
+public class MainWindowView {
     private static HostServices hostServices;
 
     public void setHostServices(HostServices mainHostServices) {

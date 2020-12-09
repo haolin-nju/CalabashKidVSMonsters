@@ -6,6 +6,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import main.java.nju.linhao.enums.Formation;
 import main.java.nju.linhao.enums.GridEnum;
+import main.java.nju.linhao.team.HumanTeam;
+import main.java.nju.linhao.team.MonsterTeam;
+import main.java.nju.linhao.team.TeamBuilder;
 
 import java.util.ArrayList;
 
@@ -13,15 +16,23 @@ public class Battlefield {
     private static int columns;
     private static int rows;
     private static GridEnum [][] grids;
+    private static HumanTeam humanTeam;
+    private static MonsterTeam monsterTeam;
 
     public Battlefield(){
-        this(20, 15);
+        this(20, 15, 6);
     }
 
-    public Battlefield(int columns, int rows){
+    public Battlefield(int columns, int rows) {
+        this(columns, rows, 6);
+    }
+
+    public Battlefield(int columns, int rows, int minionNum){
         this.columns = columns;
         this.rows = rows;
         grids = new GridEnum[this.rows][this.columns];
+        humanTeam = TeamBuilder.buildHumanTeam();
+        monsterTeam = TeamBuilder.buildMonsterTeam(minionNum);
     }
 
     public static void setGrids(int[] column, int[] row, GridEnum gridEnum){

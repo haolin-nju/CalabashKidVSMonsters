@@ -27,6 +27,10 @@ public class NetworkController {
     public static void sendMessage(MessageType messageType,
                                    String srcIp,
                                    String destIp) {
+        // TODO: Connecting to the server
+
+
+        // After successfully connected
         LocalGameController.requestLogMessages("已经向服务器发送准备请求！");
     }
 }

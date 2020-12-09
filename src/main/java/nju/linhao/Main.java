@@ -10,6 +10,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
+import main.java.nju.linhao.battlefield.Battlefield;
+import main.java.nju.linhao.battlefield.BattlefieldController;
 import main.java.nju.linhao.controller.window.*;
 import main.java.nju.linhao.controller.logic.*;
 import main.java.nju.linhao.enums.FormationRequest;
@@ -33,9 +35,9 @@ public class Main extends Application {
         Parent clientWindow = clientWindowLoader.load();
         Scene clientScene = new Scene(clientWindow);
 
-        FXMLLoader battlefieldLoader = new FXMLLoader(curClass.getResource("/Battlefield.fxml"));
-        Parent battlefieldCanvas = battlefieldLoader.load();
-        Scene battlefieldScene = new Scene(battlefieldCanvas);
+        FXMLLoader battlefieldLoader = new FXMLLoader(curClass.getResource("/BattlefieldView.fxml"));
+        Parent battlefieldView = battlefieldLoader.load();
+        Scene battlefieldScene = new Scene(battlefieldView);
 
         HostServices hostServices = this.getHostServices();
 
@@ -43,7 +45,7 @@ public class Main extends Application {
         LocalGameController.init(
                 mainWindowLoader.getController(),
                 clientWindowLoader.getController(),
-                battlefieldLoader.getController(),
+                new BattlefieldController(new Battlefield(15, 20, 6), battlefieldLoader.getController()),
                 clientScene,
                 icon,
                 hostServices);

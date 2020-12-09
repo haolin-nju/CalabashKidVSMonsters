@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.nju.linhao.controller.window.MainWindowController">
+<VBox prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.nju.linhao.controller.window.MainWindowView">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -41,7 +41,7 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0">
                <children>
-                  <fx:include fx:id="forCanvas" source="Battlefield.fxml" />
+                  <fx:include fx:id="forCanvas" source="BattlefieldView.fxml" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0">

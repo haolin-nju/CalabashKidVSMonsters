@@ -1,40 +1,44 @@
-package main.java.nju.linhao.controller.window;
+package main.java.nju.linhao.battlefield;
 
-import javafx.fxml.FXML;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import main.java.nju.linhao.battlefield.Battlefield;
+import main.java.nju.linhao.controller.window.BattlefieldView;
 import main.java.nju.linhao.enums.Formation;
 import main.java.nju.linhao.enums.GridEnum;
 import main.java.nju.linhao.enums.Player;
 
-import java.util.ArrayList;
-
 public class BattlefieldController {
-    private static Battlefield battlefield;
-    private static Formation curFormation;
-    private static int curFormationIdx;
+    private Battlefield battlefield;
+    private BattlefieldView battlefieldView;
+    private Formation curFormation;
+    private int curFormationIdx;
+    private Player curPlayer;
 
-    public BattlefieldController() {
-        battlefield = new Battlefield(20, 15);
+    public BattlefieldController(Battlefield battlefield, BattlefieldView battlefieldView) {
+        this.battlefield = battlefield;
+        this.battlefieldView = battlefieldView;
         curFormation = Formation.LONG_SNAKE_FORMATION;
         curFormationIdx = 0;
+        curPlayer = Player.PLAYER_1;
     }
 
-    public int getFormationIdx(){
+    public BattlefieldView getBattlefieldView() {
+        return battlefieldView;
+    }
+
+    public int getFormationIdx() {
         return curFormationIdx;
     }
 
-    public Formation getFormation(){
+    public Formation getFormation() {
         return curFormation;
     }
 
-    public void setFormation(Formation formation, Player player) {
+    public void setLocalPlayer(Player player) {
+        curPlayer = player;
+    }
+
+    public void setFormation(Formation formation) {
         // TODO
-        if (player == Player.PLAYER_1) {
+        if (curPlayer == Player.PLAYER_1) {
             switch (formation) {
                 case LONG_SNAKE_FORMATION:
                     battlefield.setGrid(0, 7, GridEnum.GRANDPA);
@@ -45,10 +49,13 @@ public class BattlefieldController {
                 case FRONTAL_VECTOR_FORMATION:
                     curFormationIdx = 1;
                     break;
+                case SQUARE_FORMATION:
+                    curFormationIdx = 2;
+                    break;
                 default:
                     assert (false);
             }
-        } else if (player == Player.PLAYER_2) {
+        } else if (curPlayer == Player.PLAYER_2) {
             switch (formation) {
                 case LONG_SNAKE_FORMATION:
                     curFormationIdx = 0;
@@ -56,26 +63,13 @@ public class BattlefieldController {
                 case FRONTAL_VECTOR_FORMATION:
                     curFormationIdx = 1;
                     break;
-
+                case SQUARE_FORMATION:
+                    curFormationIdx = 2;
+                    break;
                 default:
-                    assert(false);
+                    assert (false);
             }
         }
         curFormation = formation;
-    }
-
-    @FXML
-    private Canvas mainCanvas;
-
-    @FXML
-    void initialize() {
-        // init background
-        final Image backgroundImg = new Image(getClass().getResourceAsStream("/pictures/background.jpg"));
-        GraphicsContext graphicsContext = mainCanvas.getGraphicsContext2D();
-        graphicsContext.save();
-        graphicsContext.drawImage(backgroundImg, 0, 0, 768, 532);
-        graphicsContext.restore();
-
-        // init creatures
     }
 }
