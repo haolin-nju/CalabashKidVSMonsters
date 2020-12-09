@@ -9,6 +9,8 @@ import main.java.nju.linhao.enums.GridEnum;
 import main.java.nju.linhao.team.HumanTeam;
 import main.java.nju.linhao.team.MonsterTeam;
 import main.java.nju.linhao.team.TeamBuilder;
+import main.java.nju.linhao.utils.Configuration;
+import sun.security.krb5.Config;
 
 import java.util.ArrayList;
 
@@ -20,11 +22,11 @@ public class Battlefield implements Runnable {
     private static MonsterTeam monsterTeam;
 
     public Battlefield(){
-        this(20, 15, 6);
+        this(Configuration.DEFAULT_GRID_COLUMNS, Configuration.DEFAULT_GRID_ROWS, Configuration.DEFAULT_MINION_NUMS);
     }
 
     public Battlefield(int columns, int rows) {
-        this(columns, rows, 6);
+        this(columns, rows, Configuration.DEFAULT_MINION_NUMS);
     }
 
     public Battlefield(int columns, int rows, int minionNum){

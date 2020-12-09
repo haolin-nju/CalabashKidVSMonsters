@@ -43,7 +43,7 @@ public class BattlefieldController implements Runnable {
     }
 
     public void setFormation(Formation formation) {
-        // TODO
+        // TODO: Add some design patterns
         if (curPlayer == Player.PLAYER_1) {
             switch (formation) {
                 case LONG_SNAKE_FORMATION:
@@ -67,12 +67,15 @@ public class BattlefieldController implements Runnable {
         } else if (curPlayer == Player.PLAYER_2) {
             switch (formation) {
                 case LONG_SNAKE_FORMATION:
+                    battlefield.clearGrids();
                     curFormationIdx = 0;
                     break;
                 case FRONTAL_VECTOR_FORMATION:
+                    battlefield.clearGrids();
                     curFormationIdx = 1;
                     break;
                 case SQUARE_FORMATION:
+                    battlefield.clearGrids();
                     curFormationIdx = 2;
                     break;
                 default:

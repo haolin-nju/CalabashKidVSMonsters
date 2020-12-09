@@ -70,14 +70,12 @@ public class LocalGameController {
                 } else {
                     System.err.println("未定义的状态机！原状态：" + currStatus + "目标状态：READY");
                 }
-                System.out.println("3");
                 break;
             // TODO
             default:
                 break;
 
         }
-        System.out.println(currStatus);
     }
 
     // Basic Game Logic
@@ -125,7 +123,7 @@ public class LocalGameController {
                 } else {
                     mainWindowView.logMessages("本机阵营：妖怪阵营");
                 }
-                mainWindowView.logMessages("选择您当前的阵型！（按'Q''E'键切换）");
+                mainWindowView.logMessages("您还可以按'Q''E'键切换阵型！");
             } else {
                 // TODO
             }
@@ -133,6 +131,7 @@ public class LocalGameController {
         clientStage.show();
     }
 
+    // Requests
     public static void requestSetLocalPlayer(Player player) {
         localPlayer = player;
         battlefieldController.setLocalPlayer(player);
@@ -147,11 +146,24 @@ public class LocalGameController {
     public static void requestSetFormation(FormationRequest formationRequest) {
         int curFormationIdx = battlefieldController.getFormationIdx();
         Formation[] formations = Formation.values();
-        System.out.println(curFormationIdx);
-        if (formationRequest == FormationRequest.BACKWARD) {
-            battlefieldController.setFormation(formations[(curFormationIdx + formations.length - 1) % formations.length]);
-        } else if (formationRequest == FormationRequest.FORWARD) {
-            battlefieldController.setFormation(formations[(curFormationIdx + 1) % formations.length]);
+        switch(formationRequest){
+            case BACKWARD:
+                battlefieldController.setFormation(formations[(curFormationIdx + formations.length - 1) % formations.length]);
+                break;
+            case FORWARD:
+                battlefieldController.setFormation(formations[(curFormationIdx + 1) % formations.length]);
+                break;
+            case LONG_SNAKE_FORMATION_REQUEST:
+                battlefieldController.setFormation(Formation.LONG_SNAKE_FORMATION);
+                break;
+            case FRONTAL_VECTOR_FORMATION_REQUEST:
+                battlefieldController.setFormation(Formation.FRONTAL_VECTOR_FORMATION);
+                break;
+            case SQUARE_FORMATION_REQUEST:
+                battlefieldController.setFormation(Formation.SQUARE_FORMATION);
+                break;
+            default:
+                assert(false);
         }
         mainWindowView.logMessages(localPlayer + "更换阵型为：" + battlefieldController.getFormation().toString());
     }
