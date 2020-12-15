@@ -23,7 +23,7 @@ public class BattlefieldController implements Runnable {
         curPlayer = Player.PLAYER_1;
     }
 
-    public Battlefield getBattlefield(){
+    public Battlefield getBattlefield() {
         return battlefield;
     }
 
@@ -50,7 +50,7 @@ public class BattlefieldController implements Runnable {
         } else if (curPlayer == Player.PLAYER_2) {
             curFormationIdx = battlefield.getMonsterTeam().setFormation(formation);
         }
-        if(curFormationIdx == -1){
+        if (curFormationIdx == -1) {
             System.err.println("curFormationIdx = -1! It shouldn't occur!");
         }
         battlefield.updateCreatureGrids();
@@ -59,7 +59,7 @@ public class BattlefieldController implements Runnable {
 
     @Override
     public void run() {
-        while(LocalGameController.getCurrentStatus() == LocalGameStatus.RUN && !Thread.interrupted()){
+        while (LocalGameController.getCurrentStatus() == LocalGameStatus.RUN && !Thread.interrupted()) {
             battlefieldView.paintMainCanvas(battlefield);
             try {
                 Thread.sleep(50);

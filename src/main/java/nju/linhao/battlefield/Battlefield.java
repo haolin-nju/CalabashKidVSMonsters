@@ -21,7 +21,7 @@ public class Battlefield implements Runnable {
     private static ArrayList<Human> humans;
     private static ArrayList<Monster> monsters;
 
-    public Battlefield(){
+    public Battlefield() {
         this(Configuration.DEFAULT_GRID_COLUMNS, Configuration.DEFAULT_GRID_ROWS, Configuration.DEFAULT_MINION_NUMS);
     }
 
@@ -29,7 +29,7 @@ public class Battlefield implements Runnable {
         this(columns, rows, Configuration.DEFAULT_MINION_NUMS);
     }
 
-    public Battlefield(int columns, int rows, int minionNum){
+    public Battlefield(int columns, int rows, int minionNum) {
         this.columns = columns;
         this.rows = rows;
 
@@ -42,33 +42,33 @@ public class Battlefield implements Runnable {
         monsters = monsterTeam.getTeamMembers();
     }
 
-    public int getColumns(){
+    public int getColumns() {
         return columns;
     }
 
-    public int getRows(){
+    public int getRows() {
         return rows;
     }
 
-    public Creature getCreatureFromPos(int rowIdx, int colIdx){
+    public Creature getCreatureFromPos(int rowIdx, int colIdx) {
         return creatureGrids[rowIdx][colIdx];
     }
 
-    public HumanTeam getHumanTeam(){
+    public HumanTeam getHumanTeam() {
         return humanTeam;
     }
 
-    public MonsterTeam getMonsterTeam(){
+    public MonsterTeam getMonsterTeam() {
         return monsterTeam;
     }
 
-    public void updateCreatureGrids(){
+    public void updateCreatureGrids() {
         creatureGrids = new Creature[this.rows][this.columns];
-        for(Human human : humans){
+        for (Human human : humans) {
             int[] pos = human.getPos();
             creatureGrids[pos[0]][pos[1]] = human;
         }
-        for(Monster monster : monsters){
+        for (Monster monster : monsters) {
             int[] pos = monster.getPos();
             creatureGrids[pos[0]][pos[1]] = monster;
         }

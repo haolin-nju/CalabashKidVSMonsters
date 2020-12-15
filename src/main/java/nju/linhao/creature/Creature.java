@@ -1,8 +1,10 @@
 package main.java.nju.linhao.creature;
 
+import javafx.scene.image.Image;
 import main.java.nju.linhao.enums.Direction;
 
 import main.java.nju.linhao.utils.Configuration;
+import main.java.nju.linhao.utils.ImageLoader;
 
 public abstract class Creature implements Runnable{
 
@@ -25,6 +27,7 @@ public abstract class Creature implements Runnable{
         this.direction = Direction.NO_DIRECTION;
 
         this.name = name;
+        this.img = ImageLoader.loadImg(this.name);
         this.health = health;
         this.damage = damage;
         this.defense = defense;
@@ -129,6 +132,7 @@ public abstract class Creature implements Runnable{
     private Direction direction; // 移动方向
 
     private String name; // 生物名字
+    private Image img; // 生物图片
     private double health; // 生命值
     private double damage; // 攻击力
     private double defense; //防御力

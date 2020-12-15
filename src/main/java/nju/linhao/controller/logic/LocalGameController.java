@@ -147,7 +147,7 @@ public class LocalGameController {
     public static void requestSetFormation(FormationRequest formationRequest) {
         int curFormationIdx = battlefieldController.getFormationIdx();
         Formation[] formations = Formation.values();
-        switch(formationRequest){
+        switch (formationRequest) {
             case BACKWARD:
                 battlefieldController.setFormation(formations[(curFormationIdx + formations.length - 1) % formations.length]);
                 break;
@@ -164,7 +164,7 @@ public class LocalGameController {
                 battlefieldController.setFormation(Formation.SQUARE_FORMATION);
                 break;
             default:
-                assert(false);
+                assert (false);
         }
         mainWindowView.logMessages(localPlayer + "更换阵型为：" + battlefieldController.getFormation().toString());
     }

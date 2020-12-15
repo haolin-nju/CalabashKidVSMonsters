@@ -3,6 +3,8 @@ package main.java.nju.linhao.creature;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static main.java.nju.linhao.utils.Configuration.*;
+
 public class CreatureFactory {
     private CreatureFactory(){}
 
@@ -13,13 +15,13 @@ public class CreatureFactory {
 
     public static ArrayList<CalabashKid> createCalabashKids(){
         ArrayList<CalabashKid> calabashKids = new ArrayList<>();
-        calabashKids.add(new CalabashKid("大娃"));
-        calabashKids.add(new CalabashKid("二娃"));
-        calabashKids.add(new CalabashKid("三娃"));
-        calabashKids.add(new CalabashKid("四娃"));
-        calabashKids.add(new CalabashKid("五娃"));
-        calabashKids.add(new CalabashKid("六娃"));
-        calabashKids.add(new CalabashKid("七娃"));
+        calabashKids.add(new CalabashKid(DEFAULT_CALABASH_KID_1_NAME));
+        calabashKids.add(new CalabashKid(DEFAULT_CALABASH_KID_2_NAME));
+        calabashKids.add(new CalabashKid(DEFAULT_CALABASH_KID_3_NAME));
+        calabashKids.add(new CalabashKid(DEFAULT_CALABASH_KID_4_NAME));
+        calabashKids.add(new CalabashKid(DEFAULT_CALABASH_KID_5_NAME));
+        calabashKids.add(new CalabashKid(DEFAULT_CALABASH_KID_6_NAME));
+        calabashKids.add(new CalabashKid(DEFAULT_CALABASH_KID_7_NAME));
         return calabashKids;
     }
 
@@ -31,7 +33,7 @@ public class CreatureFactory {
     public static ArrayList<Minion> createMinions(int minionNum){
         ArrayList<Minion> minions = new ArrayList<>();
         for(int idx = 0; idx < minionNum; ++idx){
-            minions.add(new Minion("喽啰" + idx));
+            minions.add(new Minion(DEFAULT_MINION_NAME));
         }
         return minions;
     }
