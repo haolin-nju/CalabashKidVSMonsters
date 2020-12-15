@@ -1,5 +1,6 @@
 package main.java.nju.linhao.creature;
 
+import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class CreatureFactory {
@@ -10,8 +11,8 @@ public class CreatureFactory {
         return new Grandpa();
     }
 
-    public static CopyOnWriteArrayList<CalabashKid> createCalabashKids(){
-        CopyOnWriteArrayList<CalabashKid> calabashKids = new CopyOnWriteArrayList<>();
+    public static ArrayList<CalabashKid> createCalabashKids(){
+        ArrayList<CalabashKid> calabashKids = new ArrayList<>();
         calabashKids.add(new CalabashKid("大娃"));
         calabashKids.add(new CalabashKid("二娃"));
         calabashKids.add(new CalabashKid("三娃"));
@@ -27,8 +28,8 @@ public class CreatureFactory {
     }
 
     // for Monsters Team apis
-    public static CopyOnWriteArrayList<Minion> createMinions(int minionNum){
-        CopyOnWriteArrayList<Minion> minions = new CopyOnWriteArrayList<>();
+    public static ArrayList<Minion> createMinions(int minionNum){
+        ArrayList<Minion> minions = new ArrayList<>();
         for(int idx = 0; idx < minionNum; ++idx){
             minions.add(new Minion("喽啰" + idx));
         }

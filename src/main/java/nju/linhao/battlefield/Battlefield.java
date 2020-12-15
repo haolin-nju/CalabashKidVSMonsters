@@ -1,25 +1,25 @@
 package main.java.nju.linhao.battlefield;
 
-import javafx.fxml.FXML;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import main.java.nju.linhao.enums.Formation;
-import main.java.nju.linhao.enums.GridEnum;
+import main.java.nju.linhao.creature.Creature;
+import main.java.nju.linhao.creature.Human;
+import main.java.nju.linhao.creature.Monster;
+import main.java.nju.linhao.enums.CreatureEnum;
 import main.java.nju.linhao.team.HumanTeam;
 import main.java.nju.linhao.team.MonsterTeam;
 import main.java.nju.linhao.team.TeamBuilder;
 import main.java.nju.linhao.utils.Configuration;
-import sun.security.krb5.Config;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Battlefield implements Runnable {
     private static int columns;
     private static int rows;
-    private static GridEnum [][] grids;
+    private static Creature[][] creatureGrids;
     private static HumanTeam humanTeam;
     private static MonsterTeam monsterTeam;
+    private static ArrayList<Human> humans;
+    private static ArrayList<Monster> monsters;
 
     public Battlefield(){
         this(Configuration.DEFAULT_GRID_COLUMNS, Configuration.DEFAULT_GRID_ROWS, Configuration.DEFAULT_MINION_NUMS);
@@ -32,34 +32,45 @@ public class Battlefield implements Runnable {
     public Battlefield(int columns, int rows, int minionNum){
         this.columns = columns;
         this.rows = rows;
-        grids = new GridEnum[this.rows][this.columns];
+
+        creatureGrids = new Creature[this.rows][this.columns];
+
         humanTeam = TeamBuilder.buildHumanTeam();
+        humans = humanTeam.getTeamMembers();
+
         monsterTeam = TeamBuilder.buildMonsterTeam(minionNum);
+        monsters = monsterTeam.getTeamMembers();
     }
 
-    public void clearGrids(){
-        grids = new GridEnum[this.rows][this.columns];
+    public int getColumns(){
+        return columns;
     }
 
-    public void setGrids(int[] column, int[] row, GridEnum gridEnum){
-        try{
-            synchronized (grids) {
-                for (int i = 0; i < column.length; ++i) {
-                    grids[row[i]][column[i]] = gridEnum;
-                }
-            }
-        } catch (Exception e){
-            e.printStackTrace();
+    public int getRows(){
+        return rows;
+    }
+
+    public Creature getCreatureFromPos(int rowIdx, int colIdx){
+        return creatureGrids[rowIdx][colIdx];
+    }
+
+    public HumanTeam getHumanTeam(){
+        return humanTeam;
+    }
+
+    public MonsterTeam getMonsterTeam(){
+        return monsterTeam;
+    }
+
+    public void updateCreatureGrids(){
+        creatureGrids = new Creature[this.rows][this.columns];
+        for(Human human : humans){
+            int[] pos = human.getPos();
+            creatureGrids[pos[0]][pos[1]] = human;
         }
-    }
-
-    public void setGrid(int column, int row, GridEnum gridEnum){
-        try{
-            synchronized (grids) {
-                grids[row][column] = gridEnum;
-            }
-        } catch (Exception e){
-            e.printStackTrace();
+        for(Monster monster : monsters){
+            int[] pos = monster.getPos();
+            creatureGrids[pos[0]][pos[1]] = monster;
         }
     }
 

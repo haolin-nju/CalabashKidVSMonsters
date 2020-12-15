@@ -1,7 +1,6 @@
 package main.java.nju.linhao.creature;
 
 import main.java.nju.linhao.enums.Direction;
-import main.java.nju.linhao.enums.GridEnum;
 
 import main.java.nju.linhao.utils.Configuration;
 
@@ -60,8 +59,8 @@ public abstract class Creature implements Runnable{
         return speed;
     }
 
-    public double[] getPos() {
-        return new double[]{posX, posY};
+    public int[] getPos() {
+        return new int[]{posX, posY};
     }
 
     public void setHealth(double health){
@@ -80,9 +79,9 @@ public abstract class Creature implements Runnable{
         this.direction = direction;
     }
 
-    public void setPos(int[] pos){
-        this.posX = pos[0];
-        this.posY = pos[1];
+    public void setPos(int posX, int posY){
+        this.posX = posX;
+        this.posY = posY;
     }
 
     public void setDefense(double defense){

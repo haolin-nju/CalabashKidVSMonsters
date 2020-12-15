@@ -3,9 +3,10 @@ package main.java.nju.linhao.battlefield;
 import main.java.nju.linhao.controller.logic.LocalGameController;
 import main.java.nju.linhao.controller.window.BattlefieldView;
 import main.java.nju.linhao.enums.Formation;
-import main.java.nju.linhao.enums.GridEnum;
+import main.java.nju.linhao.enums.CreatureEnum;
 import main.java.nju.linhao.enums.LocalGameStatus;
 import main.java.nju.linhao.enums.Player;
+import main.java.nju.linhao.team.HumanTeam;
 
 public class BattlefieldController implements Runnable {
     private Battlefield battlefield;
@@ -45,51 +46,26 @@ public class BattlefieldController implements Runnable {
     public void setFormation(Formation formation) {
         // TODO: Add some design patterns
         if (curPlayer == Player.PLAYER_1) {
-            switch (formation) {
-                case LONG_SNAKE_FORMATION:
-                    battlefield.clearGrids();
-                    battlefield.setGrid(0, 7, GridEnum.GRANDPA);
-                    battlefield.setGrid(0, 8, GridEnum.PANGOLIN);
-                    battlefield.setGrids(new int[]{0, 0, 0, 0, 0, 0, 0}, new int[]{3, 4, 5, 6, 9, 10, 11}, GridEnum.CALABASH_KID);
-                    curFormationIdx = 0;
-                    break;
-                case FRONTAL_VECTOR_FORMATION:
-                    battlefield.clearGrids();
-//                    battlefield.setGrid()
-                    curFormationIdx = 1;
-                    break;
-                case SQUARE_FORMATION:
-                    curFormationIdx = 2;
-                    break;
-                default:
-                    assert (false);
-            }
+            curFormationIdx = battlefield.getHumanTeam().setFormation(formation);
         } else if (curPlayer == Player.PLAYER_2) {
-            switch (formation) {
-                case LONG_SNAKE_FORMATION:
-                    battlefield.clearGrids();
-                    curFormationIdx = 0;
-                    break;
-                case FRONTAL_VECTOR_FORMATION:
-                    battlefield.clearGrids();
-                    curFormationIdx = 1;
-                    break;
-                case SQUARE_FORMATION:
-                    battlefield.clearGrids();
-                    curFormationIdx = 2;
-                    break;
-                default:
-                    assert (false);
-            }
+            curFormationIdx = battlefield.getMonsterTeam().setFormation(formation);
         }
+        if(curFormationIdx == -1){
+            System.err.println("curFormationIdx = -1! It shouldn't occur!");
+        }
+        battlefield.updateCreatureGrids();
         curFormation = formation;
     }
 
     @Override
     public void run() {
         while(LocalGameController.getCurrentStatus() == LocalGameStatus.RUN && !Thread.interrupted()){
-            battlefieldView.setMainCanvas(battlefield);
-            battlefieldView.refreshCanvas();
+            battlefieldView.paintMainCanvas(battlefield);
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

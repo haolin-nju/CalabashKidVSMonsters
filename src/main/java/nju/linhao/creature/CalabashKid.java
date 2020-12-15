@@ -1,6 +1,6 @@
 package main.java.nju.linhao.creature;
 
-public class CalabashKid extends Creature {
+public class CalabashKid extends Human {
     public CalabashKid(String name){
         super(name);
     }

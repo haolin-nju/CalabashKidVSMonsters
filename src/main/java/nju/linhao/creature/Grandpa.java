@@ -1,6 +1,6 @@
 package main.java.nju.linhao.creature;
 
-public class Grandpa extends Creature {
+public class Grandpa extends Human {
     public Grandpa(){
         super("爷爷");
     }

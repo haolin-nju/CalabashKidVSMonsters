@@ -1,6 +1,6 @@
 package main.java.nju.linhao.creature;
 
-public class Pangolin extends Creature {
+public class Pangolin extends Human {
     public Pangolin(){
         super("穿山甲");
     }

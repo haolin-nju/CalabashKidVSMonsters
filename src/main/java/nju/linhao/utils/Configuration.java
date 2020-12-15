@@ -6,8 +6,8 @@ public class Configuration {
     public static final int CANVAS_HEIGHT = 300;
 
     // for Battlefield
-    public static final int DEFAULT_GRID_COLUMNS = 15;
-    public static final int DEFAULT_GRID_ROWS = 20;
+    public static final int DEFAULT_GRID_COLUMNS = 20;
+    public static final int DEFAULT_GRID_ROWS = 15;
     public static final int DEFAULT_MINION_NUMS = 6;
 
     // for Creture

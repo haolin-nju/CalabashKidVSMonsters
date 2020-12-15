@@ -1,6 +1,6 @@
 package main.java.nju.linhao.creature;
 
-public class CentipedeEssence extends Creature {
+public class CentipedeEssence extends Monster {
     public CentipedeEssence(){
         super("蜈蚣精");
     }

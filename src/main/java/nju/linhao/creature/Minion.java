@@ -1,6 +1,6 @@
 package main.java.nju.linhao.creature;
 
-public class Minion extends Creature {
+public class Minion extends Monster {
     public Minion(String name){
         super(name);
     }

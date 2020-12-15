@@ -2,7 +2,8 @@ package main.java.nju.linhao.team;
 
 import main.java.nju.linhao.creature.*;
 
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.ArrayList;
+
 
 public class TeamBuilder {
     private TeamBuilder(){}
@@ -10,7 +11,7 @@ public class TeamBuilder {
     public static HumanTeam buildHumanTeam(){
         Grandpa grandpa = CreatureFactory.createGrandpa();
         Pangolin pangolin = CreatureFactory.createPangolin();
-        CopyOnWriteArrayList<CalabashKid> calabashKids = CreatureFactory.createCalabashKids();
+        ArrayList<CalabashKid> calabashKids = CreatureFactory.createCalabashKids();
         return new HumanTeam(
                 grandpa,
                 pangolin,
@@ -21,7 +22,7 @@ public class TeamBuilder {
         SnakeEssence snakeEssence = CreatureFactory.createSnakeEssence();
         ScorpionEssence scorpionEssence = CreatureFactory.createScorpionEssence();
         CentipedeEssence centipedeEssence = CreatureFactory.createCentipedeEssence();
-        CopyOnWriteArrayList<Minion> minions = CreatureFactory.createMinions(minionNum);
+        ArrayList<Minion> minions = CreatureFactory.createMinions(minionNum);
         return new MonsterTeam(
                 snakeEssence,
                 scorpionEssence,

@@ -129,6 +129,7 @@ public class LocalGameController {
             }
         });
         clientStage.show();
+        battlefieldController.run();
     }
 
     // Requests
