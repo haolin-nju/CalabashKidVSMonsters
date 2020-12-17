@@ -69,6 +69,14 @@ public class Battlefield implements Runnable {
         return monsterTeam;
     }
 
+    public ArrayList<Human> getHumans(){
+        return humans;
+    }
+
+    public ArrayList<Monster> getMonsters(){
+        return monsters;
+    }
+
     public void updateCreatureGrids() {
         creatureGrids = new Creature[this.rows][this.columns];
         for (Human human : humans) {

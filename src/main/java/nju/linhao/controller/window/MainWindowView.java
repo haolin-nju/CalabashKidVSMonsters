@@ -165,7 +165,6 @@ public class MainWindowView {
             e.printStackTrace();
         }
         // TODO: just repaint the canvas
-
     }
 
     public void clearMainCanvas(){

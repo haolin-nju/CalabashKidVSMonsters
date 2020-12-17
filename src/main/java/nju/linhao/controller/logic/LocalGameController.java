@@ -74,7 +74,7 @@ public class LocalGameController {
                     System.err.println("未定义的状态机！原状态：" + currStatus + "目标状态：READY");
                 }
                 break;
-            // TODO
+            // TODO: add more state machine
             default:
                 break;
 

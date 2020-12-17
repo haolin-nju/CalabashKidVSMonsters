@@ -111,5 +111,6 @@ public class BattlefieldController {
                 curSelectedCreature.attack(selectedCreature);
             }
         }
+        repaint();
     }
 }

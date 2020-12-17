@@ -38,7 +38,9 @@ public class Configuration {
     public static final String DEFAULT_MINION_NAME = "小喽啰";
 
     // for Bullet
-    public static double DEFAULT_BULLET_SPEED;
+    public static double DEFAULT_BULLET_DAMAGE = 20;
+    public static double DEFAULT_BULLET_SPEED = 0.5;
+
 
     // for Synchronization
     public static double SYNC_TIME;

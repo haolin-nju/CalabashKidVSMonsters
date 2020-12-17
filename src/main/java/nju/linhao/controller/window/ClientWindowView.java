@@ -99,6 +99,7 @@ public class ClientWindowView {
         monsterRadioButton.setToggleGroup(group);
         monsterRadioButton.setUserData("妖怪阵营");
 
+        readyToFightButton.setDisable(true);
 
         NetworkController.init();
         serverChoiceBox.getItems().add(NetworkController.getLocalName());
@@ -117,6 +118,7 @@ public class ClientWindowView {
                 else{
                     FormationRequest newFormationRequest = FormationRequest.values()[(int) newValue + 2];
                     LocalGameController.requestSetFormation(newFormationRequest);
+                    readyToFightButton.setDisable(false);
                 }
             }
         });

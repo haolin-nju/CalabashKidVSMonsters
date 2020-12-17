@@ -1,6 +1,10 @@
 package main.java.nju.linhao.creature;
 
 import javafx.scene.image.Image;
+import main.java.nju.linhao.ai.attack.RandomTargetSelector;
+import main.java.nju.linhao.ai.attack.TargetSelector;
+import main.java.nju.linhao.ai.direction.DirectionSelector;
+import main.java.nju.linhao.ai.direction.RandomDirectionSelector;
 import main.java.nju.linhao.enums.CreatureStatus;
 import main.java.nju.linhao.enums.Direction;
 
@@ -93,8 +97,18 @@ public abstract class Creature implements Runnable{
     }
 
     public void setPos(int posX, int posY){
-        this.posX = posX;
-        this.posY = posY;
+        if(posX >= 0 && posX < Configuration.DEFAULT_GRID_ROWS){
+            this.posX = posX;
+        }
+        if(posY >= 0 && posY < Configuration.DEFAULT_GRID_COLUMNS){
+            this.posY = posY;
+        }
+    }
+
+    public void modifyPos(int deltaX, int deltaY){
+        int tempPosX = this.posX + deltaX;
+        int tempPosY = this.posY + deltaY;
+        setPos(tempPosX, tempPosY);
     }
 
     public void setDefense(double defense){
@@ -124,6 +138,30 @@ public abstract class Creature implements Runnable{
                 System.out.println(Thread.currentThread().getId() + " is being selected");
             }
             else if (this.selectionStatus == SelectionStatus.UNSELECTED){
+                // Select move direction
+                DirectionSelector directionSelector = new RandomDirectionSelector();
+                Direction moveDirection = directionSelector.selectDirection();
+                switch(moveDirection){
+                    case NO_DIRECTION:
+                    default:
+                        break;
+                    case UP:
+                        modifyPos(-1,0);
+                        break;
+                    case DOWN:
+                        modifyPos(1,0);
+                        break;
+                    case LEFT:
+                        modifyPos(0,-1);
+                        break;
+                    case RIGHT:
+                        modifyPos(0,1);
+                        break;
+                }
+                // TODO: Select attack target and attack
+
+
+
                 try {
                     Thread.sleep(Configuration.DEFAULT_SLEEP_TIME);
                 } catch (InterruptedException e) {
