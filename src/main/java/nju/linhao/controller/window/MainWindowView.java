@@ -15,6 +15,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import main.java.nju.linhao.battlefield.Battlefield;
 import main.java.nju.linhao.controller.logic.LocalGameController;
 import main.java.nju.linhao.creature.Creature;
@@ -22,6 +23,8 @@ import main.java.nju.linhao.creature.Human;
 import main.java.nju.linhao.creature.Monster;
 import main.java.nju.linhao.enums.CreatureStatus;
 import main.java.nju.linhao.enums.Player;
+import main.java.nju.linhao.enums.SelectionStatus;
+import main.java.nju.linhao.exception.OutofRangeException;
 import main.java.nju.linhao.io.Restorer;
 import main.java.nju.linhao.utils.Configuration;
 
@@ -156,10 +159,13 @@ public class MainWindowView {
     public void mainCanvasOnMouseClicked(MouseEvent mouseEvent) {
         double clickPosX = mouseEvent.getX();
         double clickPosY = mouseEvent.getY();
-        boolean whetherToRepaint = LocalGameController.requestMouseClick(clickPosX, clickPosY);
-        if(whetherToRepaint == true){
-            // TODO: just repaint the canvas
+        try {
+            LocalGameController.requestMouseClick(clickPosX, clickPosY);
+        } catch (OutofRangeException e){
+            e.printStackTrace();
         }
+        // TODO: just repaint the canvas
+
     }
 
     public void clearMainCanvas(){
@@ -170,26 +176,33 @@ public class MainWindowView {
         gc.clearRect(0, 0, Configuration.CANVAS_WIDTH, Configuration.CANVAS_HEIGHT);
         if(curPlayer == Player.PLAYER_1){
             ArrayList<Human> humans = battlefield.getHumanTeam().getTeamMembers();
-            paintCreatures(humans);
+            paintCreatures(humans, true);
         }
         else if(curPlayer == Player.PLAYER_2){
             ArrayList<Monster> monsters = battlefield.getMonsterTeam().getTeamMemebers();
-            paintCreatures(monsters);
+            paintCreatures(monsters, true);
         }
     }
 
-    public void paintBothMainCanvas(Battlefield battlefield) {
+    public void paintBothMainCanvas(Battlefield battlefield, Player curPlayer) {
         gc.clearRect(0, 0, Configuration.CANVAS_WIDTH, Configuration.CANVAS_HEIGHT);
         ArrayList<Human> humans = battlefield.getHumanTeam().getTeamMembers();
-        paintCreatures(humans);
+        paintCreatures(humans, curPlayer == Player.PLAYER_1);
         ArrayList<Monster> monsters = battlefield.getMonsterTeam().getTeamMemebers();
-        paintCreatures(monsters);
+        paintCreatures(monsters, curPlayer == Player.PLAYER_2);
     }
 
-    private void paintCreatures(ArrayList<? extends Creature> creatures) {
+    private void paintCreatures(ArrayList<? extends Creature> creatures, boolean ourTeam) {
         int[] curCreaturePos;
+        gc.save();
+        if(ourTeam){
+            gc.setFill(Color.BLUE);
+        } else{
+            gc.setFill(Color.RED);
+        }
         for (Creature creature : creatures) {
             if(creature.getCreatureStatus() == CreatureStatus.ALIVE){
+                // Draw creatures
                 curCreaturePos = creature.getPos();
                 double topLeftY = Configuration.DEFAULT_GRID_HEIGHT * curCreaturePos[0];
                 double topLeftX = Configuration.DEFAULT_GRID_WIDTH * curCreaturePos[1];
@@ -198,8 +211,29 @@ public class MainWindowView {
                         topLeftY,
                         Configuration.DEFAULT_GRID_WIDTH,
                         Configuration.DEFAULT_GRID_HEIGHT);
+                // Draw Blood Lines
+                gc.setStroke(Color.BLACK);
+                gc.strokeRect(topLeftX,
+                        topLeftY,
+                        Configuration.DEFAULT_GRID_WIDTH,
+                        3);
+                gc.fillRect(topLeftX,
+                        topLeftY,
+                        Configuration.DEFAULT_GRID_WIDTH
+                                * creature.getHealth()
+                                / Configuration.DEFAULT_HEALTH,
+                        3);
+                if(creature.getSelectionStatus() == SelectionStatus.SELECTED){
+                    gc.setStroke(Color.GOLD);
+                    gc.strokeRect(topLeftX,
+                            topLeftY,
+                            Configuration.DEFAULT_GRID_WIDTH,
+                            Configuration.DEFAULT_GRID_HEIGHT);
+                }
+
             }
         }
+        gc.restore();
     }
 
     @FXML

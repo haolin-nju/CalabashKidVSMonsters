@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 import main.java.nju.linhao.enums.CreatureStatus;
 import main.java.nju.linhao.enums.Direction;
 
+import main.java.nju.linhao.enums.SelectionStatus;
 import main.java.nju.linhao.utils.Configuration;
 import main.java.nju.linhao.utils.ImageLoader;
 
@@ -100,12 +101,20 @@ public abstract class Creature implements Runnable{
         this.defense = defense;
     }
 
-    public void selected(){
+    public void setSelected(){
         this.selectionStatus = SelectionStatus.SELECTED;
     }
 
-    public void unselected(){
+    public void setUnselected(){
         this.selectionStatus = SelectionStatus.UNSELECTED;
+    }
+
+    public SelectionStatus getSelectionStatus(){
+        return this.selectionStatus;
+    }
+
+    public void attack(Creature attakTarget){
+        // TODO: Communication and attack!!
     }
 
     @Override
@@ -127,9 +136,6 @@ public abstract class Creature implements Runnable{
         }
     }
 
-    private enum SelectionStatus {
-        SELECTED, UNSELECTED
-    }
 
     private static int id = 0; // 全局唯一id
     private SelectionStatus selectionStatus;
@@ -144,4 +150,9 @@ public abstract class Creature implements Runnable{
     private double speed; // 移动速度
     private int posX; // 当前位置x坐标
     private int posY; // 当前位置y坐标
+
+    @Override
+    public String toString(){
+        return name;
+    }
 }

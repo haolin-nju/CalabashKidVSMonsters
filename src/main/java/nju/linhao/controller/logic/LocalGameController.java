@@ -12,6 +12,7 @@ import main.java.nju.linhao.enums.Formation;
 import main.java.nju.linhao.enums.FormationRequest;
 import main.java.nju.linhao.enums.LocalGameStatus;
 import main.java.nju.linhao.enums.Player;
+import main.java.nju.linhao.exception.OutofRangeException;
 
 
 public class LocalGameController {
@@ -127,6 +128,7 @@ public class LocalGameController {
                 }
                 mainWindowView.logMessages("您还可以按'⬅''➡'键切换阵型！");
                 battlefieldController.repaint();
+                battlefieldController.setDefaultSelectedCreature();
             } else {
                 // TODO
             }
@@ -181,8 +183,8 @@ public class LocalGameController {
         battlefieldController.repaint();
     }
 
-    public static boolean requestMouseClick(double clickPosX, double clickPosY) {
+    public static void requestMouseClick(double clickPosX, double clickPosY) throws OutofRangeException {
         // TODO: Mouse click event handle, including select a creature or attack. You can use Battlefirld.getCreatureFromPos() and utilize 泛型
-        return true;
+        battlefieldController.requestMouseClick(clickPosX, clickPosY, localPlayer);
     }
 }

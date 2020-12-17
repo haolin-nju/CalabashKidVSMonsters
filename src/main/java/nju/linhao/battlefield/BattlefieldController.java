@@ -3,18 +3,23 @@ package main.java.nju.linhao.battlefield;
 import javafx.application.Platform;
 import main.java.nju.linhao.controller.logic.LocalGameController;
 import main.java.nju.linhao.controller.window.MainWindowView;
+import main.java.nju.linhao.creature.Creature;
+import main.java.nju.linhao.creature.Human;
+import main.java.nju.linhao.creature.Monster;
 import main.java.nju.linhao.enums.Formation;
 import main.java.nju.linhao.enums.CreatureEnum;
 import main.java.nju.linhao.enums.LocalGameStatus;
 import main.java.nju.linhao.enums.Player;
+import main.java.nju.linhao.exception.OutofRangeException;
 import main.java.nju.linhao.team.HumanTeam;
 
-public class BattlefieldController{
+public class BattlefieldController {
     private Battlefield battlefield;
     private MainWindowView battlefieldView;
     private Formation curFormation;
     private int curFormationIdx;
     private Player curPlayer;
+    private Creature curSelectedCreature;
 
     public BattlefieldController(Battlefield battlefield, MainWindowView battlefieldView) {
         this.battlefield = battlefield;
@@ -58,21 +63,53 @@ public class BattlefieldController{
         curFormation = formation;
     }
 
-    public synchronized void repaint() {
-        LocalGameStatus localGameStatus = LocalGameController.getCurrentStatus();
-        if (localGameStatus == LocalGameStatus.INIT){
-            Platform.runLater(() -> battlefieldView.paintLocalMainCanvas(battlefield, curPlayer));
-        }
-        else if (localGameStatus == LocalGameStatus.READY
-                || localGameStatus == LocalGameStatus.RUN) {
-            Platform.runLater(() -> battlefieldView.paintBothMainCanvas(battlefield));
+    public void setDefaultSelectedCreature(){
+        if (curPlayer == Player.PLAYER_1) {
+            curSelectedCreature = battlefield.getHumanTeam().getGrandpa();
+        } else if (curPlayer == Player.PLAYER_2) {
+            curSelectedCreature = battlefield.getMonsterTeam().getSnakeEssence();
         }
     }
 
-    public void clear(){
+    public synchronized void repaint() {
+        LocalGameStatus localGameStatus = LocalGameController.getCurrentStatus();
+        if (localGameStatus == LocalGameStatus.INIT) {
+            Platform.runLater(() -> battlefieldView.paintLocalMainCanvas(battlefield, curPlayer));
+        } else if (localGameStatus == LocalGameStatus.READY
+                || localGameStatus == LocalGameStatus.RUN) {
+            Platform.runLater(() -> battlefieldView.paintBothMainCanvas(battlefield, curPlayer));
+        }
+    }
+
+    public void clear() {
         Platform.runLater(() -> battlefieldView.clearMainCanvas());
         curFormation = Formation.LONG_SNAKE_FORMATION;
         curFormationIdx = 0;
         curPlayer = Player.PLAYER_1;
+    }
+
+    public void requestMouseClick(double clickPosX, double clickPosY, Player localPlayer) throws OutofRangeException {
+        Creature selectedCreature = battlefield.getCreatureFromPos(clickPosX, clickPosY);
+        if (localPlayer == Player.PLAYER_1) {
+            if (selectedCreature instanceof Human) {
+                curSelectedCreature.setUnselected();
+                selectedCreature.setSelected();
+                LocalGameController.requestLogMessages("当前选择生物：" + selectedCreature);
+                curSelectedCreature = selectedCreature;
+            } else if (selectedCreature instanceof Monster
+                    && curSelectedCreature instanceof Human) {
+                curSelectedCreature.attack(selectedCreature);
+            }
+        } else if(localPlayer == Player.PLAYER_2){
+            if(selectedCreature instanceof Monster){
+                curSelectedCreature.setUnselected();;
+                selectedCreature.setSelected();
+                LocalGameController.requestLogMessages("当前选择生物：" + selectedCreature);
+                curSelectedCreature = selectedCreature;
+            } else if (selectedCreature instanceof Human
+                    && curSelectedCreature instanceof Monster) {
+                curSelectedCreature.attack(selectedCreature);
+            }
+        }
     }
 }
