@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -13,40 +14,40 @@
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
-        <Menu mnemonicParsing="false" text="Game">
+        <Menu mnemonicParsing="false" text="游戏">
           <items>
-            <MenuItem fx:id="newGameMenuItem" mnemonicParsing="false" onAction="#newGameMenuItemOnAction" text="New Game" />
-            <MenuItem fx:id="openMenuItem" mnemonicParsing="false" onAction="#openMenuItemOnAction" text="Open…" />
+            <MenuItem fx:id="newGameMenuItem" mnemonicParsing="false" onAction="#newGameMenuItemOnAction" text="新游戏" />
+            <MenuItem fx:id="openMenuItem" mnemonicParsing="false" onAction="#openMenuItemOnAction" text="打开…" />
             <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem fx:id="continueMenuItem" mnemonicParsing="false" onAction="#continueMenuItemOnAction" text="Continue" />
-            <MenuItem fx:id="pauseMenuItem" mnemonicParsing="false" onAction="#pauseMenuItemOnAction" text="Pause" />
-                  <MenuItem fx:id="stopMenuItem" mnemonicParsing="false" onAction="#stopMenuItemOnAction" text="Stop" />
+                  <MenuItem fx:id="continueMenuItem" mnemonicParsing="false" onAction="#continueMenuItemOnAction" text="继续" />
+            <MenuItem fx:id="pauseMenuItem" mnemonicParsing="false" onAction="#pauseMenuItemOnAction" text="暂停" />
+                  <MenuItem fx:id="stopMenuItem" mnemonicParsing="false" onAction="#stopMenuItemOnAction" text="停止" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#saveMenuItemOnAction" text="Save" />
-            <MenuItem fx:id="saveAsMenuItem" mnemonicParsing="false" onAction="#saveAsMenuItemOnAction" text="Save As…" />
+            <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#saveMenuItemOnAction" text="保存" />
+            <MenuItem fx:id="saveAsMenuItem" mnemonicParsing="false" onAction="#saveAsMenuItemOnAction" text="保存为…" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="quitMenuItem" mnemonicParsing="false" onAction="#quitMenuItemOnAction" text="Quit" />
+            <MenuItem fx:id="quitMenuItem" mnemonicParsing="false" onAction="#quitMenuItemOnAction" text="退出" />
           </items>
         </Menu>
-        <Menu mnemonicParsing="false" text="Help">
+        <Menu mnemonicParsing="false" text="帮助">
           <items>
-                  <MenuItem fx:id="instructionsMenuItem" mnemonicParsing="false" onAction="#instructionsMenuItemOnAction" text="Instructions" />
+                  <MenuItem fx:id="instructionsMenuItem" mnemonicParsing="false" onAction="#instructionsMenuItemOnAction" text="指南" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="aboutMenuItem" mnemonicParsing="false" onAction="#aboutMenuItemOnAction" text="About CalabashKids VS Monsters" />
+            <MenuItem fx:id="aboutMenuItem" mnemonicParsing="false" onAction="#aboutMenuItemOnAction" text="关于" />
           </items>
         </Menu>
       </menus>
     </MenuBar>
       <SplitPane dividerPositions="0.8" prefHeight="532.0" prefWidth="960.0">
         <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0">
+          <AnchorPane fx:id="forCanvas" minHeight="0.0" minWidth="0.0">
                <children>
-                  <fx:include fx:id="forCanvas" source="BattlefieldView.fxml" />
+                  <Canvas fx:id="mainCanvas" height="515.0" onMouseClicked="#mainCanvasOnMouseClicked" width="768.0" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0">
                <children>
-                  <TextArea fx:id="logTextArea" editable="false" prefHeight="513.0" prefWidth="189.0" />
+                  <TextArea fx:id="logTextArea" editable="false" prefHeight="520.0" prefWidth="192.0" />
                </children></AnchorPane>
         </items>
       </SplitPane>

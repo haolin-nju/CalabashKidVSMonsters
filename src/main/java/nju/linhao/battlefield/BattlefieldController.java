@@ -1,21 +1,22 @@
 package main.java.nju.linhao.battlefield;
 
+import javafx.application.Platform;
 import main.java.nju.linhao.controller.logic.LocalGameController;
-import main.java.nju.linhao.controller.window.BattlefieldView;
+import main.java.nju.linhao.controller.window.MainWindowView;
 import main.java.nju.linhao.enums.Formation;
 import main.java.nju.linhao.enums.CreatureEnum;
 import main.java.nju.linhao.enums.LocalGameStatus;
 import main.java.nju.linhao.enums.Player;
 import main.java.nju.linhao.team.HumanTeam;
 
-public class BattlefieldController implements Runnable {
+public class BattlefieldController{
     private Battlefield battlefield;
-    private BattlefieldView battlefieldView;
+    private MainWindowView battlefieldView;
     private Formation curFormation;
     private int curFormationIdx;
     private Player curPlayer;
 
-    public BattlefieldController(Battlefield battlefield, BattlefieldView battlefieldView) {
+    public BattlefieldController(Battlefield battlefield, MainWindowView battlefieldView) {
         this.battlefield = battlefield;
         this.battlefieldView = battlefieldView;
         curFormation = Formation.LONG_SNAKE_FORMATION;
@@ -27,7 +28,7 @@ public class BattlefieldController implements Runnable {
         return battlefield;
     }
 
-    public BattlefieldView getBattlefieldView() {
+    public MainWindowView getBattlefieldView() {
         return battlefieldView;
     }
 
@@ -57,15 +58,11 @@ public class BattlefieldController implements Runnable {
         curFormation = formation;
     }
 
-    @Override
-    public void run() {
-        while (LocalGameController.getCurrentStatus() == LocalGameStatus.RUN && !Thread.interrupted()) {
-            battlefieldView.paintMainCanvas(battlefield);
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+    public synchronized void repaint() {
+        LocalGameStatus localGameStatus = LocalGameController.getCurrentStatus();
+        if (localGameStatus == LocalGameStatus.READY
+                || localGameStatus == LocalGameStatus.RUN) {
+            Platform.runLater(() -> battlefieldView.paintMainCanvas(battlefield));
         }
     }
 }

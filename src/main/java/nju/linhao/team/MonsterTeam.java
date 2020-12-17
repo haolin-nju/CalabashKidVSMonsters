@@ -37,35 +37,35 @@ public class MonsterTeam<T extends Monster> extends Team<Monster> {
         this.formation = formation;
         int[] rows;
         int[] cols;
-        switch(formation){
+        switch (formation) {
             case LONG_SNAKE_FORMATION:
-                this.snakeEssence.setPos(7,19);
-                this.scorpionEssence.setPos(6,19);
+                this.snakeEssence.setPos(7, 19);
+                this.scorpionEssence.setPos(6, 19);
                 this.centipedeEssence.setPos(8, 19);
-                rows = new int[]{5,9,4,10,3,11};
-                cols = new int[]{19,19,19,19,19,19};
-                for(int i=0;i<Configuration.DEFAULT_MINION_NUMS;++i){
-                    this.minions.get(i).setPos(rows[i],cols[i]);
+                rows = new int[]{5, 9, 4, 10, 3, 11};
+                cols = new int[]{19, 19, 19, 19, 19, 19};
+                for (int i = 0; i < Configuration.DEFAULT_MINION_NUMS; ++i) {
+                    this.minions.get(i).setPos(rows[i], cols[i]);
                 }
                 return 0;
             case FRONTAL_VECTOR_FORMATION:
-                this.snakeEssence.setPos(7,15);
-                this.scorpionEssence.setPos(6,16);
-                this.centipedeEssence.setPos(8,16);
-                rows = new int[]{5,9,4,10,3,11};
-                cols = new int[]{17,17,18,18,19,19};
-                for(int i = 0; i< Configuration.DEFAULT_MINION_NUMS; ++i){
-                    this.minions.get(i).setPos(rows[i],cols[i]);
+                this.snakeEssence.setPos(7, 15);
+                this.scorpionEssence.setPos(6, 16);
+                this.centipedeEssence.setPos(8, 16);
+                rows = new int[]{5, 9, 4, 10, 3, 11};
+                cols = new int[]{17, 17, 18, 18, 19, 19};
+                for (int i = 0; i < Configuration.DEFAULT_MINION_NUMS; ++i) {
+                    this.minions.get(i).setPos(rows[i], cols[i]);
                 }
                 return 1;
             case SQUARE_FORMATION:
-                this.snakeEssence.setPos(7,16);
-                this.scorpionEssence.setPos(6,16);
-                this.centipedeEssence.setPos(8,16);
-                rows = new int[]{5,8,5,8,5,8};
-                cols = new int[]{16,17,17,18,18,19};
-                for(int i=0;i<Configuration.DEFAULT_MINION_NUMS;++i){
-                    this.minions.get(i).setPos(rows[i],cols[i]);
+                this.snakeEssence.setPos(7, 16);
+                this.scorpionEssence.setPos(6, 16);
+                this.centipedeEssence.setPos(8, 16);
+                rows = new int[]{5, 8, 5, 8, 5, 8};
+                cols = new int[]{16, 17, 17, 18, 18, 19};
+                for (int i = 0; i < Configuration.DEFAULT_MINION_NUMS; ++i) {
+                    this.minions.get(i).setPos(rows[i], cols[i]);
                 }
                 return 2;
             default:

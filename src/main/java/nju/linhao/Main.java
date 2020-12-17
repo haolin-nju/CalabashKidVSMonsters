@@ -35,17 +35,14 @@ public class Main extends Application {
         Parent clientWindow = clientWindowLoader.load();
         Scene clientScene = new Scene(clientWindow);
 
-        FXMLLoader battlefieldLoader = new FXMLLoader(curClass.getResource("/fxml/BattlefieldView.fxml"));
-        Parent battlefieldView = battlefieldLoader.load();
-        Scene battlefieldScene = new Scene(battlefieldView);
-
         HostServices hostServices = this.getHostServices();
 
         Image icon = new Image(curClass.getResourceAsStream("/icon/CalabashKidsVSMonstersIcon.png"));
+        MainWindowView mainWindowView = mainWindowLoader.getController();
         LocalGameController.init(
-                mainWindowLoader.getController(),
+                mainWindowView,
                 clientWindowLoader.getController(),
-                new BattlefieldController(new Battlefield(), battlefieldLoader.getController()),
+                new BattlefieldController(new Battlefield(), mainWindowView),
                 clientScene,
                 icon,
                 hostServices);
@@ -64,10 +61,10 @@ public class Main extends Application {
                     Restorer.restore();
                 }
             }
-            else if (event.getCode() == KeyCode.Q && LocalGameController.getCurrentStatus() == LocalGameStatus.READY){
+            else if (event.getCode() == KeyCode.LEFT && LocalGameController.getCurrentStatus() == LocalGameStatus.READY){
                 LocalGameController.requestSetFormation(FormationRequest.BACKWARD);
             }
-            else if(event.getCode() == KeyCode.E && LocalGameController.getCurrentStatus() == LocalGameStatus.READY){
+            else if(event.getCode() == KeyCode.RIGHT && LocalGameController.getCurrentStatus() == LocalGameStatus.READY){
                 LocalGameController.requestSetFormation(FormationRequest.FORWARD);
             }
         });

@@ -4,6 +4,7 @@ import main.java.nju.linhao.creature.Creature;
 import main.java.nju.linhao.creature.Human;
 import main.java.nju.linhao.creature.Monster;
 import main.java.nju.linhao.enums.CreatureEnum;
+import main.java.nju.linhao.exception.OutofRangeException;
 import main.java.nju.linhao.team.HumanTeam;
 import main.java.nju.linhao.team.MonsterTeam;
 import main.java.nju.linhao.team.TeamBuilder;
@@ -50,7 +51,12 @@ public class Battlefield implements Runnable {
         return rows;
     }
 
-    public Creature getCreatureFromPos(int rowIdx, int colIdx) {
+    public Creature getCreatureFromPos(double posX, int posY) throws Exception {
+        if(posX < 0 || posX >= Configuration.CANVAS_WIDTH || posY < 0 || posY >= Configuration.CANVAS_HEIGHT){
+            throw new OutofRangeException("Out of Range!");
+        }
+        int rowIdx = (int) (posY / Configuration.DEFAULT_GRID_HEIGHT);
+        int colIdx = (int) (posX / Configuration.DEFAULT_GRID_WIDTH);
         return creatureGrids[rowIdx][colIdx];
     }
 

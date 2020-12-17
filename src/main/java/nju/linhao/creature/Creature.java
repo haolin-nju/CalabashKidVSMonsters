@@ -1,6 +1,7 @@
 package main.java.nju.linhao.creature;
 
 import javafx.scene.image.Image;
+import main.java.nju.linhao.enums.CreatureStatus;
 import main.java.nju.linhao.enums.Direction;
 
 import main.java.nju.linhao.utils.Configuration;
@@ -38,8 +39,16 @@ public abstract class Creature implements Runnable{
         return id;
     }
 
+    public CreatureStatus getCreatureStatus(){
+        return this.creatureStatus;
+    }
+
     public String getCreatureName() {
         return name;
+    }
+
+    public Image getImg(){
+        return img;
     }
 
     public double getHealth() {
@@ -120,10 +129,6 @@ public abstract class Creature implements Runnable{
 
     private enum SelectionStatus {
         SELECTED, UNSELECTED
-    }
-
-    private enum CreatureStatus {
-        ALIVE, DEAD
     }
 
     private static int id = 0; // 全局唯一id

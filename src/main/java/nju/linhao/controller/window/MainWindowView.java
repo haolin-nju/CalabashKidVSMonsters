@@ -1,18 +1,28 @@
 package main.java.nju.linhao.controller.window;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import javafx.application.HostServices;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.MenuItem;
 
 import javafx.scene.control.TextArea;
 import javafx.scene.input.InputMethodEvent;
+import javafx.scene.input.MouseEvent;
+import main.java.nju.linhao.battlefield.Battlefield;
 import main.java.nju.linhao.controller.logic.LocalGameController;
+import main.java.nju.linhao.creature.Creature;
+import main.java.nju.linhao.creature.Human;
+import main.java.nju.linhao.creature.Monster;
+import main.java.nju.linhao.enums.CreatureStatus;
 import main.java.nju.linhao.io.Restorer;
+import main.java.nju.linhao.utils.Configuration;
 
 public class MainWindowView {
     private HostServices hostServices;
@@ -23,6 +33,10 @@ public class MainWindowView {
 
     public void logMessages(String log) {
         logTextArea.appendText(log + "\n");
+    }
+
+    public Canvas getCanvasController(){
+        return mainCanvas;
     }
 
     @FXML // ResourceBundle that was given to the FXMLLoader
@@ -63,6 +77,11 @@ public class MainWindowView {
 
     @FXML // fx:id="logTextArea"
     private TextArea logTextArea;
+
+    @FXML
+    private Canvas mainCanvas;
+
+    private GraphicsContext gc;
 
     @FXML
     void aboutMenuItemOnAction(ActionEvent event) {
@@ -131,6 +150,41 @@ public class MainWindowView {
         LocalGameController.endGame();
     }
 
+
+    @FXML
+    public void mainCanvasOnMouseClicked(MouseEvent mouseEvent) {
+        double clickPosX = mouseEvent.getX();
+        double clickPosY = mouseEvent.getY();
+        boolean whetherToRepaint = LocalGameController.requestMouseClick(clickPosX, clickPosY);
+        if(whetherToRepaint == true){
+            // TODO: just repaint the canvas
+        }
+    }
+
+    public void paintMainCanvas(Battlefield battlefield) {
+        gc.clearRect(0, 0, Configuration.CANVAS_WIDTH, Configuration.CANVAS_HEIGHT);
+        ArrayList<Human> humans = battlefield.getHumanTeam().getTeamMembers();
+        paintCreatures(humans);
+        ArrayList<Monster> monsters = battlefield.getMonsterTeam().getTeamMemebers();
+        paintCreatures(monsters);
+    }
+
+    private void paintCreatures(ArrayList<? extends Creature> creatures) {
+        int[] curCreaturePos;
+        for (Creature creature : creatures) {
+            if(creature.getCreatureStatus() == CreatureStatus.ALIVE){
+                curCreaturePos = creature.getPos();
+                double topLeftY = Configuration.DEFAULT_GRID_HEIGHT * curCreaturePos[0];
+                double topLeftX = Configuration.DEFAULT_GRID_WIDTH * curCreaturePos[1];
+                gc.drawImage(creature.getImg(),
+                        topLeftX,
+                        topLeftY,
+                        Configuration.DEFAULT_GRID_WIDTH,
+                        Configuration.DEFAULT_GRID_HEIGHT);
+            }
+        }
+    }
+
     @FXML
         // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
@@ -145,9 +199,14 @@ public class MainWindowView {
         assert instructionsMenuItem != null : "fx:id=\"instructionsMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert aboutMenuItem != null : "fx:id=\"aboutMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert logTextArea != null : "fx:id=\"logTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert mainCanvas != null : "fx:id=\"mainCanvas\" was not injected: check your FXML file 'MainWindow.fxml'.";
 
+        System.out.println("111");
         continueMenuItem.setDisable(true);
         pauseMenuItem.setDisable(true);
         stopMenuItem.setDisable(true);
+
+        // for canvas
+        gc = mainCanvas.getGraphicsContext2D();
     }
 }

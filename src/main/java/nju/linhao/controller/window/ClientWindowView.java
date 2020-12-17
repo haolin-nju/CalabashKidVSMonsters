@@ -113,5 +113,7 @@ public class ClientWindowView {
                 LocalGameController.requestSetFormation(newFormationRequest);
             }
         });
+
+        System.out.println("333");
     }
 }

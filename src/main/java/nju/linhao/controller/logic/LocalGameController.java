@@ -24,6 +24,7 @@ public class LocalGameController {
     private static MainWindowView mainWindowView;
     private static ClientWindowView clientWindowView;
     private static BattlefieldController battlefieldController;
+    private static Thread threadBattleField;
 
     public static void init(
             MainWindowView mainWindowViewForInit,
@@ -41,6 +42,7 @@ public class LocalGameController {
         mainWindowView.setHostServices(hostServices);
         currStatus = LocalGameStatus.INIT;
         localPlayer = Player.PLAYER_1;
+        threadBattleField = null;
     }
 
     public static LocalGameStatus getCurrentStatus() {
@@ -81,8 +83,8 @@ public class LocalGameController {
     // Basic Game Logic
     public static void newGame() {
 //        changeFormation(Formation.LONG_SNAKE_FORMATION, Player.PLAYER_1); 我觉得这应该变成网络传输的内容
-        mainWindowView.logMessages("开始新游戏！");
         getReady();
+        mainWindowView.logMessages("开始新游戏！");
     }
 
     public static void resetGame() {
@@ -123,13 +125,13 @@ public class LocalGameController {
                 } else {
                     mainWindowView.logMessages("本机阵营：妖怪阵营");
                 }
-                mainWindowView.logMessages("您还可以按'Q''E'键切换阵型！");
+                mainWindowView.logMessages("您还可以按'⬅''➡'键切换阵型！");
             } else {
                 // TODO
             }
+            battlefieldController.repaint();
         });
         clientStage.show();
-        battlefieldController.run();
     }
 
     // Requests
@@ -166,6 +168,16 @@ public class LocalGameController {
             default:
                 assert (false);
         }
+        battlefieldController.repaint();
         mainWindowView.logMessages(localPlayer + "更换阵型为：" + battlefieldController.getFormation().toString());
+    }
+
+    public static void requestRepaint(){
+        battlefieldController.repaint();
+    }
+
+    public static boolean requestMouseClick(double clickPosX, double clickPosY) {
+        // TODO: Mouse click event handle, including select a creature or attack. You can use Battlefirld.getCreatureFromPos() and utilize 泛型
+        return true;
     }
 }

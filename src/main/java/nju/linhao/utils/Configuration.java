@@ -2,13 +2,16 @@ package main.java.nju.linhao.utils;
 
 public class Configuration {
     // Codes below are for Canvas width and height
-    public static final int CANVAS_WIDTH = 400;
-    public static final int CANVAS_HEIGHT = 300;
+    public static final int CANVAS_WIDTH = 768;
+    public static final int CANVAS_HEIGHT = 515;
 
     // for Battlefield
     public static final int DEFAULT_GRID_COLUMNS = 20;
     public static final int DEFAULT_GRID_ROWS = 15;
     public static final int DEFAULT_MINION_NUMS = 6;
+    public static final double DEFAULT_GRID_WIDTH = CANVAS_WIDTH / DEFAULT_GRID_COLUMNS;
+    public static final double DEFAULT_GRID_HEIGHT = CANVAS_HEIGHT / DEFAULT_GRID_ROWS;
+
 
     // for Creture
     public static final double DEFAULT_HEALTH = 100;
