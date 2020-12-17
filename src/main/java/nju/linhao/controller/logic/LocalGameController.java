@@ -126,10 +126,11 @@ public class LocalGameController {
                     mainWindowView.logMessages("本机阵营：妖怪阵营");
                 }
                 mainWindowView.logMessages("您还可以按'⬅''➡'键切换阵型！");
+                battlefieldController.repaint();
             } else {
                 // TODO
             }
-            battlefieldController.repaint();
+
         });
         clientStage.show();
     }
@@ -170,6 +171,10 @@ public class LocalGameController {
         }
         battlefieldController.repaint();
         mainWindowView.logMessages(localPlayer + "更换阵型为：" + battlefieldController.getFormation().toString());
+    }
+
+    public static void requestClearInfo(){
+        battlefieldController.clear();
     }
 
     public static void requestRepaint(){

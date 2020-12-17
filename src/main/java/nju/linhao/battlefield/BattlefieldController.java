@@ -60,9 +60,19 @@ public class BattlefieldController{
 
     public synchronized void repaint() {
         LocalGameStatus localGameStatus = LocalGameController.getCurrentStatus();
-        if (localGameStatus == LocalGameStatus.READY
-                || localGameStatus == LocalGameStatus.RUN) {
-            Platform.runLater(() -> battlefieldView.paintMainCanvas(battlefield));
+        if (localGameStatus == LocalGameStatus.INIT){
+            Platform.runLater(() -> battlefieldView.paintLocalMainCanvas(battlefield, curPlayer));
         }
+        else if (localGameStatus == LocalGameStatus.READY
+                || localGameStatus == LocalGameStatus.RUN) {
+            Platform.runLater(() -> battlefieldView.paintBothMainCanvas(battlefield));
+        }
+    }
+
+    public void clear(){
+        Platform.runLater(() -> battlefieldView.clearMainCanvas());
+        curFormation = Formation.LONG_SNAKE_FORMATION;
+        curFormationIdx = 0;
+        curPlayer = Player.PLAYER_1;
     }
 }

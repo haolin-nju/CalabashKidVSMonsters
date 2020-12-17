@@ -48,11 +48,13 @@ public class ClientWindowView {
     @FXML
     void humanRadioButtonOnClicked(MouseEvent event) {
         LocalGameController.requestSetLocalPlayer(Player.PLAYER_1);
+        formationChoiceBox.getSelectionModel().clearSelection();
     }
 
     @FXML
     void monsterRadioButtonOnClicked(MouseEvent event) {
         LocalGameController.requestSetLocalPlayer(Player.PLAYER_2);
+        formationChoiceBox.getSelectionModel().clearSelection();
     }
 
     @FXML
@@ -66,6 +68,7 @@ public class ClientWindowView {
 
     @FXML
     void returnToMainWindowOnClicked(MouseEvent event) {
+        LocalGameController.requestClearInfo();
         ((Stage) returnToMainWindow.getScene().getWindow()).close();
     }
 
@@ -105,12 +108,16 @@ public class ClientWindowView {
                 Formation.LONG_SNAKE_FORMATION,
                 Formation.FRONTAL_VECTOR_FORMATION,
                 Formation.SQUARE_FORMATION);
-        formationChoiceBox.getSelectionModel().selectFirst();
         formationChoiceBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                FormationRequest newFormationRequest = FormationRequest.values()[(int) newValue + 2];
-                LocalGameController.requestSetFormation(newFormationRequest);
+                if((int) newValue == -1){
+                    formationChoiceBox.getSelectionModel().selectFirst();
+                }
+                else{
+                    FormationRequest newFormationRequest = FormationRequest.values()[(int) newValue + 2];
+                    LocalGameController.requestSetFormation(newFormationRequest);
+                }
             }
         });
 

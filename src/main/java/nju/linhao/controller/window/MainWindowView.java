@@ -21,6 +21,7 @@ import main.java.nju.linhao.creature.Creature;
 import main.java.nju.linhao.creature.Human;
 import main.java.nju.linhao.creature.Monster;
 import main.java.nju.linhao.enums.CreatureStatus;
+import main.java.nju.linhao.enums.Player;
 import main.java.nju.linhao.io.Restorer;
 import main.java.nju.linhao.utils.Configuration;
 
@@ -161,7 +162,23 @@ public class MainWindowView {
         }
     }
 
-    public void paintMainCanvas(Battlefield battlefield) {
+    public void clearMainCanvas(){
+        gc.clearRect(0, 0, Configuration.CANVAS_WIDTH, Configuration.CANVAS_HEIGHT);
+    }
+
+    public void paintLocalMainCanvas(Battlefield battlefield, Player curPlayer){
+        gc.clearRect(0, 0, Configuration.CANVAS_WIDTH, Configuration.CANVAS_HEIGHT);
+        if(curPlayer == Player.PLAYER_1){
+            ArrayList<Human> humans = battlefield.getHumanTeam().getTeamMembers();
+            paintCreatures(humans);
+        }
+        else if(curPlayer == Player.PLAYER_2){
+            ArrayList<Monster> monsters = battlefield.getMonsterTeam().getTeamMemebers();
+            paintCreatures(monsters);
+        }
+    }
+
+    public void paintBothMainCanvas(Battlefield battlefield) {
         gc.clearRect(0, 0, Configuration.CANVAS_WIDTH, Configuration.CANVAS_HEIGHT);
         ArrayList<Human> humans = battlefield.getHumanTeam().getTeamMembers();
         paintCreatures(humans);
