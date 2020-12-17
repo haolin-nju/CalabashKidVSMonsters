@@ -29,4 +29,4 @@ BattlefieldController
 
 Battlefield
 
-BattlefieldView
+MainWindowView
