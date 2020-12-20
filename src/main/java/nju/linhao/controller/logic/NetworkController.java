@@ -33,4 +33,8 @@ public class NetworkController {
         // After successfully connected
         LocalGameController.requestLogMessages("已经向服务器发送准备请求！");
     }
+
+    public static void recvMessage(){
+
+    }
 }

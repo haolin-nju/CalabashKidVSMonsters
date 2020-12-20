@@ -222,6 +222,7 @@ public class MainWindowView {
                                 * creature.getHealth()
                                 / Configuration.DEFAULT_HEALTH,
                         3);
+                // Draw Selection status
                 if(creature.getSelectionStatus() == SelectionStatus.SELECTED){
                     gc.setStroke(Color.GOLD);
                     gc.strokeRect(topLeftX,
