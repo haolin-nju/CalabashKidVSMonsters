@@ -1,5 +1,6 @@
 package main.java.nju.linhao.controller.window;
 
+import java.io.IOException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ResourceBundle;
@@ -58,10 +59,16 @@ public class ClientWindowView {
     }
 
     @FXML
-    void readyToFightButtonOnClicked(MouseEvent event) {
+    void readyToFightButtonOnClicked(MouseEvent event) throws InterruptedException {
         String srcIp = NetworkController.getLocalIp();
         LocalGameController.setCurrentStatus(LocalGameStatus.CONNECTING);
-        NetworkController.sendMessage(MessageType.CLIENT1_READY, srcIp, srcIp);
+
+        boolean isSucceed = NetworkController.sendMessage(MessageType.CLIENT1_READY);
+        if (!isSucceed) {
+            LocalGameController.changeLocalPlayer();
+            //可能需要一些提示信息
+        }
+
         LocalGameController.setCurrentStatus(LocalGameStatus.READY);
         ((Stage) readyToFightButton.getScene().getWindow()).close();
     }
@@ -84,7 +91,7 @@ public class ClientWindowView {
 
     @FXML
         // This method is called by the FXMLLoader when initialization is complete
-    void initialize() throws UnknownHostException {
+    void initialize() throws IOException {
         assert serverChoiceBox != null : "fx:id=\"serverChoiceBox\" was not injected: check your FXML file 'ClientWindow.fxml'.";
         assert formationChoiceBox != null : "fx:id=\"formationChoiceBox\" was not injected: check your FXML file 'ClientWindow.fxml'.";
         assert humanRadioButton != null : "fx:id=\"humanRadioButton\" was not injected: check your FXML file 'ClientWindow.fxml'.";
