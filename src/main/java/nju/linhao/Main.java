@@ -46,6 +46,9 @@ public class Main extends Application {
                 clientScene,
                 icon,
                 hostServices);
+        NetworkController networkController=new NetworkController();
+        Thread networkThread = new Thread(networkController);
+        networkThread.start();
 
         scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.SPACE) {
@@ -78,7 +81,9 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
+
         launch(args);
+
     }
 
 }
