@@ -3,6 +3,7 @@ package main.java.nju.linhao.controller.logic;
 import main.java.nju.linhao.enums.LocalGameStatus;
 import main.java.nju.linhao.enums.MessageType;
 import main.java.nju.linhao.enums.Player;
+import main.java.nju.linhao.server.controller.NetWorkController;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -13,13 +14,26 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.Semaphore;
 
-public class NetworkController implements  Runnable {
+public class NetworkController implements Runnable {
     private static String localName;
     private static String localIp;
     private static Socket socket;
-    private static ArrayList<String> command;//command用于接收对方传来的指令
+    private static ArrayList<String> command;//command用于接收对方传来的指令, 可能要改成并发安全的对象
     private static final Stack<String> st = new Stack<>();
     private static final Stack<String> st2 = new Stack<>();
+
+    private static NetworkController instance = null;
+
+    public static NetworkController getInstance() {
+        if (instance == null) {
+            synchronized (NetworkController.class) {
+                if (instance == null) {
+                    instance = new NetworkController();
+                }
+            }
+        }
+        return instance;
+    }
 
 
     public static void init() throws IOException {
@@ -28,7 +42,6 @@ public class NetworkController implements  Runnable {
         localIp = inetAddress.getHostAddress();
 
         command = new ArrayList<>();
-
 
 
 
@@ -46,14 +59,16 @@ public class NetworkController implements  Runnable {
     }
 
     //加锁使得sendMessage一次只能被一个线程调用
-    public synchronized static boolean sendMessage(MessageType messageType) throws InterruptedException {
-        // TODO: Connecting to the server
+    public synchronized static boolean sendMessage(MessageType messageType, String message) throws InterruptedException {
+        // TODO: 发送message
         String sendMsg="";
         switch (messageType) {
             case CLIENT1_READY:
                 sendMsg = sendMsg + messageType + "#" + (
                         LocalGameController.getLocalPlayer().equals(Player.PLAYER_1)?"PLAYER_1":"PLAYER2");
                 break;
+            // TODO: more case
+
         }
         //st 始终只能由一个元素，算是共享内存区，由于直接修改String对象会带来不必要麻烦
         st.push(sendMsg);

@@ -34,6 +34,5 @@ Battlefield
 MainWindowView
 
 ## log
-NetworkController:
-新增：xxxxx api，做什么的
+Combine server and client to the same project.
 

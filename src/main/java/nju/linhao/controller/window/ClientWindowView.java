@@ -63,7 +63,7 @@ public class ClientWindowView {
         String srcIp = NetworkController.getLocalIp();
         LocalGameController.setCurrentStatus(LocalGameStatus.CONNECTING);
 
-        boolean isSucceed = NetworkController.sendMessage(MessageType.CLIENT1_READY);
+        boolean isSucceed = NetworkController.sendMessage(MessageType.CLIENT1_READY, "null");
         if (!isSucceed) {
             LocalGameController.changeLocalPlayer();
             //可能需要一些提示信息
