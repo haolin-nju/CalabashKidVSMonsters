@@ -1,6 +1,14 @@
 # CalabashKidVSMonsters
 葫芦娃大战妖精游戏
 
+## 客户端目录
+
+client
+
+## 服务端目录
+
+server
+
 ## 资源文件
 
 
