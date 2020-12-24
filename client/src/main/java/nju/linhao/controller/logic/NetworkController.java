@@ -3,7 +3,6 @@ package main.java.nju.linhao.controller.logic;
 import main.java.nju.linhao.enums.LocalGameStatus;
 import main.java.nju.linhao.enums.MessageType;
 import main.java.nju.linhao.enums.Player;
-import main.java.nju.linhao.server.controller.NetWorkController;
 
 import java.io.*;
 import java.net.InetAddress;
