@@ -1,4 +1,4 @@
-package main.java.nju.linhao.server.controller;
+package main.java.nju.linhao.controller;
 
 import java.util.Collection;
 

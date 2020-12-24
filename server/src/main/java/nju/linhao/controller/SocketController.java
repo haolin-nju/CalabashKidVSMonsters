@@ -1,6 +1,6 @@
-package main.java.nju.linhao.server.controller;
+package main.java.nju.linhao.controller;
 
-import main.java.nju.linhao.server.Main;
+import main.java.nju.linhao.Main;
 
 import java.io.*;
 import java.net.Socket;

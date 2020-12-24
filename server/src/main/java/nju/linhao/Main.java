@@ -1,7 +1,7 @@
-package main.java.nju.linhao.server;
+package main.java.nju.linhao;
 
-import main.java.nju.linhao.server.controller.NetWorkController;
-import main.java.nju.linhao.server.controller.SocketController;
+import main.java.nju.linhao.controller.NetWorkController;
+import main.java.nju.linhao.controller.SocketController;
 
 import java.io.IOException;
 
