@@ -202,4 +202,16 @@ public class LocalGameController {
         // TODO: Mouse click event handle, including select a creature or attack. You can use Battlefirld.getCreatureFromPos() and utilize 泛型
         battlefieldController.requestMouseClick(clickPosX, clickPosY, localPlayer);
     }
+
+    public static Player getLocalPlayer(){
+        return localPlayer;
+    }
+
+    public static void changeLocalPlayer(){
+        if(localPlayer==Player.PLAYER_1){
+            localPlayer=Player.PLAYER_2;
+        }else{
+            localPlayer=Player.PLAYER_1;
+        }
+    }
 }

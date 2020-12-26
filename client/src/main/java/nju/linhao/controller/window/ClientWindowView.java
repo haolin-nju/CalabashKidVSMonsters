@@ -1,5 +1,6 @@
 package main.java.nju.linhao.controller.window;
 
+import java.io.IOException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ResourceBundle;
@@ -58,10 +59,24 @@ public class ClientWindowView {
     }
 
     @FXML
+<<<<<<< HEAD:src/main/java/nju/linhao/controller/window/ClientWindowView.java
     void readyToFightButtonOnClicked(MouseEvent event) {
         String srcIp = LocalGameController.getLocalIp();
         LocalGameController.setCurrentStatus(LocalGameStatus.CONNECTING);
         LocalGameController.requestNetworkController(MessageType.CLIENT_READY, destIp);
+=======
+    void readyToFightButtonOnClicked(MouseEvent event) throws InterruptedException {
+        String srcIp = NetworkController.getLocalIp();
+        LocalGameController.setCurrentStatus(LocalGameStatus.CONNECTING);
+
+        boolean isSucceed = NetworkController.sendMessage(MessageType.CLIENT1_READY, "null");
+        if (!isSucceed) {
+            LocalGameController.changeLocalPlayer();
+            //可能需要一些提示信息
+        }
+
+        LocalGameController.setCurrentStatus(LocalGameStatus.READY);
+>>>>>>> fb7193613b368dae15b1893439a3c6cae21b7085:client/src/main/java/nju/linhao/controller/window/ClientWindowView.java
         ((Stage) readyToFightButton.getScene().getWindow()).close();
     }
 
@@ -84,8 +99,13 @@ public class ClientWindowView {
 
     @FXML
         // This method is called by the FXMLLoader when initialization is complete
+<<<<<<< HEAD:src/main/java/nju/linhao/controller/window/ClientWindowView.java
     void initialize() throws UnknownHostException {
         assert serverComboBox != null : "fx:id=\"serverChoiceBox\" was not injected: check your FXML file 'ClientWindow.fxml'.";
+=======
+    void initialize() throws IOException {
+        assert serverChoiceBox != null : "fx:id=\"serverChoiceBox\" was not injected: check your FXML file 'ClientWindow.fxml'.";
+>>>>>>> fb7193613b368dae15b1893439a3c6cae21b7085:client/src/main/java/nju/linhao/controller/window/ClientWindowView.java
         assert formationChoiceBox != null : "fx:id=\"formationChoiceBox\" was not injected: check your FXML file 'ClientWindow.fxml'.";
         assert humanRadioButton != null : "fx:id=\"humanRadioButton\" was not injected: check your FXML file 'ClientWindow.fxml'.";
         assert monsterRadioButton != null : "fx:id=\"monsterRadioButton\" was not injected: check your FXML file 'ClientWindow.fxml'.";

@@ -1,6 +1,14 @@
 # CalabashKidVSMonsters
 葫芦娃大战妖精游戏
 
+## 客户端目录
+
+client
+
+## 服务端目录
+
+server
+
 ## 资源文件
 
 
@@ -34,6 +42,5 @@ Battlefield
 MainWindowView
 
 ## log
-NetworkController:
-新增：xxxxx api，做什么的
+Combine server and client to the same project.
 
