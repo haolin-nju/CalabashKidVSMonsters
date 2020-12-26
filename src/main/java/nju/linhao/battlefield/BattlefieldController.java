@@ -1,6 +1,8 @@
 package main.java.nju.linhao.battlefield;
 
 import javafx.application.Platform;
+import main.java.nju.linhao.bullet.Bullet;
+import main.java.nju.linhao.bullet.HumanBullet;
 import main.java.nju.linhao.controller.logic.LocalGameController;
 import main.java.nju.linhao.controller.window.MainWindowView;
 import main.java.nju.linhao.creature.Creature;
@@ -98,7 +100,10 @@ public class BattlefieldController {
                 curSelectedCreature = selectedCreature;
             } else if (selectedCreature instanceof Monster
                     && curSelectedCreature instanceof Human) {
-                curSelectedCreature.attack(selectedCreature);
+                Bullet bullet = curSelectedCreature.attack(selectedCreature, clickPosX, clickPosY);
+                if(bullet!=null){
+                    battlefield.addBullet(bullet);
+                }
             }
         } else if(localPlayer == Player.PLAYER_2){
             if(selectedCreature instanceof Monster){
@@ -108,7 +113,11 @@ public class BattlefieldController {
                 curSelectedCreature = selectedCreature;
             } else if (selectedCreature instanceof Human
                     && curSelectedCreature instanceof Monster) {
-                curSelectedCreature.attack(selectedCreature);
+                Bullet bullet = curSelectedCreature.attack(selectedCreature, clickPosX, clickPosY);
+                if(bullet!=null){
+                    battlefield.addBullet(bullet);
+                }
+
             }
         }
         repaint();

@@ -41,6 +41,9 @@ public class Configuration {
     public static double DEFAULT_BULLET_DAMAGE = 20;
     public static double DEFAULT_BULLET_SPEED = 0.5;
 
+    // for Server Client
+    public static int DEFAULT_PORT = 7777;
+
 
     // for Synchronization
     public static double SYNC_TIME;

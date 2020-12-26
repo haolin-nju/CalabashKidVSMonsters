@@ -5,6 +5,10 @@ import main.java.nju.linhao.ai.attack.RandomTargetSelector;
 import main.java.nju.linhao.ai.attack.TargetSelector;
 import main.java.nju.linhao.ai.direction.DirectionSelector;
 import main.java.nju.linhao.ai.direction.RandomDirectionSelector;
+import main.java.nju.linhao.bullet.Bullet;
+import main.java.nju.linhao.bullet.BulletFactory;
+import main.java.nju.linhao.bullet.HumanBullet;
+import main.java.nju.linhao.bullet.MonsterBullet;
 import main.java.nju.linhao.enums.CreatureStatus;
 import main.java.nju.linhao.enums.Direction;
 
@@ -127,8 +131,15 @@ public abstract class Creature implements Runnable{
         return this.selectionStatus;
     }
 
-    public void attack(Creature attakTarget){
+    public Bullet attack(Creature attackTarget, double clickPosX, double clickPosY){
         // TODO: Communication and attack!!
+        if (attackTarget instanceof Monster) {
+            return BulletFactory.createHumanBullet((clickPosY - posY) / (clickPosX - posX), posX, posY);
+        } else if (attackTarget instanceof Human) {
+            return BulletFactory.createMonsterBullet((clickPosY - posY) / (clickPosX - posX), posX, posY);
+        } else {
+            return null;
+        }
     }
 
     @Override

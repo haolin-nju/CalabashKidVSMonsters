@@ -43,6 +43,7 @@ public class Main extends Application {
                 mainWindowView,
                 clientWindowLoader.getController(),
                 new BattlefieldController(new Battlefield(), mainWindowView),
+                new NetworkController(),
                 clientScene,
                 icon,
                 hostServices);

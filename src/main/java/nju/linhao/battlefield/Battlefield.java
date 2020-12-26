@@ -1,5 +1,8 @@
 package main.java.nju.linhao.battlefield;
 
+import main.java.nju.linhao.bullet.Bullet;
+import main.java.nju.linhao.bullet.BulletManager;
+import main.java.nju.linhao.bullet.HumanBullet;
 import main.java.nju.linhao.creature.Creature;
 import main.java.nju.linhao.creature.Human;
 import main.java.nju.linhao.creature.Monster;
@@ -22,6 +25,7 @@ public class Battlefield implements Runnable {
     private static MonsterTeam monsterTeam;
     private static ArrayList<Human> humans;
     private static ArrayList<Monster> monsters;
+    private static BulletManager bulletManager;
 
     public Battlefield() {
         this(Configuration.DEFAULT_GRID_COLUMNS, Configuration.DEFAULT_GRID_ROWS, Configuration.DEFAULT_MINION_NUMS);
@@ -42,6 +46,8 @@ public class Battlefield implements Runnable {
 
         monsterTeam = TeamBuilder.buildMonsterTeam(minionNum);
         monsters = monsterTeam.getTeamMembers();
+
+        bulletManager = new BulletManager();
     }
 
     public int getColumns() {
@@ -87,6 +93,14 @@ public class Battlefield implements Runnable {
             int[] pos = monster.getPos();
             creatureGrids[pos[0]][pos[1]] = monster;
         }
+    }
+
+    public void addBullet(Bullet bullet){
+        bulletManager.addBullet(bullet);
+    }
+
+    public BulletManager getBulletManager(){
+        return bulletManager;
     }
 
     @Override

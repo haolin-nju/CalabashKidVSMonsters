@@ -8,15 +8,13 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import main.java.nju.linhao.controller.logic.LocalGameController;
 import main.java.nju.linhao.controller.logic.NetworkController;
 import main.java.nju.linhao.enums.*;
+import main.java.nju.linhao.utils.IPAddressJudger;
 
 public class ClientWindowView {
     private ToggleGroup group = new ToggleGroup();
@@ -28,7 +26,7 @@ public class ClientWindowView {
     private URL location;
 
     @FXML // fx:id="serverChoiceBox"
-    private ChoiceBox<String> serverChoiceBox; // Value injected by FXMLLoader
+    private ComboBox<String> serverComboBox; // Value injected by FXMLLoader
 
     @FXML // fx:id="formationChoiceBox"
     private ChoiceBox<Formation> formationChoiceBox; // Value injected by FXMLLoader
@@ -45,6 +43,8 @@ public class ClientWindowView {
     @FXML // fx:id="returnToMainWindow"
     private Button returnToMainWindow; // Value injected by FXMLLoader
 
+    private String destIp = "127.0.0.1";
+
     @FXML
     void humanRadioButtonOnClicked(MouseEvent event) {
         LocalGameController.requestSetLocalPlayer(Player.PLAYER_1);
@@ -59,10 +59,9 @@ public class ClientWindowView {
 
     @FXML
     void readyToFightButtonOnClicked(MouseEvent event) {
-        String srcIp = NetworkController.getLocalIp();
+        String srcIp = LocalGameController.getLocalIp();
         LocalGameController.setCurrentStatus(LocalGameStatus.CONNECTING);
-        NetworkController.sendMessage(MessageType.CLIENT1_READY, srcIp, srcIp);
-        LocalGameController.setCurrentStatus(LocalGameStatus.READY);
+        LocalGameController.requestNetworkController(MessageType.CLIENT_READY, destIp);
         ((Stage) readyToFightButton.getScene().getWindow()).close();
     }
 
@@ -73,7 +72,7 @@ public class ClientWindowView {
     }
 
     @FXML
-    void serverChoiceBoxOnClicked(MouseEvent event) {
+    void serverComboBoxOnClicked(MouseEvent event) {
 
     }
 
@@ -82,10 +81,11 @@ public class ClientWindowView {
 
     }
 
+
     @FXML
         // This method is called by the FXMLLoader when initialization is complete
     void initialize() throws UnknownHostException {
-        assert serverChoiceBox != null : "fx:id=\"serverChoiceBox\" was not injected: check your FXML file 'ClientWindow.fxml'.";
+        assert serverComboBox != null : "fx:id=\"serverChoiceBox\" was not injected: check your FXML file 'ClientWindow.fxml'.";
         assert formationChoiceBox != null : "fx:id=\"formationChoiceBox\" was not injected: check your FXML file 'ClientWindow.fxml'.";
         assert humanRadioButton != null : "fx:id=\"humanRadioButton\" was not injected: check your FXML file 'ClientWindow.fxml'.";
         assert monsterRadioButton != null : "fx:id=\"monsterRadioButton\" was not injected: check your FXML file 'ClientWindow.fxml'.";
@@ -101,9 +101,20 @@ public class ClientWindowView {
 
         readyToFightButton.setDisable(true);
 
-        NetworkController.init();
-        serverChoiceBox.getItems().add(NetworkController.getLocalName());
-        serverChoiceBox.getSelectionModel().selectFirst();
+        serverComboBox.getItems().add("本机");
+        serverComboBox.getSelectionModel().selectFirst();
+        serverComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            String curIPAddress = String.valueOf(newValue);
+            if(IPAddressJudger.isIPAddress(curIPAddress)){
+                destIp = curIPAddress;
+                if(!serverComboBox.getItems().contains(newValue)) {
+                    serverComboBox.getItems().add(newValue);
+                }
+            }
+        });
+        serverComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            destIp = String.valueOf(newValue);
+        });
 
         formationChoiceBox.getItems().addAll(
                 Formation.LONG_SNAKE_FORMATION,

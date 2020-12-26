@@ -8,10 +8,7 @@ import main.java.nju.linhao.battlefield.BattlefieldController;
 import main.java.nju.linhao.controller.window.ClientWindowView;
 import main.java.nju.linhao.controller.window.MainWindowView;
 import main.java.nju.linhao.creature.Creature;
-import main.java.nju.linhao.enums.Formation;
-import main.java.nju.linhao.enums.FormationRequest;
-import main.java.nju.linhao.enums.LocalGameStatus;
-import main.java.nju.linhao.enums.Player;
+import main.java.nju.linhao.enums.*;
 import main.java.nju.linhao.exception.OutofRangeException;
 
 
@@ -25,18 +22,21 @@ public class LocalGameController {
     private static MainWindowView mainWindowView;
     private static ClientWindowView clientWindowView;
     private static BattlefieldController battlefieldController;
+    private static NetworkController networkController;
     private static Thread threadBattleField;
 
     public static void init(
             MainWindowView mainWindowViewForInit,
             ClientWindowView clientWindowViewForInit,
             BattlefieldController battlefieldControllerForInit,
+            NetworkController networkControllerForInit,
             Scene clientScene,
             Image icon,
             HostServices mainHostServices) {
         mainWindowView = mainWindowViewForInit;
         clientWindowView = clientWindowViewForInit;
         battlefieldController = battlefieldControllerForInit;
+        networkController = networkControllerForInit;
         localClientScene = clientScene;
         localIcon = icon;
         hostServices = mainHostServices;
@@ -120,7 +120,7 @@ public class LocalGameController {
         clientStage.setResizable(false);
         clientStage.setOnHidden(event -> {
             if (LocalGameController.getCurrentStatus() == LocalGameStatus.READY) {
-                mainWindowView.logMessages("已经准备好了！\n本机IP：" + NetworkController.getLocalIp());
+                mainWindowView.logMessages("已经准备好了！\n本机IP：" + networkController.getLocalIp());
                 if (localPlayer == Player.PLAYER_1) {
                     mainWindowView.logMessages("本机阵营：人类阵营");
                 } else {
@@ -136,6 +136,21 @@ public class LocalGameController {
         });
         clientStage.show();
     }
+
+    public static void requestNetworkController(MessageType messageType, String destIp){
+        networkController.setDestIp(destIp);
+        Thread networkThread = new Thread(networkController);
+        networkThread.run();
+    }
+
+    public static void requestGameStart(){
+        LocalGameController.setCurrentStatus(LocalGameStatus.READY);
+    }
+
+    public static String getLocalIp(){
+        return networkController.getLocalIp();
+    }
+
 
     // Requests
     public static void requestSetLocalPlayer(Player player) {

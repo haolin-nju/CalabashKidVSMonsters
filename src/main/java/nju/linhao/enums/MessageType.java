@@ -1,14 +1,24 @@
 package main.java.nju.linhao.enums;
 
 public enum MessageType {
-    CLIENT1_READY,
-    CLIENT2_READY,
+    CLIENT_READY("CLIENT_READY"),
 
-    CREATURE_CREATE,
-    CREATURE_MOVE,
-    CREATURE_DAMAGE,
-    CREATURE_DEAD,
+    SERVER_ACK("SERVER_ACK"),
 
-    BULLET_CREATE,
-    BULLET_DEAD,
+    CREATURE_CREATE("CREATURE_CREATE"),
+    CREATURE_MOVE("CREATURE_MOVE"),
+    CREATURE_DAMAGE("CREATURE_DAMAGE"),
+
+    BULLET_CREATE("BULLET_CREATE");
+
+    private String description;
+
+    MessageType(String description){
+        this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return description;
+    }
 }

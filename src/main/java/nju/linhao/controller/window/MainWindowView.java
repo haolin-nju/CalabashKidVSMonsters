@@ -17,6 +17,9 @@ import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import main.java.nju.linhao.battlefield.Battlefield;
+import main.java.nju.linhao.bullet.Bullet;
+import main.java.nju.linhao.bullet.HumanBullet;
+import main.java.nju.linhao.bullet.MonsterBullet;
 import main.java.nju.linhao.controller.logic.LocalGameController;
 import main.java.nju.linhao.creature.Creature;
 import main.java.nju.linhao.creature.Human;
@@ -189,6 +192,10 @@ public class MainWindowView {
         paintCreatures(humans, curPlayer == Player.PLAYER_1);
         ArrayList<Monster> monsters = battlefield.getMonsterTeam().getTeamMemebers();
         paintCreatures(monsters, curPlayer == Player.PLAYER_2);
+        ArrayList<HumanBullet> humanBullets = battlefield.getBulletManager().getHumanBullets();
+        paintBullets(humanBullets);
+        ArrayList<MonsterBullet> monsterBullets = battlefield.getBulletManager().getMonsterBullets();
+        paintBullets(monsterBullets);
     }
 
     private void paintCreatures(ArrayList<? extends Creature> creatures, boolean ourTeam) {
@@ -234,6 +241,10 @@ public class MainWindowView {
             }
         }
         gc.restore();
+    }
+
+    private static void paintBullets(ArrayList<? extends Bullet> bullets){
+
     }
 
     @FXML
