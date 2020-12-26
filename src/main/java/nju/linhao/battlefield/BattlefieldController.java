@@ -117,7 +117,6 @@ public class BattlefieldController {
                 if(bullet!=null){
                     battlefield.addBullet(bullet);
                 }
-
             }
         }
         repaint();
