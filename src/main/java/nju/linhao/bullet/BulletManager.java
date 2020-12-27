@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class BulletManager {
+public class BulletManager implements Runnable {
     private ArrayList<HumanBullet> humanBullets;
     private ArrayList<MonsterBullet> monsterBullets;
 
@@ -57,5 +57,10 @@ public class BulletManager {
 
     public ArrayList<MonsterBullet> getMonsterBullets(){
         return monsterBullets;
+    }
+
+    @Override
+    public void run() {
+
     }
 }

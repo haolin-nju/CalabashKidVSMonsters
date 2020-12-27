@@ -40,7 +40,7 @@ public class Main extends Application {
 
         Image icon = new Image(curClass.getResourceAsStream("/icon/CalabashKidsVSMonstersIcon.png"));
         MainWindowView mainWindowView = mainWindowLoader.getController();
-        LocalGameController.init(
+        LocalGameController.getInstance().init(
                 mainWindowView,
                 clientWindowLoader.getController(),
                 new BattlefieldController(new Battlefield(), mainWindowView),
@@ -50,13 +50,13 @@ public class Main extends Application {
                 hostServices);
 
         scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            LocalGameStatus curGameStatus = LocalGameController.getCurrentStatus();
+            LocalGameStatus curGameStatus = LocalGameController.getInstance().getCurrentStatus();
             switch(event.getCode()){
                 case SPACE:
                     if (curGameStatus == LocalGameStatus.END) {
-                        LocalGameController.resetGame();
+                        LocalGameController.getInstance().resetGame();
                     } else if (curGameStatus == LocalGameStatus.INIT) {
-                        LocalGameController.newGame();
+                        LocalGameController.getInstance().newGame();
                     }
                     break;
                 case L:
@@ -67,32 +67,32 @@ public class Main extends Application {
                     break;
                 case LEFT:
                     if(curGameStatus == LocalGameStatus.READY){
-                        LocalGameController.requestSetFormation(FormationRequest.BACKWARD);
+                        LocalGameController.getInstance().requestSetFormation(FormationRequest.BACKWARD);
                     }
                     break;
                 case RIGHT:
                     if(curGameStatus == LocalGameStatus.READY){
-                        LocalGameController.requestSetFormation(FormationRequest.FORWARD);
+                        LocalGameController.getInstance().requestSetFormation(FormationRequest.FORWARD);
                     }
                     break;
                 case W:
                     if(curGameStatus == LocalGameStatus.RUN){
-                        LocalGameController.requestCreatureMove(Direction.UP);
+                        LocalGameController.getInstance().requestCreatureMove(Direction.UP);
                     }
                     break;
                 case S:
                     if(curGameStatus == LocalGameStatus.RUN){
-                        LocalGameController.requestCreatureMove(Direction.DOWN);
+                        LocalGameController.getInstance().requestCreatureMove(Direction.DOWN);
                     }
                     break;
                 case A:
                     if(curGameStatus == LocalGameStatus.RUN){
-                        LocalGameController.requestCreatureMove(Direction.LEFT);
+                        LocalGameController.getInstance().requestCreatureMove(Direction.LEFT);
                     }
                     break;
                 case D:
                     if(curGameStatus == LocalGameStatus.RUN){
-                        LocalGameController.requestCreatureMove(Direction.RIGHT);
+                        LocalGameController.getInstance().requestCreatureMove(Direction.RIGHT);
                     }
                     break;
 //                case Q:

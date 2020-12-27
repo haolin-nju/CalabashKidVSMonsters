@@ -1,5 +1,6 @@
 package main.java.nju.linhao.bullet;
 
+import main.java.nju.linhao.controller.logic.LocalGameController;
 import main.java.nju.linhao.utils.Configuration;
 import sun.security.krb5.Config;
 
@@ -22,7 +23,8 @@ public class Bullet implements Runnable {
         this.damage = damage;
         this.speed = speed;
         this.setAngle(angle);
-        this.posY = posY;
+        this.posX = posX;//行像素
+        this.posY = posY;//列像素
     }
 
     public int getId() {
@@ -79,12 +81,8 @@ public class Bullet implements Runnable {
             if (isOutOfRange()) {
                 return;
             }
-            posX = posX + speed * deno;
-            posY = posY + speed * angle * deno;
-            if (posX < 0 || posX >= Configuration.DEFAULT_GRID_HEIGHT
-                    || posY < 0 || posY >= Configuration.DEFAULT_GRID_WIDTH) {
-                return;
-            }
+            posX = posX + speed * angle * deno;
+            posY = posY + speed * deno;
         }
     }
 }

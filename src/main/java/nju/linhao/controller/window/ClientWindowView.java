@@ -48,28 +48,28 @@ public class ClientWindowView {
 
     @FXML
     void humanRadioButtonOnClicked(MouseEvent event) {
-        LocalGameController.requestSetLocalPlayer(Player.PLAYER_1);
+        LocalGameController.getInstance().requestSetLocalPlayer(Player.PLAYER_1);
         formationChoiceBox.getSelectionModel().clearSelection();
     }
 
     @FXML
     void monsterRadioButtonOnClicked(MouseEvent event) {
-        LocalGameController.requestSetLocalPlayer(Player.PLAYER_2);
+        LocalGameController.getInstance().requestSetLocalPlayer(Player.PLAYER_2);
         formationChoiceBox.getSelectionModel().clearSelection();
     }
 
     @FXML
     void readyToFightButtonOnClicked(MouseEvent event) {
-        String srcIp = LocalGameController.getLocalIp();
-        LocalGameController.setCurrentStatus(LocalGameStatus.CONNECTING);
-        LocalGameController.requestNetworkController(MessageType.CLIENT_READY, destIp);
-        LocalGameController.setCurrentStatus(LocalGameStatus.READY);
+        String srcIp = LocalGameController.getInstance().getLocalIp();
+        LocalGameController.getInstance().setCurrentStatus(LocalGameStatus.CONNECTING);
+        LocalGameController.getInstance().requestNetworkController(MessageType.CLIENT_READY, destIp);
+        LocalGameController.getInstance().setCurrentStatus(LocalGameStatus.READY);
         ((Stage) readyToFightButton.getScene().getWindow()).close();
     }
 
     @FXML
     void returnToMainWindowOnClicked(MouseEvent event) {
-        LocalGameController.requestClearInfo();
+        LocalGameController.getInstance().requestClearInfo();
         ((Stage) returnToMainWindow.getScene().getWindow()).close();
     }
 
@@ -130,7 +130,7 @@ public class ClientWindowView {
                 }
                 else{
                     FormationRequest newFormationRequest = FormationRequest.values()[(int) newValue + 2];
-                    LocalGameController.requestSetFormation(newFormationRequest);
+                    LocalGameController.getInstance().requestSetFormation(newFormationRequest);
                     readyToFightButton.setDisable(false);
                 }
             }

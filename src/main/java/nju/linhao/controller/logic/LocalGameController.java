@@ -19,19 +19,25 @@ import java.io.IOException;
 
 
 public class LocalGameController {
-    private static LocalGameStatus currStatus;
-    private static Scene localClientScene;
-    private static Image localIcon;
-    private static Player localPlayer;
-    private static Creature currCreatureSelected;
-    private static HostServices hostServices;
-    private static MainWindowView mainWindowView;
-    private static ClientWindowView clientWindowView;
-    private static BattlefieldController battlefieldController;
-    private static NetworkController networkController;
-    private static Thread threadBattleField;
+    private LocalGameStatus currStatus;
+    private Scene localClientScene;
+    private Image localIcon;
+    private Player localPlayer;
+    private Creature currCreatureSelected;
+    private HostServices hostServices;
+    private MainWindowView mainWindowView;
+    private ClientWindowView clientWindowView;
+    private BattlefieldController battlefieldController;
+    private NetworkController networkController;
+    private Thread threadBattleField;
 
-    public static void init(
+    private static LocalGameController localGameController = new LocalGameController();
+    private LocalGameController(){}
+    public static LocalGameController getInstance(){
+        return localGameController;
+    }
+
+    public void init(
             MainWindowView mainWindowViewForInit,
             ClientWindowView clientWindowViewForInit,
             BattlefieldController battlefieldControllerForInit,
@@ -52,11 +58,11 @@ public class LocalGameController {
         threadBattleField = null;
     }
 
-    public static LocalGameStatus getCurrentStatus() {
+    public LocalGameStatus getCurrentStatus() {
         return currStatus;
     }
 
-    public static void setCurrentStatus(LocalGameStatus status) {
+    public void setCurrentStatus(LocalGameStatus status) {
         // state machine
         switch (status) {
             case INIT:
@@ -94,28 +100,28 @@ public class LocalGameController {
     }
 
     // Basic Game Logic
-    public static void newGame() {
+    public void newGame() {
 //        changeFormation(Formation.LONG_SNAKE_FORMATION, Player.PLAYER_1); 我觉得这应该变成网络传输的内容
         getReady();
         mainWindowView.logMessages("开始新游戏！");
     }
 
-    public static void resetGame() {
+    public void resetGame() {
         mainWindowView.logMessages("重置游戏！！");
         currStatus = LocalGameStatus.READY;
     }
 
-    public static void pauseGame() {
+    public void pauseGame() {
         mainWindowView.logMessages("暂停游戏！！");
         currStatus = LocalGameStatus.PAUSE;
     }
 
-    public static void continueGame() {
+    public void continueGame() {
         mainWindowView.logMessages("继续游戏！！");
         currStatus = LocalGameStatus.RUN;
     }
 
-    public static void endGame() {
+    public void endGame() {
         mainWindowView.logMessages("停止游戏！");
         currStatus = LocalGameStatus.END;
     }
@@ -124,7 +130,7 @@ public class LocalGameController {
 
 
     // Client Server Logic
-    private static void getReady() {
+    private void getReady() {
         Stage clientStage = new Stage();
         clientStage.setScene(localClientScene);
         clientStage.setTitle("准备界面");
@@ -143,42 +149,42 @@ public class LocalGameController {
         clientStage.show();
     }
 
-    public static void requestNetworkController(MessageType messageType, String destIp){
+    public void requestNetworkController(MessageType messageType, String destIp){
         networkController.setDestIp(destIp);
         Thread networkThread = new Thread(networkController);
         networkThread.start();
     }
 
-    public static void requestGameStart(){
-        LocalGameController.setCurrentStatus(LocalGameStatus.READY);
+    public void requestGameStart(){
+        LocalGameController.getInstance().setCurrentStatus(LocalGameStatus.READY);
     }
 
-    public static String getLocalIp(){
+    public String getLocalIp(){
         return networkController.getLocalIp();
     }
 
-    public static Player getLocalPlayer(){
+    public Player getLocalPlayer(){
         return localPlayer;
     }
 
-    public static BattlefieldController getBattlefieldController(){
+    public BattlefieldController getBattlefieldController(){
         return battlefieldController;
     }
 
 
     // Requests
-    public static void requestSetLocalPlayer(Player player) {
+    public void requestSetLocalPlayer(Player player) {
         localPlayer = player;
         battlefieldController.setLocalPlayer(player);
     }
 
 
     // Requests following
-    public static void requestLogMessages(String log) {
+    public void requestLogMessages(String log) {
         mainWindowView.logMessages(log);
     }
 
-    public static void requestSetFormation(FormationRequest formationRequest) {
+    public void requestSetFormation(FormationRequest formationRequest) {
         int curFormationIdx = battlefieldController.getFormationIdx();
         Formation[] formations = Formation.values();
         switch (formationRequest) {
@@ -204,20 +210,20 @@ public class LocalGameController {
         mainWindowView.logMessages(localPlayer + "更换阵型为：" + battlefieldController.getFormation().toString());
     }
 
-    public static void requestClearInfo(){
+    public void requestClearInfo(){
         battlefieldController.clear();
     }
 
-    public static void requestRepaint(){
+    public void requestRepaint(){
         battlefieldController.repaint();
     }
 
-    public static void requestMouseClick(double clickPosX, double clickPosY) throws OutofRangeException {
+    public void requestMouseClick(double clickPosX, double clickPosY) throws OutofRangeException {
         // TODO: Mouse click event handle, including select a creature or attack. You can use Battlefirld.getCreatureFromPos() and utilize 泛型
         battlefieldController.requestMouseClick(clickPosX, clickPosY, localPlayer);
     }
 
-    public static Formation requestGetTeamFormation(){
+    public Formation requestGetTeamFormation(){
         if(localPlayer == Player.PLAYER_1){
             return battlefieldController.getBattlefield().getHumanTeam().getFormation();
         } else if(localPlayer == Player.PLAYER_2){
@@ -228,7 +234,7 @@ public class LocalGameController {
         }
     }
 
-    public static void requestSetTeamFormation(Formation formation){
+    public void requestSetTeamFormation(Formation formation){
         // 为对方在本机设置阵型
         if(localPlayer == Player.PLAYER_1){
             battlefieldController.getBattlefield().getMonsterTeam().setFormation(formation);
@@ -240,11 +246,11 @@ public class LocalGameController {
         battlefieldController.repaint();
     }
 
-//    public static void requestStartCreatureThreads(){
-//        battlefieldController.getBattlefield().startLocalCreatureThreads(localPlayer);
-//    }
+    public void requestStartCreatureThreads(){
+        battlefieldController.getBattlefield().startLocalCreatureThreads(localPlayer);
+    }
 
-    public static void requestCreatureMove(Direction direction){
+    public void requestCreatureMove(Direction direction){
         Creature curSelectedCreature = battlefieldController.letCurSelectedCreatureMove(direction);
         battlefieldController.repaint();
         try {
@@ -254,7 +260,7 @@ public class LocalGameController {
         }
     }
 
-    public static void requestCreatureMove(Creature creature, Direction direction){
+    public synchronized void requestCreatureMove(Creature creature, Direction direction){
             battlefieldController.letCreatureMove(creature, direction);
             battlefieldController.repaint();
             try {
@@ -264,7 +270,7 @@ public class LocalGameController {
             }
     }
 
-    public static void requestOthersCreatureMove(Creature creature) {
+    public void requestOthersCreatureMove(Creature creature) {
         Battlefield battlefield = battlefieldController.getBattlefield();
         synchronized (battlefield) {
             Creature creatureToMove = battlefield.getCreatureFromId(creature, localPlayer);

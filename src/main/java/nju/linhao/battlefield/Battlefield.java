@@ -115,21 +115,21 @@ public class Battlefield implements Runnable {
         }
     }
 
-//    public void startLocalCreatureThreads(Player player){
-//        if(player == Player.PLAYER_1){
-//            ArrayList<Human> humans = humanTeam.getTeamMembers();
-//            for(Human human : humans){
-//                Thread humanThread = new Thread(human);
-//                humanThread.start();
-//            }
-//        } else if(player == Player.PLAYER_2) {
-//            ArrayList<Monster> monsters = monsterTeam.getTeamMembers();
-//            for (Monster monster : monsters) {
-//                Thread monsterThread = new Thread(monster);
-//                monsterThread.start();
-//            }
-//        }
-//    }
+    public void startLocalCreatureThreads(Player player){
+        if(player == Player.PLAYER_1){
+            ArrayList<Human> humans = humanTeam.getTeamMembers();
+            for(Human human : humans){
+                Thread humanThread = new Thread(human);
+                humanThread.start();
+            }
+        } else if(player == Player.PLAYER_2) {
+            ArrayList<Monster> monsters = monsterTeam.getTeamMembers();
+            for (Monster monster : monsters) {
+                Thread monsterThread = new Thread(monster);
+                monsterThread.start();
+            }
+        }
+    }
 
     public void addBullet(Bullet bullet){
         bulletManager.addBullet(bullet);

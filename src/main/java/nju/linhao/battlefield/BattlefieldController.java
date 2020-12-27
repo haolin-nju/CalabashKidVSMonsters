@@ -76,7 +76,7 @@ public class BattlefieldController {
     }
 
     public synchronized void repaint() {
-        LocalGameStatus localGameStatus = LocalGameController.getCurrentStatus();
+        LocalGameStatus localGameStatus = LocalGameController.getInstance().getCurrentStatus();
         if (localGameStatus == LocalGameStatus.INIT
                 || localGameStatus == LocalGameStatus.READY) {
             Platform.runLater(() -> battlefieldView.paintLocalMainCanvas(battlefield, curPlayer));
@@ -98,23 +98,24 @@ public class BattlefieldController {
             if (selectedCreature instanceof Human) {
                 curSelectedCreature.setUnselected();
                 selectedCreature.setSelected();
-                LocalGameController.requestLogMessages("当前选择生物：" + selectedCreature.getCreatureName());
+                LocalGameController.getInstance().requestLogMessages("当前选择生物：" + selectedCreature.getCreatureName());
                 curSelectedCreature = selectedCreature;
             } else if (selectedCreature instanceof Monster
                     && curSelectedCreature instanceof Human) {
-                Bullet bullet = curSelectedCreature.attack(selectedCreature, clickPosX, clickPosY);
-                if(bullet != null){
-                    battlefield.addBullet(bullet);
-                }
-//                LocalGameController.requestNetworkController();
-                LocalGameController.requestLogMessages(curSelectedCreature.getCreatureName() + "攻击："
+                curSelectedCreature.setAttack(selectedCreature, clickPosX, clickPosY);
+//                Bullet bullet = curSelectedCreature.attack(selectedCreature, clickPosX, clickPosY);
+//                if(bullet != null){
+//                    battlefield.addBullet(bullet);
+//                }
+//                LocalGameController.getInstance().requestNetworkController();
+                LocalGameController.getInstance().requestLogMessages(curSelectedCreature.getCreatureName() + "攻击："
                         + selectedCreature.getCreatureName());
             }
         } else if(localPlayer == Player.PLAYER_2){
             if(selectedCreature instanceof Monster){
                 curSelectedCreature.setUnselected();;
                 selectedCreature.setSelected();
-                LocalGameController.requestLogMessages("当前选择生物：" + selectedCreature.getCreatureName());
+                LocalGameController.getInstance().requestLogMessages("当前选择生物：" + selectedCreature.getCreatureName());
                 curSelectedCreature = selectedCreature;
             } else if (selectedCreature instanceof Human
                     && curSelectedCreature instanceof Monster) {
@@ -123,7 +124,7 @@ public class BattlefieldController {
                     battlefield.addBullet(bullet);
                 }
                 //                LocalGameController.requestNetworkController();
-                LocalGameController.requestLogMessages(curSelectedCreature.getCreatureName() + "攻击："
+                LocalGameController.getInstance().requestLogMessages(curSelectedCreature.getCreatureName() + "攻击："
                         + selectedCreature.getCreatureName());
             }
         }
@@ -163,7 +164,7 @@ public class BattlefieldController {
                 battlefield.updateCreatureGrids();
                 return curSelectedCreature;
             } catch (OutofRangeException e){
-                LocalGameController.requestLogMessages(creature.toString() + "不能再往外面走了！");
+                LocalGameController.getInstance().requestLogMessages(creature.toString() + "不能再往外面走了！");
                 return curSelectedCreature;
             }
         }

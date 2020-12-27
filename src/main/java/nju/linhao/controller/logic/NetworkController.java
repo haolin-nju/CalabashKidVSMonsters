@@ -70,7 +70,7 @@ public class NetworkController implements Runnable {
             }
             out.writeObject(msgToSend);
         } catch(IOException e) {
-            LocalGameController.requestLogMessages("传输数据发生错误！");
+            LocalGameController.getInstance().requestLogMessages("传输数据发生错误！");
             throw (IOException) e.fillInStackTrace();
         }
     }
@@ -82,7 +82,7 @@ public class NetworkController implements Runnable {
             socketToClient = serverSocket.accept();
         }
         connectionEstablished = true;
-        LocalGameController.requestLogMessages("本机同时作为服务器进行游戏");
+        LocalGameController.getInstance().requestLogMessages("本机同时作为服务器进行游戏");
     }
 
     private Message recvMessage() throws IOException, ClassNotFoundException {
@@ -95,7 +95,7 @@ public class NetworkController implements Runnable {
             }
             return (Message) in.readObject();
         } catch(IOException e){
-            LocalGameController.requestLogMessages("传输数据发生错误！");
+            LocalGameController.getInstance().requestLogMessages("传输数据发生错误！");
             throw (IOException) e.fillInStackTrace();
         }
     }
@@ -108,17 +108,17 @@ public class NetworkController implements Runnable {
                 sendMessage(MessageType.SERVER_ACK);// 回送服务器ACK，这里故意不写break的！
             case SERVER_ACK:// 客户端收到服务器确认请求
                 // 给对方发送我方生物的Team信息，设置本地运行状态为RUN
-                LocalGameController.setCurrentStatus(LocalGameStatus.RUN);
-                sendMessage(MessageType.TEAM_CREATE, LocalGameController.requestGetTeamFormation());
+                LocalGameController.getInstance().setCurrentStatus(LocalGameStatus.RUN);
+                sendMessage(MessageType.TEAM_CREATE, LocalGameController.getInstance().requestGetTeamFormation());
                 connectionEstablished = true;
                 break;
             case TEAM_CREATE: //收到对方的创建对象的请求
-                LocalGameController.requestSetTeamFormation((Formation) msgContent);
-//                LocalGameController.requestStartCreatureThreads();//启动所有生物线程开始运行
-                LocalGameController.requestLogMessages("游戏开始！");
+                LocalGameController.getInstance().requestSetTeamFormation((Formation) msgContent);
+                LocalGameController.getInstance().requestStartCreatureThreads();//启动所有生物线程开始运行
+                LocalGameController.getInstance().requestLogMessages("游戏开始！");
                 break;
             case CREATURE_MOVE:
-                LocalGameController.requestOthersCreatureMove((Creature) msgContent);
+                LocalGameController.getInstance().requestOthersCreatureMove((Creature) msgContent);
                 break;
             case CREATURE_ATTACK:
                 break;
@@ -148,13 +148,13 @@ public class NetworkController implements Runnable {
                     if (connectionEstablished) {
                         isCurrentClientServer = false;
 //                        LocalGameController.requestGameStart();
-                        LocalGameController.requestLogMessages("本机仅作为客户端进行游戏");
+                        LocalGameController.getInstance().requestLogMessages("本机仅作为客户端进行游戏");
                         break;
                     }
                 }
             } catch (IOException | ClassNotFoundException e) {
                 System.err.println("对方房间不存在！");
-                LocalGameController.requestLogMessages("想要连接的房间不存在！");
+                LocalGameController.getInstance().requestLogMessages("想要连接的房间不存在！");
             }
         }
         // 对各种信息进行处理

@@ -114,7 +114,7 @@ public class MainWindowView {
         continueMenuItem.setDisable(true);
         pauseMenuItem.setDisable(false);
         stopMenuItem.setDisable(false);
-        LocalGameController.newGame();
+        LocalGameController.getInstance().newGame();
     }
 
     @FXML
@@ -125,14 +125,14 @@ public class MainWindowView {
     @FXML
     void continueMenuItemOnAction(ActionEvent event) {
         pauseMenuItem.setDisable(false);
-        LocalGameController.continueGame();
+        LocalGameController.getInstance().continueGame();
         continueMenuItem.setDisable(true);
     }
 
     @FXML
     void pauseMenuItemOnAction(ActionEvent event) {
         continueMenuItem.setDisable(false);
-        LocalGameController.pauseGame();
+        LocalGameController.getInstance().pauseGame();
         pauseMenuItem.setDisable(true);
     }
 
@@ -156,7 +156,7 @@ public class MainWindowView {
         continueMenuItem.setDisable(true);
         pauseMenuItem.setDisable(true);
         stopMenuItem.setDisable(true);
-        LocalGameController.endGame();
+        LocalGameController.getInstance().endGame();
     }
 
 
@@ -165,7 +165,7 @@ public class MainWindowView {
         double clickPosX = mouseEvent.getX();
         double clickPosY = mouseEvent.getY();
         try {
-            LocalGameController.requestMouseClick(clickPosX, clickPosY);
+            LocalGameController.getInstance().requestMouseClick(clickPosX, clickPosY);
         } catch (OutofRangeException e){
             e.printStackTrace();
         }
@@ -255,12 +255,12 @@ public class MainWindowView {
         for(Bullet bullet : bullets){
             double[] bulletPos = bullet.getPos();
             gc.setStroke(Color.BLACK);
-            gc.strokeOval(bulletPos[0] - DEFAULT_BULLET_RADIUS,
-                    bulletPos[1] - DEFAULT_BULLET_RADIUS,
+            gc.strokeOval(bulletPos[1] - DEFAULT_BULLET_RADIUS,
+                    bulletPos[0] - DEFAULT_BULLET_RADIUS,
                     2 * DEFAULT_BULLET_RADIUS,
                     2 * DEFAULT_BULLET_RADIUS);
-            gc.fillOval(bulletPos[0] - DEFAULT_BULLET_RADIUS,
-                    bulletPos[1] - DEFAULT_BULLET_RADIUS,
+            gc.fillOval(bulletPos[1] - DEFAULT_BULLET_RADIUS,
+                    bulletPos[0] - DEFAULT_BULLET_RADIUS,
                     2 * DEFAULT_BULLET_RADIUS,
                     2 * DEFAULT_BULLET_RADIUS);
         }

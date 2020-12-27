@@ -49,10 +49,10 @@ public abstract class Creature implements Runnable, Serializable {
         this.defense = defense;
         this.speed = speed;
 
-//        this.attackFlag = false;
-//        this.attackTarget = null;
-//        this.clickPosX = 0;
-//        this.clickPosY = 0;
+        this.attackFlag = false;
+        this.attackTarget = null;
+        this.clickPosX = 0;
+        this.clickPosY = 0;
     }
 
     public int getCreatureId() {
@@ -173,23 +173,30 @@ public abstract class Creature implements Runnable, Serializable {
         }
     }
 
+    public void setAttack(Creature attackTarget, double clickPosX, double clickPosY){
+        this.attackTarget = attackTarget;
+        this.clickPosX = clickPosX;
+        this.clickPosY = clickPosY;
+        this.attackFlag = true;
+    }
+
     @Override
     public void run(){
         while(this.creatureStatus == CreatureStatus.ALIVE && !Thread.interrupted()){
             if(this.selectionStatus == SelectionStatus.SELECTED){
-//                if(this.attackFlag == true){
-//                    Bullet bullet = attack();
-//                    if(bullet != null){
-//                        LocalGameController.getBattlefieldController().getBattlefield().addBullet(bullet);
-//                    }
-//                    this.attackFlag = false;//攻击完就不再攻击
-//                }
+                if(this.attackFlag == true){
+                    Bullet bullet = attack(attackTarget, clickPosX, clickPosY);
+                    if(bullet != null){
+                        LocalGameController.getInstance().getBattlefieldController().getBattlefield().addBullet(bullet);
+                    }
+                    this.attackFlag = false;//攻击完就不再攻击
+                }
             }
             else if (this.selectionStatus == SelectionStatus.UNSELECTED){
                 // Select move direction
                 DirectionSelector directionSelector = new RandomDirectionSelector();
                 Direction moveDirection = directionSelector.selectDirection();
-                LocalGameController.requestCreatureMove(this, moveDirection);
+                LocalGameController.getInstance().requestCreatureMove(this, moveDirection);
                 // TODO: Select attack target and attack
 
                 try {
@@ -220,10 +227,10 @@ public abstract class Creature implements Runnable, Serializable {
     private int posX; // 当前位置x坐标
     private int posY; // 当前位置y坐标
 
-//    private boolean attackFlag; //是否需要进行攻击
-//    private Creature attackTarget; //攻击的目标
-//    private double clickPosX; //攻击点击的位置X
-//    private double clickPosY; //攻击点击的位置Y
+    private boolean attackFlag; //是否需要进行攻击
+    private Creature attackTarget; //攻击的目标
+    private double clickPosX; //攻击点击的位置X
+    private double clickPosY; //攻击点击的位置Y
 
     @Override
     public String toString(){
