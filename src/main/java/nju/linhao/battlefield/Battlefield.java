@@ -29,8 +29,6 @@ public class Battlefield implements Runnable {
     private static MonsterTeam monsterTeam;
     private static BulletManager bulletManager;
 
-    private ArrayList<Thread> bulletThreads;
-
     public Battlefield() {
         this(Configuration.DEFAULT_GRID_COLUMNS, Configuration.DEFAULT_GRID_ROWS, Configuration.DEFAULT_MINION_NUMS);
     }
@@ -49,8 +47,6 @@ public class Battlefield implements Runnable {
         monsterTeam = TeamBuilder.buildMonsterTeam(Configuration.DEFAULT_MINION_NUMS);
 
         bulletManager = new BulletManager();
-
-        bulletThreads = new ArrayList<>();
     }
 
     public int getColumns() {
@@ -139,7 +135,6 @@ public class Battlefield implements Runnable {
         bulletManager.addBullet(bullet);
         Thread bulletThread = new Thread(bullet);
         bulletThread.start();
-        bulletThreads.add(bulletThread);
     }
 
     public BulletManager getBulletManager(){
