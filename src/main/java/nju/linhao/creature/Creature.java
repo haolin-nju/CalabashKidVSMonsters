@@ -59,7 +59,7 @@ public abstract class Creature implements Runnable, Serializable {
         return creatureID;
     }
 
-    public CreatureStatus getCreatureStatus(){
+    public CreatureStatus getCreatureStatus() {
         return this.creatureStatus;
     }
 
@@ -67,7 +67,7 @@ public abstract class Creature implements Runnable, Serializable {
         return name;
     }
 
-    public Image getImg(){
+    public Image getImg() {
         return img;
     }
 
@@ -95,72 +95,72 @@ public abstract class Creature implements Runnable, Serializable {
         return new int[]{posX, posY};
     }
 
-    public void setHealth(double health){
+    public void setHealth(double health) {
         this.health = health;
     }
 
-    public void setDamage(double damage){
+    public void setDamage(double damage) {
         this.damage = damage;
     }
 
-    public void setSpeed(double speed){
+    public void setSpeed(double speed) {
         this.speed = speed;
     }
 
-    public void setDirection(Direction direction){
+    public void setDirection(Direction direction) {
         this.direction = direction;
     }
 
-    public void setPos(int posX, int posY){
-        if(posX >= 0 && posX < Configuration.DEFAULT_GRID_ROWS){
+    public void setPos(int posX, int posY) {
+        if (posX >= 0 && posX < Configuration.DEFAULT_GRID_ROWS) {
             this.posX = posX;
         }
-        if(posY >= 0 && posY < Configuration.DEFAULT_GRID_COLUMNS){
+        if (posY >= 0 && posY < Configuration.DEFAULT_GRID_COLUMNS) {
             this.posY = posY;
         }
     }
 
-    public void modifyPos(int deltaX, int deltaY){
+    public void modifyPos(int deltaX, int deltaY) {
         int tempPosX = this.posX + deltaX;
         int tempPosY = this.posY + deltaY;
         setPos(tempPosX, tempPosY);
     }
 
-    public void move(Direction direction){
-        switch(direction){
+    public void move(Direction direction) {
+        switch (direction) {
             case UP:
                 modifyPos(-1, 0);
                 break;
             case LEFT:
-                modifyPos(0,-1);
+                modifyPos(0, -1);
                 break;
             case DOWN:
-                modifyPos(1,0);
+                modifyPos(1, 0);
                 break;
             case RIGHT:
-                modifyPos(0,1);
+                modifyPos(0, 1);
                 break;
         }
         this.direction = direction;
     }
 
-    public void setDefense(double defense){
+    public void setDefense(double defense) {
         this.defense = defense;
     }
 
-    public void setSelected(){
+    public void setSelected() {
         this.selectionStatus = SelectionStatus.SELECTED;
     }
 
-    public void setUnselected(){
+    public void setUnselected() {
         this.selectionStatus = SelectionStatus.UNSELECTED;
     }
 
-    public SelectionStatus getSelectionStatus(){
+    public SelectionStatus getSelectionStatus() {
         return this.selectionStatus;
     }
 
-    public Bullet attack(Creature attackTarget, double clickPosX, double clickPosY){
+    public Bullet attack(Creature attackTarget, double clickPosX, double clickPosY) {
         // TODO: Communication and attack!!
         double doublePosX = (posX + 0.5) * Configuration.DEFAULT_GRID_HEIGHT;
         double doublePosY = (posY + 0.5) * Configuration.DEFAULT_GRID_WIDTH;
@@ -173,33 +173,32 @@ public abstract class Creature implements Runnable, Serializable {
         }
     }
 
-    public void setAttack(Creature attackTarget, double clickPosX, double clickPosY){
+    public void setAttack(Creature attackTarget, double clickPosX, double clickPosY) {
         this.attackTarget = attackTarget;
         this.clickPosX = clickPosX;
         this.clickPosY = clickPosY;
         this.attackFlag = true;
     }
 
-    public void injured(double damage){
+    public void injured(double damage) {
         this.health -= (damage - defense);
-        if(this.health <= 0){
+        if (this.health <= 0) {
             creatureStatus = CreatureStatus.DEAD;
         }
     }
 
     @Override
-    public void run(){
-        while(this.creatureStatus == CreatureStatus.ALIVE && !Thread.interrupted()){
-            if(this.selectionStatus == SelectionStatus.SELECTED){
-                if(this.attackFlag == true){
+    public void run() {
+        while (this.creatureStatus == CreatureStatus.ALIVE && !Thread.interrupted()) {
+            if (this.selectionStatus == SelectionStatus.SELECTED) {
+                if (this.attackFlag == true) {
                     Bullet bullet = attack(attackTarget, clickPosX, clickPosY);
-                    if(bullet != null){
+                    if (bullet != null) {
                         LocalGameController.getInstance().getBattlefieldController().getBattlefield().addBullet(bullet);
                     }
                     this.attackFlag = false;//攻击完就不再攻击
                 }
-            }
-            else if (this.selectionStatus == SelectionStatus.UNSELECTED){
+            } else if (this.selectionStatus == SelectionStatus.UNSELECTED) {
                 // Select move direction
                 DirectionSelector directionSelector = new RandomDirectionSelector();
                 Direction moveDirection = directionSelector.selectDirection();
@@ -211,8 +210,7 @@ public abstract class Creature implements Runnable, Serializable {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            }
-            else{
+            } else {
                 throw new NullPointerException("当前生物的选择状态不正确！");
             }
         }
@@ -240,7 +238,7 @@ public abstract class Creature implements Runnable, Serializable {
     private double clickPosY; //攻击点击的位置Y
 
     @Override
-    public String toString(){
+    public String toString() {
         return name;
     }
 }

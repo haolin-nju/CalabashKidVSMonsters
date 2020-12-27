@@ -45,7 +45,7 @@ public class MainWindowView {
         logTextArea.appendText(log + "\n");
     }
 
-    public Canvas getCanvasController(){
+    public Canvas getCanvasController() {
         return mainCanvas;
     }
 
@@ -167,23 +167,22 @@ public class MainWindowView {
         double clickPosY = mouseEvent.getY();
         try {
             LocalGameController.getInstance().requestMouseClick(clickPosX, clickPosY);
-        } catch (OutofRangeException e){
+        } catch (OutofRangeException e) {
             e.printStackTrace();
         }
         // TODO: just repaint the canvas
     }
 
-    public void clearMainCanvas(){
+    public void clearMainCanvas() {
         gc.clearRect(0, 0, Configuration.CANVAS_WIDTH, Configuration.CANVAS_HEIGHT);
     }
 
-    public void paintLocalMainCanvas(Battlefield battlefield, Player curPlayer){
+    public void paintLocalMainCanvas(Battlefield battlefield, Player curPlayer) {
         gc.clearRect(0, 0, Configuration.CANVAS_WIDTH, Configuration.CANVAS_HEIGHT);
-        if(curPlayer == Player.PLAYER_1){
+        if (curPlayer == Player.PLAYER_1) {
             ArrayList<Human> humans = battlefield.getHumanTeam().getTeamMembers();
             paintCreatures(humans, true);
-        }
-        else if(curPlayer == Player.PLAYER_2){
+        } else if (curPlayer == Player.PLAYER_2) {
             ArrayList<Monster> monsters = battlefield.getMonsterTeam().getTeamMemebers();
             paintCreatures(monsters, true);
         }
@@ -204,13 +203,13 @@ public class MainWindowView {
     private void paintCreatures(ArrayList<? extends Creature> creatures, boolean isCurrentPlayer) {
         int[] curCreaturePos;
         gc.save();
-        if(isCurrentPlayer){
+        if (isCurrentPlayer) {
             gc.setFill(Color.BLUE);
-        } else{
+        } else {
             gc.setFill(Color.RED);
         }
         for (Creature creature : creatures) {
-            if(creature.getCreatureStatus() == CreatureStatus.ALIVE){
+            if (creature.getCreatureStatus() == CreatureStatus.ALIVE) {
                 // Draw creatures
                 curCreaturePos = creature.getPos();
                 double topLeftY = Configuration.DEFAULT_GRID_HEIGHT * curCreaturePos[0];
@@ -233,7 +232,7 @@ public class MainWindowView {
                                 / Configuration.DEFAULT_HEALTH,
                         3);
                 // Draw Selection status
-                if(creature.getSelectionStatus() == SelectionStatus.SELECTED){
+                if (creature.getSelectionStatus() == SelectionStatus.SELECTED) {
                     gc.setStroke(Color.GOLD);
                     gc.strokeRect(topLeftX,
                             topLeftY,
@@ -246,14 +245,14 @@ public class MainWindowView {
         gc.restore();
     }
 
-    private void paintBullets(CopyOnWriteArrayList<? extends Bullet> bullets, boolean isCurrentPlayer){
+    private void paintBullets(CopyOnWriteArrayList<? extends Bullet> bullets, boolean isCurrentPlayer) {
         gc.save();
-        if(isCurrentPlayer){
+        if (isCurrentPlayer) {
             gc.setFill(Color.BLUE);
-        } else{
+        } else {
             gc.setFill(Color.RED);
         }
-        for(Bullet bullet : bullets){
+        for (Bullet bullet : bullets) {
             double[] bulletPos = bullet.getPos();
             gc.setStroke(Color.BLACK);
             gc.strokeOval(bulletPos[1] - DEFAULT_BULLET_RADIUS,

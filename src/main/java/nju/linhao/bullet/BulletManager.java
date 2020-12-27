@@ -15,63 +15,69 @@ public class BulletManager implements Runnable {
     private CopyOnWriteArrayList<HumanBullet> humanBullets;
     private CopyOnWriteArrayList<MonsterBullet> monsterBullets;
 
-    public BulletManager(){
+    public BulletManager() {
         humanBullets = new CopyOnWriteArrayList<>();
         monsterBullets = new CopyOnWriteArrayList<>();
     }
 
-    public void addBullet(Bullet bullet){
-        if (bullet instanceof HumanBullet){
+    public void addBullet(Bullet bullet) {
+        if (bullet instanceof HumanBullet) {
             humanBullets.add((HumanBullet) bullet);
-        } else if(bullet instanceof MonsterBullet){
+        } else if (bullet instanceof MonsterBullet) {
             monsterBullets.add((MonsterBullet) bullet);
         } else {
             System.err.println("子弹不属于人类或妖怪！");
         }
     }
 
-    public void removeBullets(){
-        for(HumanBullet humanBullet : humanBullets){
-            if(humanBullet.getToDestroy() == true){
+    public void removeBullets() {
+        for (HumanBullet humanBullet : humanBullets) {
+            if (humanBullet.getToDestroy() == true) {
                 humanBullets.remove(humanBullet);
             }
         }
-        for(MonsterBullet monsterBullet : monsterBullets){
-            if(monsterBullet.getToDestroy() == true){
+        for (MonsterBullet monsterBullet : monsterBullets) {
+            if (monsterBullet.getToDestroy() == true) {
                 humanBullets.remove(monsterBullet);
             }
         }
         return;
     }
 
-    public void clearBullets(){
+    public void clearBullets() {
         humanBullets.clear();
         monsterBullets.clear();
     }
 
-    public CopyOnWriteArrayList<HumanBullet> getHumanBullets(){
+    public CopyOnWriteArrayList<HumanBullet> getHumanBullets() {
         return humanBullets;
     }
 
-    public CopyOnWriteArrayList<MonsterBullet> getMonsterBullets(){
+    public CopyOnWriteArrayList<MonsterBullet> getMonsterBullets() {
         return monsterBullets;
     }
 
     @Override
     public void run() {
-        while(true){
-            for(HumanBullet humanBullet : humanBullets){
-                double[] humanBulletPos = humanBullet.modifyPos();
+        while (true) {
+            for (HumanBullet humanBullet : humanBullets) {
+                if(humanBullet.modifyPos()){
+                    continue;
+                }
+                double[] humanBulletPos = humanBullet.getPos();
                 Creature creature = Battlefield.getCreatureFromBulletPos(humanBulletPos[0], humanBulletPos[1]);
-                if(creature instanceof Monster){
+                if (creature instanceof Monster) {
                     creature.injured(humanBullet.getDamage());
                     humanBullet.setToDestroy(true); // 打到敌人，可以消亡
                 }
             }
-            for(MonsterBullet monsterBullet : monsterBullets){
-                double[] monsterBulletPos = monsterBullet.modifyPos();
+            for (MonsterBullet monsterBullet : monsterBullets) {
+                if(monsterBullet.modifyPos()){
+                    continue;
+                }
+                double[] monsterBulletPos =monsterBullet.getPos();
                 Creature creature = Battlefield.getCreatureFromBulletPos(monsterBulletPos[0], monsterBulletPos[1]);
-                if(creature instanceof Human){
+                if (creature instanceof Human) {
                     creature.injured(monsterBullet.getDamage());
                     monsterBullet.setToDestroy(true);// 打到敌人，可以消亡
                 }

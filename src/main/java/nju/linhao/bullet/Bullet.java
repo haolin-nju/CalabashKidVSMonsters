@@ -48,7 +48,7 @@ public class Bullet {
         return new double[]{posX, posY};
     }
 
-    public boolean getToDestroy(){
+    public boolean getToDestroy() {
         return toDestroy;
     }
 
@@ -62,27 +62,29 @@ public class Bullet {
 
     public void setAngle(double angle) {
         this.angle = angle;
-        this.deno = 1 / Math.sqrt(1 + angle);;
+        this.deno = 1 / Math.sqrt(1 + angle);
+        ;
     }
 
-    public void setToDestroy(boolean toDestroy){
+    public void setToDestroy(boolean toDestroy) {
         this.toDestroy = toDestroy;
     }
 
     public boolean isOutOfRange() {
-        if (posX < 0 || posX >= Configuration.CANVAS_HEIGHT || posY < 0 || posY >= Configuration.CANVAS_WIDTH) {
+        if (posX < 0 || posX >= Configuration.CANVAS_WIDTH || posY < 0 || posY >= Configuration.CANVAS_HEIGHT) {
             return true;
         }
         return false;
     }
 
-    public double[] modifyPos(){
+    public boolean modifyPos() {
         posX = posX + speed * angle * deno;
         posY = posY + speed * deno;
         if (isOutOfRange()) {
             toDestroy = true; //可以消亡了
+            return true;
         }
-        return new double[]{posX, posY};
+        return false;
     }
 
     private static int id = 0; // 全局唯一bullet id

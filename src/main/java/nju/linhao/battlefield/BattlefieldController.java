@@ -45,7 +45,7 @@ public class BattlefieldController {
         return curFormation;
     }
 
-    public Creature getCurSelectedCreature(){
+    public Creature getCurSelectedCreature() {
         return curSelectedCreature;
     }
 
@@ -67,7 +67,7 @@ public class BattlefieldController {
         curFormation = formation;
     }
 
-    public void setDefaultSelectedCreature(){
+    public void setDefaultSelectedCreature() {
         if (curPlayer == Player.PLAYER_1) {
             curSelectedCreature = battlefield.getHumanTeam().getGrandpa();
         } else if (curPlayer == Player.PLAYER_2) {
@@ -111,9 +111,10 @@ public class BattlefieldController {
                 LocalGameController.getInstance().requestLogMessages(curSelectedCreature.getCreatureName() + "攻击："
                         + selectedCreature.getCreatureName());
             }
-        } else if(localPlayer == Player.PLAYER_2){
-            if(selectedCreature instanceof Monster){
-                curSelectedCreature.setUnselected();;
+        } else if (localPlayer == Player.PLAYER_2) {
+            if (selectedCreature instanceof Monster) {
+                curSelectedCreature.setUnselected();
+                ;
                 selectedCreature.setSelected();
                 LocalGameController.getInstance().requestLogMessages("当前选择生物：" + selectedCreature.getCreatureName());
                 curSelectedCreature = selectedCreature;
@@ -132,13 +133,13 @@ public class BattlefieldController {
         repaint();
     }
 
-    public Creature letCurSelectedCreatureMove(Direction direction){
+    public Creature letCurSelectedCreatureMove(Direction direction) {
         return letCreatureMove(curSelectedCreature, direction);
     }
 
-    public Creature letCreatureMove(Creature creature, Direction direction){
+    public Creature letCreatureMove(Creature creature, Direction direction) {
         int[] creaturePos = creature.getPos();
-        synchronized (battlefield){
+        synchronized (battlefield) {
             try {
                 switch (direction) {
                     case UP:
@@ -147,24 +148,24 @@ public class BattlefieldController {
                         }
                         break;
                     case DOWN:
-                        if (battlefield.getCreatureFromPos(creaturePos[0] + 1, creaturePos[1])==null){
+                        if (battlefield.getCreatureFromPos(creaturePos[0] + 1, creaturePos[1]) == null) {
                             creature.move(Direction.DOWN);
                         }
                         break;
                     case LEFT:
-                        if (battlefield.getCreatureFromPos(creaturePos[0], creaturePos[1] - 1)==null){
+                        if (battlefield.getCreatureFromPos(creaturePos[0], creaturePos[1] - 1) == null) {
                             creature.move(Direction.LEFT);
                         }
                         break;
                     case RIGHT:
-                        if (battlefield.getCreatureFromPos(creaturePos[0], creaturePos[1] + 1)==null){
+                        if (battlefield.getCreatureFromPos(creaturePos[0], creaturePos[1] + 1) == null) {
                             creature.move(Direction.RIGHT);
                         }
                         break;
                 }
                 battlefield.updateCreatureGrids();
                 return curSelectedCreature;
-            } catch (OutofRangeException e){
+            } catch (OutofRangeException e) {
                 LocalGameController.getInstance().requestLogMessages(creature.toString() + "不能再往外面走了！");
                 return curSelectedCreature;
             }

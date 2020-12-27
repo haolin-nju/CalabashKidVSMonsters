@@ -32,8 +32,11 @@ public class LocalGameController {
     private Thread threadBattleField;
 
     private static LocalGameController localGameController = new LocalGameController();
-    private LocalGameController(){}
-    public static LocalGameController getInstance(){
+
+    private LocalGameController() {
+    }
+
+    public static LocalGameController getInstance() {
         return localGameController;
     }
 
@@ -87,7 +90,7 @@ public class LocalGameController {
                 }
                 break;
             case RUN:
-                if(currStatus == LocalGameStatus.READY){
+                if (currStatus == LocalGameStatus.READY) {
                     currStatus = LocalGameStatus.RUN;
                 } else {
                     System.err.println("未定义的状态机！原状态：" + currStatus + "目标状态：RUN");
@@ -149,25 +152,25 @@ public class LocalGameController {
         clientStage.show();
     }
 
-    public void requestNetworkController(MessageType messageType, String destIp){
+    public void requestNetworkController(MessageType messageType, String destIp) {
         networkController.setDestIp(destIp);
         Thread networkThread = new Thread(networkController);
         networkThread.start();
     }
 
-    public void requestGameStart(){
+    public void requestGameStart() {
         LocalGameController.getInstance().setCurrentStatus(LocalGameStatus.READY);
     }
 
-    public String getLocalIp(){
+    public String getLocalIp() {
         return networkController.getLocalIp();
     }
 
-    public Player getLocalPlayer(){
+    public Player getLocalPlayer() {
         return localPlayer;
     }
 
-    public BattlefieldController getBattlefieldController(){
+    public BattlefieldController getBattlefieldController() {
         return battlefieldController;
     }
 
@@ -210,11 +213,11 @@ public class LocalGameController {
         mainWindowView.logMessages(localPlayer + "更换阵型为：" + battlefieldController.getFormation().toString());
     }
 
-    public void requestClearInfo(){
+    public void requestClearInfo() {
         battlefieldController.clear();
     }
 
-    public void requestRepaint(){
+    public void requestRepaint() {
         battlefieldController.repaint();
     }
 
@@ -223,51 +226,51 @@ public class LocalGameController {
         battlefieldController.requestMouseClick(clickPosX, clickPosY, localPlayer);
     }
 
-    public Formation requestGetTeamFormation(){
-        if(localPlayer == Player.PLAYER_1){
+    public Formation requestGetTeamFormation() {
+        if (localPlayer == Player.PLAYER_1) {
             return battlefieldController.getBattlefield().getHumanTeam().getFormation();
-        } else if(localPlayer == Player.PLAYER_2){
+        } else if (localPlayer == Player.PLAYER_2) {
             return battlefieldController.getBattlefield().getMonsterTeam().getFormation();
-        } else{
+        } else {
             System.err.println("意外的本地玩家！");
             return null;
         }
     }
 
-    public void requestSetTeamFormation(Formation formation){
+    public void requestSetTeamFormation(Formation formation) {
         // 为对方在本机设置阵型
-        if(localPlayer == Player.PLAYER_1){
+        if (localPlayer == Player.PLAYER_1) {
             battlefieldController.getBattlefield().getMonsterTeam().setFormation(formation);
-        } else if(localPlayer == Player.PLAYER_2){
+        } else if (localPlayer == Player.PLAYER_2) {
             battlefieldController.getBattlefield().getHumanTeam().setFormation(formation);
-        } else{
+        } else {
             System.err.println("意料之外的阵营！");
         }
         battlefieldController.repaint();
     }
 
-    public void requestStartCreatureThreads(){
+    public void requestStartCreatureThreads() {
         battlefieldController.getBattlefield().startLocalCreatureThreads(localPlayer);
     }
 
-    public void requestCreatureMove(Direction direction){
+    public void requestCreatureMove(Direction direction) {
         Creature curSelectedCreature = battlefieldController.letCurSelectedCreatureMove(direction);
         battlefieldController.repaint();
         try {
             networkController.sendMessage(MessageType.CREATURE_MOVE, curSelectedCreature);
-        } catch(IOException e){
+        } catch (IOException e) {
             requestLogMessages("当前移动没有被另一端接收！");
         }
     }
 
-    public synchronized void requestCreatureMove(Creature creature, Direction direction){
-            battlefieldController.letCreatureMove(creature, direction);
-            battlefieldController.repaint();
-            try {
-                networkController.sendMessage(MessageType.CREATURE_MOVE, creature);
-            } catch (IOException e) {
-                requestLogMessages("当前移动没有被另一端接收！");
-            }
+    public synchronized void requestCreatureMove(Creature creature, Direction direction) {
+        battlefieldController.letCreatureMove(creature, direction);
+        battlefieldController.repaint();
+        try {
+            networkController.sendMessage(MessageType.CREATURE_MOVE, creature);
+        } catch (IOException e) {
+            requestLogMessages("当前移动没有被另一端接收！");
+        }
     }
 
     public void requestOthersCreatureMove(Creature creature) {

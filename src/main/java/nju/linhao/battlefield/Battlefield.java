@@ -58,14 +58,14 @@ public class Battlefield implements Runnable {
         return rows;
     }
 
-    public static Creature getCreatureFromBulletPos(double posX, double posY){ // 已经检查过位置的合法性了！
+    public static Creature getCreatureFromBulletPos(double posX, double posY) { // 已经检查过位置的合法性了！
         int rowIdx = (int) (posX / Configuration.DEFAULT_GRID_HEIGHT);
         int colIdx = (int) (posY / Configuration.DEFAULT_GRID_WIDTH);
         return creatureGrids[rowIdx][colIdx];
     }
 
     public Creature getCreatureFromClickPos(double posX, double posY) throws OutofRangeException {
-        if(posX < 0 || posX >= Configuration.CANVAS_WIDTH || posY < 0 || posY >= Configuration.CANVAS_HEIGHT){
+        if (posX < 0 || posX >= Configuration.CANVAS_WIDTH || posY < 0 || posY >= Configuration.CANVAS_HEIGHT) {
             throw new OutofRangeException("Out of Range!");
         }
         int rowIdx = (int) (posY / Configuration.DEFAULT_GRID_HEIGHT);
@@ -74,22 +74,22 @@ public class Battlefield implements Runnable {
     }
 
     public Creature getCreatureFromPos(int rowIdx, int colIdx) throws OutofRangeException {
-        if(rowIdx < 0 || rowIdx >= Configuration.DEFAULT_GRID_ROWS || colIdx < 0 || colIdx >= Configuration.DEFAULT_GRID_COLUMNS){
+        if (rowIdx < 0 || rowIdx >= Configuration.DEFAULT_GRID_ROWS || colIdx < 0 || colIdx >= Configuration.DEFAULT_GRID_COLUMNS) {
             throw new OutofRangeException("Out of Range!");
         }
         return creatureGrids[rowIdx][colIdx];
     }
 
-    public Creature getCreatureFromId(Creature creature, Player curPlayer){
+    public Creature getCreatureFromId(Creature creature, Player curPlayer) {
         int creatureId = creature.getCreatureId();
-        if(curPlayer == Player.PLAYER_1){
+        if (curPlayer == Player.PLAYER_1) {
             ArrayList<Monster> monsters = monsterTeam.getTeamMembers();
             for (Monster monster : monsters) {
                 if (creatureId == monster.getCreatureId()) {
                     return monster;
                 }
             }
-        } else if(curPlayer == Player.PLAYER_2) {
+        } else if (curPlayer == Player.PLAYER_2) {
             ArrayList<Human> humans = humanTeam.getTeamMembers();
             for (Human human : humans) {
                 if (creatureId == human.getCreatureId()) {
@@ -122,14 +122,14 @@ public class Battlefield implements Runnable {
         }
     }
 
-    public void startLocalCreatureThreads(Player player){
-        if(player == Player.PLAYER_1){
+    public void startLocalCreatureThreads(Player player) {
+        if (player == Player.PLAYER_1) {
             ArrayList<Human> humans = humanTeam.getTeamMembers();
-            for(Human human : humans){
+            for (Human human : humans) {
                 Thread humanThread = new Thread(human);
                 humanThread.start();
             }
-        } else if(player == Player.PLAYER_2) {
+        } else if (player == Player.PLAYER_2) {
             ArrayList<Monster> monsters = monsterTeam.getTeamMembers();
             for (Monster monster : monsters) {
                 Thread monsterThread = new Thread(monster);
@@ -138,8 +138,8 @@ public class Battlefield implements Runnable {
         }
     }
 
-    public void addBullet(Bullet bullet){
-        if(isFirstBullet == true){
+    public void addBullet(Bullet bullet) {
+        if (isFirstBullet == true) {
             Thread bulletManagerThread = new Thread(bulletManager);
             bulletManagerThread.start();
             isFirstBullet = false;
@@ -147,7 +147,7 @@ public class Battlefield implements Runnable {
         bulletManager.addBullet(bullet);
     }
 
-    public BulletManager getBulletManager(){
+    public BulletManager getBulletManager() {
         return bulletManager;
     }
 

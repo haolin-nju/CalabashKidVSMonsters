@@ -51,7 +51,7 @@ public class Main extends Application {
 
         scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             LocalGameStatus curGameStatus = LocalGameController.getInstance().getCurrentStatus();
-            switch(event.getCode()){
+            switch (event.getCode()) {
                 case SPACE:
                     if (curGameStatus == LocalGameStatus.END) {
                         LocalGameController.getInstance().resetGame();
@@ -66,32 +66,32 @@ public class Main extends Application {
                     }
                     break;
                 case LEFT:
-                    if(curGameStatus == LocalGameStatus.READY){
+                    if (curGameStatus == LocalGameStatus.READY) {
                         LocalGameController.getInstance().requestSetFormation(FormationRequest.BACKWARD);
                     }
                     break;
                 case RIGHT:
-                    if(curGameStatus == LocalGameStatus.READY){
+                    if (curGameStatus == LocalGameStatus.READY) {
                         LocalGameController.getInstance().requestSetFormation(FormationRequest.FORWARD);
                     }
                     break;
                 case W:
-                    if(curGameStatus == LocalGameStatus.RUN){
+                    if (curGameStatus == LocalGameStatus.RUN) {
                         LocalGameController.getInstance().requestCreatureMove(Direction.UP);
                     }
                     break;
                 case S:
-                    if(curGameStatus == LocalGameStatus.RUN){
+                    if (curGameStatus == LocalGameStatus.RUN) {
                         LocalGameController.getInstance().requestCreatureMove(Direction.DOWN);
                     }
                     break;
                 case A:
-                    if(curGameStatus == LocalGameStatus.RUN){
+                    if (curGameStatus == LocalGameStatus.RUN) {
                         LocalGameController.getInstance().requestCreatureMove(Direction.LEFT);
                     }
                     break;
                 case D:
-                    if(curGameStatus == LocalGameStatus.RUN){
+                    if (curGameStatus == LocalGameStatus.RUN) {
                         LocalGameController.getInstance().requestCreatureMove(Direction.RIGHT);
                     }
                     break;
