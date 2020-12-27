@@ -8,12 +8,15 @@ import main.java.nju.linhao.creature.Human;
 import main.java.nju.linhao.creature.Monster;
 import main.java.nju.linhao.enums.CreatureEnum;
 import main.java.nju.linhao.enums.CreatureStatus;
+import main.java.nju.linhao.enums.Formation;
 import main.java.nju.linhao.exception.OutofRangeException;
 import main.java.nju.linhao.team.HumanTeam;
 import main.java.nju.linhao.team.MonsterTeam;
+import main.java.nju.linhao.team.Team;
 import main.java.nju.linhao.team.TeamBuilder;
 import main.java.nju.linhao.utils.Configuration;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -23,8 +26,6 @@ public class Battlefield implements Runnable {
     private static Creature[][] creatureGrids;
     private static HumanTeam humanTeam;
     private static MonsterTeam monsterTeam;
-    private static ArrayList<Human> humans;
-    private static ArrayList<Monster> monsters;
     private static BulletManager bulletManager;
 
     public Battlefield() {
@@ -42,10 +43,7 @@ public class Battlefield implements Runnable {
         creatureGrids = new Creature[this.rows][this.columns];
 
         humanTeam = TeamBuilder.buildHumanTeam();
-        humans = humanTeam.getTeamMembers();
-
-        monsterTeam = TeamBuilder.buildMonsterTeam(minionNum);
-        monsters = monsterTeam.getTeamMembers();
+        monsterTeam = TeamBuilder.buildMonsterTeam(Configuration.DEFAULT_MINION_NUMS);
 
         bulletManager = new BulletManager();
     }
@@ -75,20 +73,14 @@ public class Battlefield implements Runnable {
         return monsterTeam;
     }
 
-    public ArrayList<Human> getHumans(){
-        return humans;
-    }
-
-    public ArrayList<Monster> getMonsters(){
-        return monsters;
-    }
-
     public void updateCreatureGrids() {
         creatureGrids = new Creature[this.rows][this.columns];
+        ArrayList<Human> humans = humanTeam.getTeamMembers();
         for (Human human : humans) {
             int[] pos = human.getPos();
             creatureGrids[pos[0]][pos[1]] = human;
         }
+        ArrayList<Monster> monsters = monsterTeam.getTeamMembers();
         for (Monster monster : monsters) {
             int[] pos = monster.getPos();
             creatureGrids[pos[0]][pos[1]] = monster;
@@ -107,4 +99,5 @@ public class Battlefield implements Runnable {
     public void run() {
 
     }
+
 }

@@ -1,22 +1,23 @@
 package main.java.nju.linhao.utils;
 
 import main.java.nju.linhao.enums.MessageType;
+import main.java.nju.linhao.team.Team;
 
 import java.io.Serializable;
 
 public class Message implements Serializable {
     private static final long serialVersionUID = 3103317843148814898L;
     private MessageType messageType;
-    private String messageContent;
+    private Object messageContent;
 
     public Message(MessageType messageType){
         this.messageType = messageType;
-        this.messageContent = "";
+        this.messageContent = null;
     }
 
-    public Message(MessageType messageType, String messageContent){
+    public Message(MessageType messageType, Object object) {
         this.messageType = messageType;
-        this.messageContent = messageContent;
+        this.messageContent = object;
     }
 
     public MessageType getMessageType(){
@@ -27,11 +28,12 @@ public class Message implements Serializable {
         this.messageType = messageType;
     }
 
-    public String getMessageContent(){
+    public Object getMessageContent(){
         return messageContent;
     }
 
-    public void setMessageContent(String messageContent){
+    public void setMessageContent(Object messageContent){
         this.messageContent = messageContent;
     }
+
 }

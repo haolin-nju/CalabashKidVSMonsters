@@ -28,11 +28,20 @@ public class BulletManager {
     }
 
     public void removeBullet(int id){
-        Iterator<HumanBullet> iter = humanBullets.iterator();
-        while( iter.hasNext()){
-            Bullet bullet = iter.next();
+        Iterator<HumanBullet> humanBulletIterator = humanBullets.iterator();
+        while(humanBulletIterator.hasNext()){
+            Bullet bullet = humanBulletIterator.next();
             if(bullet.getId()== id){
-                iter.remove();
+                humanBulletIterator.remove();
+                return;
+            }
+        }
+        Iterator<MonsterBullet> monsterBulletIterator = monsterBullets.iterator();
+        while(monsterBulletIterator.hasNext()){
+            Bullet bullet = monsterBulletIterator.next();
+            if(bullet.getId()== id){
+                monsterBulletIterator.remove();
+                return;
             }
         }
     }

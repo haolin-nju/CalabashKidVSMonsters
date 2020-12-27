@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import main.java.nju.linhao.controller.logic.LocalGameController;
 import main.java.nju.linhao.controller.logic.NetworkController;
 import main.java.nju.linhao.enums.*;
+import main.java.nju.linhao.team.TeamBuilder;
 import main.java.nju.linhao.utils.IPAddressJudger;
 
 public class ClientWindowView {
@@ -62,6 +63,7 @@ public class ClientWindowView {
         String srcIp = LocalGameController.getLocalIp();
         LocalGameController.setCurrentStatus(LocalGameStatus.CONNECTING);
         LocalGameController.requestNetworkController(MessageType.CLIENT_READY, destIp);
+        LocalGameController.setCurrentStatus(LocalGameStatus.READY);
         ((Stage) readyToFightButton.getScene().getWindow()).close();
     }
 

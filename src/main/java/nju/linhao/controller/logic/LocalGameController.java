@@ -10,6 +10,9 @@ import main.java.nju.linhao.controller.window.MainWindowView;
 import main.java.nju.linhao.creature.Creature;
 import main.java.nju.linhao.enums.*;
 import main.java.nju.linhao.exception.OutofRangeException;
+import main.java.nju.linhao.team.HumanTeam;
+import main.java.nju.linhao.team.MonsterTeam;
+import main.java.nju.linhao.team.Team;
 
 
 public class LocalGameController {
@@ -119,20 +122,14 @@ public class LocalGameController {
         clientStage.getIcons().add(localIcon);
         clientStage.setResizable(false);
         clientStage.setOnHidden(event -> {
-            if (LocalGameController.getCurrentStatus() == LocalGameStatus.READY) {
-                mainWindowView.logMessages("已经准备好了！\n本机IP：" + networkController.getLocalIp());
-                if (localPlayer == Player.PLAYER_1) {
-                    mainWindowView.logMessages("本机阵营：人类阵营");
-                } else {
-                    mainWindowView.logMessages("本机阵营：妖怪阵营");
-                }
-                mainWindowView.logMessages("您还可以按'⬅''➡'键切换阵型！");
-                battlefieldController.repaint();
-                battlefieldController.setDefaultSelectedCreature();
+            if (localPlayer == Player.PLAYER_1) {
+                mainWindowView.logMessages("本机阵营：人类阵营");
             } else {
-                // TODO
+                mainWindowView.logMessages("本机阵营：妖怪阵营");
             }
-
+            mainWindowView.logMessages("您还可以按'⬅''➡'键切换阵型！");
+            battlefieldController.repaint();
+            battlefieldController.setDefaultSelectedCreature();
         });
         clientStage.show();
     }
@@ -140,7 +137,7 @@ public class LocalGameController {
     public static void requestNetworkController(MessageType messageType, String destIp){
         networkController.setDestIp(destIp);
         Thread networkThread = new Thread(networkController);
-        networkThread.run();
+        networkThread.start();
     }
 
     public static void requestGameStart(){
@@ -149,6 +146,10 @@ public class LocalGameController {
 
     public static String getLocalIp(){
         return networkController.getLocalIp();
+    }
+
+    public static Player getLocalPlayer(){
+        return localPlayer;
     }
 
 
@@ -201,5 +202,28 @@ public class LocalGameController {
     public static void requestMouseClick(double clickPosX, double clickPosY) throws OutofRangeException {
         // TODO: Mouse click event handle, including select a creature or attack. You can use Battlefirld.getCreatureFromPos() and utilize 泛型
         battlefieldController.requestMouseClick(clickPosX, clickPosY, localPlayer);
+    }
+
+    public static Formation requestGetTeamFormation(){
+        if(localPlayer == Player.PLAYER_1){
+            return battlefieldController.getBattlefield().getHumanTeam().getFormation();
+        } else if(localPlayer == Player.PLAYER_2){
+            return battlefieldController.getBattlefield().getMonsterTeam().getFormation();
+        } else{
+            System.err.println("意外的本地玩家！");
+            return null;
+        }
+    }
+
+    public static void requestSetTeamFormation(Formation formation){
+        // 为对方在本机设置阵型
+        if(localPlayer == Player.PLAYER_1){
+            battlefieldController.getBattlefield().getMonsterTeam().setFormation(formation);
+        } else if(localPlayer == Player.PLAYER_2){
+            battlefieldController.getBattlefield().getHumanTeam().setFormation(formation);
+        } else{
+            System.err.println("意料之外的阵营！");
+        }
+        battlefieldController.repaint();
     }
 }

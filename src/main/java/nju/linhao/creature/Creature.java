@@ -16,7 +16,9 @@ import main.java.nju.linhao.enums.SelectionStatus;
 import main.java.nju.linhao.utils.Configuration;
 import main.java.nju.linhao.utils.ImageLoader;
 
-public abstract class Creature implements Runnable{
+import java.io.Serializable;
+
+public abstract class Creature implements Runnable, Serializable {
 
     public Creature(String name) {
         this(name,

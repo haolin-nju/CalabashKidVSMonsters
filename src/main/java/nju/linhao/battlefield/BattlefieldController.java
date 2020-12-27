@@ -75,10 +75,10 @@ public class BattlefieldController {
 
     public synchronized void repaint() {
         LocalGameStatus localGameStatus = LocalGameController.getCurrentStatus();
-        if (localGameStatus == LocalGameStatus.INIT) {
+        if (localGameStatus == LocalGameStatus.INIT
+                || localGameStatus == LocalGameStatus.READY) {
             Platform.runLater(() -> battlefieldView.paintLocalMainCanvas(battlefield, curPlayer));
-        } else if (localGameStatus == LocalGameStatus.READY
-                || localGameStatus == LocalGameStatus.RUN) {
+        } else if (localGameStatus == LocalGameStatus.RUN) {
             Platform.runLater(() -> battlefieldView.paintBothMainCanvas(battlefield, curPlayer));
         }
     }
@@ -96,7 +96,7 @@ public class BattlefieldController {
             if (selectedCreature instanceof Human) {
                 curSelectedCreature.setUnselected();
                 selectedCreature.setSelected();
-                LocalGameController.requestLogMessages("当前选择生物：" + selectedCreature);
+                LocalGameController.requestLogMessages("当前选择生物：" + selectedCreature.getCreatureName());
                 curSelectedCreature = selectedCreature;
             } else if (selectedCreature instanceof Monster
                     && curSelectedCreature instanceof Human) {
@@ -109,7 +109,7 @@ public class BattlefieldController {
             if(selectedCreature instanceof Monster){
                 curSelectedCreature.setUnselected();;
                 selectedCreature.setSelected();
-                LocalGameController.requestLogMessages("当前选择生物：" + selectedCreature);
+                LocalGameController.requestLogMessages("当前选择生物：" + selectedCreature.getCreatureName());
                 curSelectedCreature = selectedCreature;
             } else if (selectedCreature instanceof Human
                     && curSelectedCreature instanceof Monster) {

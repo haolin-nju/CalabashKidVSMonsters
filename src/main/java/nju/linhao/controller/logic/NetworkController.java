@@ -1,6 +1,12 @@
 package main.java.nju.linhao.controller.logic;
 
+import main.java.nju.linhao.enums.Formation;
+import main.java.nju.linhao.enums.LocalGameStatus;
 import main.java.nju.linhao.enums.MessageType;
+import main.java.nju.linhao.enums.Player;
+import main.java.nju.linhao.team.HumanTeam;
+import main.java.nju.linhao.team.MonsterTeam;
+import main.java.nju.linhao.team.Team;
 import main.java.nju.linhao.utils.Configuration;
 import main.java.nju.linhao.utils.Message;
 
@@ -48,25 +54,27 @@ public class NetworkController implements Runnable {
 
     public void sendMessage(MessageType messageType) throws IOException {
         Message msgToSend = new Message(messageType);
-        ObjectOutputStream out;
-        if (isCurrentClientServer) {//是服务器
-            out = new ObjectOutputStream(socketToClient.getOutputStream());
-        } else {
-            out = new ObjectOutputStream(socketToServer.getOutputStream());
-        }
-        out.writeObject(msgToSend);
+        send(msgToSend);
     }
 
-    public void sendMessage(MessageType messageType, String messageContent) throws IOException {
-        // TODO: Connecting to the server
-        Message msgToSend = new Message(messageType, messageContent);
-        ObjectOutputStream out;
-        if (isCurrentClientServer) {//是服务器
-            out = new ObjectOutputStream(socketToClient.getOutputStream());
-        } else {
-            out = new ObjectOutputStream(socketToServer.getOutputStream());
+    public void sendMessage(MessageType messageType, Object object) throws IOException {
+        Message msgToSend = new Message(messageType, object);
+        send(msgToSend);
+    }
+
+    private void send(Message msgToSend) throws IOException {
+        ObjectOutputStream out = null;
+        try {
+            if (isCurrentClientServer) {//是服务器
+                out = new ObjectOutputStream(socketToClient.getOutputStream());
+            } else {
+                out = new ObjectOutputStream(socketToServer.getOutputStream());
+            }
+            out.writeObject(msgToSend);
+        } catch(IOException e) {
+            LocalGameController.requestLogMessages("传输数据发生错误！");
+            throw (IOException) e.fillInStackTrace();
         }
-        out.writeObject(msgToSend);
     }
 
     private void serveAsServer() throws IOException, ClassNotFoundException, InterruptedException {
@@ -76,36 +84,43 @@ public class NetworkController implements Runnable {
             socketToClient = serverSocket.accept();
         }
         connectionEstablished = true;
-//        LocalGameController.requestGameStart();
         LocalGameController.requestLogMessages("本机同时作为服务器进行游戏");
     }
 
     private Message recvMessage() throws IOException, ClassNotFoundException {
-        ObjectInputStream in;
-        if(isCurrentClientServer){//是服务器
-            in = new ObjectInputStream(socketToClient.getInputStream());
-        } else {
-            in = new ObjectInputStream(socketToServer.getInputStream());
+        ObjectInputStream in = null;
+        try {
+            if (isCurrentClientServer) {//是服务器
+                in = new ObjectInputStream(socketToClient.getInputStream());
+            } else {
+                in = new ObjectInputStream(socketToServer.getInputStream());
+            }
+            return (Message) in.readObject();
+        } catch(IOException e){
+            LocalGameController.requestLogMessages("传输数据发生错误！");
+            throw (IOException) e.fillInStackTrace();
         }
-        return (Message) in.readObject();
     }
 
     private void parseMessage(Message message) throws IOException {
         MessageType msgType = message.getMessageType();
-        String msgContent = message.getMessageContent();
-        switch(msgType){
+        Object msgContent = message.getMessageContent();
+        switch (msgType) {
             case CLIENT_READY:// 服务器收到客户端建立连接请求
                 sendMessage(MessageType.SERVER_ACK);// 回送服务器ACK
+                connectionEstablished = true;
+                break;
             case SERVER_ACK:// 客户端收到服务器确认请求
                 connectionEstablished = true;
-            case CREATURE_CREATE: //收到对方的创建对象的请求
-
+                break;
+            case TEAM_CREATE: //收到对方的创建对象的请求
+                LocalGameController.requestSetTeamFormation((Formation) msgContent);
+                LocalGameController.requestLogMessages("游戏开始！");
+                break;
             case CREATURE_MOVE:
-
-            case CREATURE_DAMAGE:
-
-            case BULLET_CREATE:
-
+                break;
+            case CREATURE_ATTACK:
+                break;
             default:
         }
     }
@@ -115,16 +130,21 @@ public class NetworkController implements Runnable {
         // 首先，如果连接的是本机，那么自己就是服务器
         if (destIp == localIp || destIp == "127.0.0.1") {
             isCurrentClientServer = true;
-        } else {
+            try (ServerSocket serverSocket = new ServerSocket(Configuration.DEFAULT_PORT)){
+
+            } catch (IOException e){
+                isCurrentClientServer = false;
+            }
+        }
+        if(isCurrentClientServer == false) {
             // 其次，如果连接远程，默认对方是服务器，且该房间要存在
             try {
-                while(true){
+                while (true) {
                     socketToServer = new Socket(destIp, destPort);//先假设自己不是服务器，请求对方是不是服务器
                     sendMessage(MessageType.CLIENT_READY);
                     Message recvMsg = recvMessage();
                     parseMessage(recvMsg);
-                    if(connectionEstablished){
-                        //可以关闭clientwindow窗口，整体游戏直接开始
+                    if (connectionEstablished) {
                         isCurrentClientServer = false;
 //                        LocalGameController.requestGameStart();
                         LocalGameController.requestLogMessages("本机仅作为客户端进行游戏");
@@ -141,6 +161,9 @@ public class NetworkController implements Runnable {
             if(isCurrentClientServer) {
                 serveAsServer();
             }
+            // 给对方服务器发送我方生物的Team信息，设置本地运行状态为RUN
+            LocalGameController.setCurrentStatus(LocalGameStatus.RUN);
+            sendMessage(MessageType.TEAM_CREATE, LocalGameController.requestGetTeamFormation());
             while(true) {
                 Message recvMsg = recvMessage();
                 parseMessage(recvMsg);
