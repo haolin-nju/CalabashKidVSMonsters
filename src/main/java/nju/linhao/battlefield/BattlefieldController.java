@@ -4,14 +4,12 @@ import javafx.application.Platform;
 import main.java.nju.linhao.bullet.Bullet;
 import main.java.nju.linhao.bullet.HumanBullet;
 import main.java.nju.linhao.controller.logic.LocalGameController;
+import main.java.nju.linhao.controller.logic.NetworkController;
 import main.java.nju.linhao.controller.window.MainWindowView;
 import main.java.nju.linhao.creature.Creature;
 import main.java.nju.linhao.creature.Human;
 import main.java.nju.linhao.creature.Monster;
-import main.java.nju.linhao.enums.Formation;
-import main.java.nju.linhao.enums.CreatureEnum;
-import main.java.nju.linhao.enums.LocalGameStatus;
-import main.java.nju.linhao.enums.Player;
+import main.java.nju.linhao.enums.*;
 import main.java.nju.linhao.exception.OutofRangeException;
 import main.java.nju.linhao.team.HumanTeam;
 
@@ -45,6 +43,10 @@ public class BattlefieldController {
 
     public Formation getFormation() {
         return curFormation;
+    }
+
+    public Creature getCurSelectedCreature(){
+        return curSelectedCreature;
     }
 
     public void setLocalPlayer(Player player) {
@@ -91,7 +93,7 @@ public class BattlefieldController {
     }
 
     public void requestMouseClick(double clickPosX, double clickPosY, Player localPlayer) throws OutofRangeException {
-        Creature selectedCreature = battlefield.getCreatureFromPos(clickPosX, clickPosY);
+        Creature selectedCreature = battlefield.getCreatureFromClickPos(clickPosX, clickPosY);
         if (localPlayer == Player.PLAYER_1) {
             if (selectedCreature instanceof Human) {
                 curSelectedCreature.setUnselected();
@@ -101,9 +103,12 @@ public class BattlefieldController {
             } else if (selectedCreature instanceof Monster
                     && curSelectedCreature instanceof Human) {
                 Bullet bullet = curSelectedCreature.attack(selectedCreature, clickPosX, clickPosY);
-                if(bullet!=null){
+                if(bullet != null){
                     battlefield.addBullet(bullet);
                 }
+//                LocalGameController.requestNetworkController();
+                LocalGameController.requestLogMessages(curSelectedCreature.getCreatureName() + "攻击："
+                        + selectedCreature.getCreatureName());
             }
         } else if(localPlayer == Player.PLAYER_2){
             if(selectedCreature instanceof Monster){
@@ -114,11 +119,53 @@ public class BattlefieldController {
             } else if (selectedCreature instanceof Human
                     && curSelectedCreature instanceof Monster) {
                 Bullet bullet = curSelectedCreature.attack(selectedCreature, clickPosX, clickPosY);
-                if(bullet!=null){
+                if(bullet != null){
                     battlefield.addBullet(bullet);
                 }
+                //                LocalGameController.requestNetworkController();
+                LocalGameController.requestLogMessages(curSelectedCreature.getCreatureName() + "攻击："
+                        + selectedCreature.getCreatureName());
             }
         }
         repaint();
+    }
+
+    public Creature letCurSelectedCreatureMove(Direction direction){
+        return letCreatureMove(curSelectedCreature, direction);
+    }
+
+    public Creature letCreatureMove(Creature creature, Direction direction){
+        int[] creaturePos = creature.getPos();
+        synchronized (battlefield){
+            try {
+                switch (direction) {
+                    case UP:
+                        if (battlefield.getCreatureFromPos(creaturePos[0] - 1, creaturePos[1]) == null) {
+                            creature.move(Direction.UP);
+                        }
+                        break;
+                    case DOWN:
+                        if (battlefield.getCreatureFromPos(creaturePos[0] + 1, creaturePos[1])==null){
+                            creature.move(Direction.DOWN);
+                        }
+                        break;
+                    case LEFT:
+                        if (battlefield.getCreatureFromPos(creaturePos[0], creaturePos[1] - 1)==null){
+                            creature.move(Direction.LEFT);
+                        }
+                        break;
+                    case RIGHT:
+                        if (battlefield.getCreatureFromPos(creaturePos[0], creaturePos[1] + 1)==null){
+                            creature.move(Direction.RIGHT);
+                        }
+                        break;
+                }
+                battlefield.updateCreatureGrids();
+                return curSelectedCreature;
+            } catch (OutofRangeException e){
+                LocalGameController.requestLogMessages(creature.toString() + "不能再往外面走了！");
+                return curSelectedCreature;
+            }
+        }
     }
 }

@@ -1,8 +1,9 @@
 package main.java.nju.linhao.bullet;
 
 import main.java.nju.linhao.utils.Configuration;
+import sun.security.krb5.Config;
 
-public class Bullet {
+public class Bullet implements Runnable {
     public Bullet(double angle, double posX, double posY) {
         this(Configuration.DEFAULT_BULLET_DAMAGE,
                 Configuration.DEFAULT_BULLET_SPEED,
@@ -20,8 +21,7 @@ public class Bullet {
 
         this.damage = damage;
         this.speed = speed;
-        this.angle = angle;
-        this.posX = posX;
+        this.setAngle(angle);
         this.posY = posY;
     }
 
@@ -55,6 +55,7 @@ public class Bullet {
 
     public void setAngle(double angle) {
         this.angle = angle;
+        this.deno = 1 / Math.sqrt(1 + angle);;
     }
 
     public boolean isOutOfRange() {
@@ -68,6 +69,22 @@ public class Bullet {
     private double damage;
     private double speed;
     private double angle;
+    private double deno;
     private double posX;
     private double posY;
+
+    @Override
+    public void run() {
+        while (true) {
+            if (isOutOfRange()) {
+                return;
+            }
+            posX = posX + speed * deno;
+            posY = posY + speed * angle * deno;
+            if (posX < 0 || posX >= Configuration.DEFAULT_GRID_HEIGHT
+                    || posY < 0 || posY >= Configuration.DEFAULT_GRID_WIDTH) {
+                return;
+            }
+        }
+    }
 }

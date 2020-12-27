@@ -4,6 +4,7 @@ import javafx.application.HostServices;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import main.java.nju.linhao.battlefield.Battlefield;
 import main.java.nju.linhao.battlefield.BattlefieldController;
 import main.java.nju.linhao.controller.window.ClientWindowView;
 import main.java.nju.linhao.controller.window.MainWindowView;
@@ -13,6 +14,8 @@ import main.java.nju.linhao.exception.OutofRangeException;
 import main.java.nju.linhao.team.HumanTeam;
 import main.java.nju.linhao.team.MonsterTeam;
 import main.java.nju.linhao.team.Team;
+
+import java.io.IOException;
 
 
 public class LocalGameController {
@@ -77,7 +80,13 @@ public class LocalGameController {
                     System.err.println("未定义的状态机！原状态：" + currStatus + "目标状态：READY");
                 }
                 break;
-            // TODO: add more state machine
+            case RUN:
+                if(currStatus == LocalGameStatus.READY){
+                    currStatus = LocalGameStatus.RUN;
+                } else {
+                    System.err.println("未定义的状态机！原状态：" + currStatus + "目标状态：RUN");
+                }
+                // TODO: add more state machine
             default:
                 break;
 
@@ -152,6 +161,10 @@ public class LocalGameController {
         return localPlayer;
     }
 
+    public static BattlefieldController getBattlefieldController(){
+        return battlefieldController;
+    }
+
 
     // Requests
     public static void requestSetLocalPlayer(Player player) {
@@ -223,6 +236,40 @@ public class LocalGameController {
             battlefieldController.getBattlefield().getHumanTeam().setFormation(formation);
         } else{
             System.err.println("意料之外的阵营！");
+        }
+        battlefieldController.repaint();
+    }
+
+//    public static void requestStartCreatureThreads(){
+//        battlefieldController.getBattlefield().startLocalCreatureThreads(localPlayer);
+//    }
+
+    public static void requestCreatureMove(Direction direction){
+        Creature curSelectedCreature = battlefieldController.letCurSelectedCreatureMove(direction);
+        battlefieldController.repaint();
+        try {
+            networkController.sendMessage(MessageType.CREATURE_MOVE, curSelectedCreature);
+        } catch(IOException e){
+            requestLogMessages("当前移动没有被另一端接收！");
+        }
+    }
+
+    public static void requestCreatureMove(Creature creature, Direction direction){
+            battlefieldController.letCreatureMove(creature, direction);
+            battlefieldController.repaint();
+            try {
+                networkController.sendMessage(MessageType.CREATURE_MOVE, creature);
+            } catch (IOException e) {
+                requestLogMessages("当前移动没有被另一端接收！");
+            }
+    }
+
+    public static void requestOthersCreatureMove(Creature creature) {
+        Battlefield battlefield = battlefieldController.getBattlefield();
+        synchronized (battlefield) {
+            Creature creatureToMove = battlefield.getCreatureFromId(creature, localPlayer);
+            int[] newPos = creature.getPos();
+            creatureToMove.setPos(newPos[0], newPos[1]);
         }
         battlefieldController.repaint();
     }

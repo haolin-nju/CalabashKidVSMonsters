@@ -1,9 +1,7 @@
 package main.java.nju.linhao.controller.logic;
 
-import main.java.nju.linhao.enums.Formation;
-import main.java.nju.linhao.enums.LocalGameStatus;
-import main.java.nju.linhao.enums.MessageType;
-import main.java.nju.linhao.enums.Player;
+import main.java.nju.linhao.creature.Creature;
+import main.java.nju.linhao.enums.*;
 import main.java.nju.linhao.team.HumanTeam;
 import main.java.nju.linhao.team.MonsterTeam;
 import main.java.nju.linhao.team.Team;
@@ -107,17 +105,20 @@ public class NetworkController implements Runnable {
         Object msgContent = message.getMessageContent();
         switch (msgType) {
             case CLIENT_READY:// 服务器收到客户端建立连接请求
-                sendMessage(MessageType.SERVER_ACK);// 回送服务器ACK
-                connectionEstablished = true;
-                break;
+                sendMessage(MessageType.SERVER_ACK);// 回送服务器ACK，这里故意不写break的！
             case SERVER_ACK:// 客户端收到服务器确认请求
+                // 给对方发送我方生物的Team信息，设置本地运行状态为RUN
+                LocalGameController.setCurrentStatus(LocalGameStatus.RUN);
+                sendMessage(MessageType.TEAM_CREATE, LocalGameController.requestGetTeamFormation());
                 connectionEstablished = true;
                 break;
             case TEAM_CREATE: //收到对方的创建对象的请求
                 LocalGameController.requestSetTeamFormation((Formation) msgContent);
+//                LocalGameController.requestStartCreatureThreads();//启动所有生物线程开始运行
                 LocalGameController.requestLogMessages("游戏开始！");
                 break;
             case CREATURE_MOVE:
+                LocalGameController.requestOthersCreatureMove((Creature) msgContent);
                 break;
             case CREATURE_ATTACK:
                 break;
@@ -140,7 +141,7 @@ public class NetworkController implements Runnable {
             // 其次，如果连接远程，默认对方是服务器，且该房间要存在
             try {
                 while (true) {
-                    socketToServer = new Socket(destIp, destPort);//先假设自己不是服务器，请求对方是不是服务器
+                    socketToServer = new Socket(destIp, destPort);//请求对方是不是服务器
                     sendMessage(MessageType.CLIENT_READY);
                     Message recvMsg = recvMessage();
                     parseMessage(recvMsg);
@@ -161,13 +162,9 @@ public class NetworkController implements Runnable {
             if(isCurrentClientServer) {
                 serveAsServer();
             }
-            // 给对方服务器发送我方生物的Team信息，设置本地运行状态为RUN
-            LocalGameController.setCurrentStatus(LocalGameStatus.RUN);
-            sendMessage(MessageType.TEAM_CREATE, LocalGameController.requestGetTeamFormation());
-            while(true) {
+            while (true) {
                 Message recvMsg = recvMessage();
                 parseMessage(recvMsg);
-                Thread.sleep(50);
             }
         } catch (IOException | ClassNotFoundException | InterruptedException e) {
             e.printStackTrace();

@@ -5,10 +5,13 @@ import main.java.nju.linhao.ai.attack.RandomTargetSelector;
 import main.java.nju.linhao.ai.attack.TargetSelector;
 import main.java.nju.linhao.ai.direction.DirectionSelector;
 import main.java.nju.linhao.ai.direction.RandomDirectionSelector;
+import main.java.nju.linhao.battlefield.Battlefield;
+import main.java.nju.linhao.battlefield.BattlefieldController;
 import main.java.nju.linhao.bullet.Bullet;
 import main.java.nju.linhao.bullet.BulletFactory;
 import main.java.nju.linhao.bullet.HumanBullet;
 import main.java.nju.linhao.bullet.MonsterBullet;
+import main.java.nju.linhao.controller.logic.LocalGameController;
 import main.java.nju.linhao.enums.CreatureStatus;
 import main.java.nju.linhao.enums.Direction;
 
@@ -33,7 +36,8 @@ public abstract class Creature implements Runnable, Serializable {
                     double damage,
                     double defense,
                     double speed) {
-        this.id++;
+        this.creatureID = this.globalCreatureID;
+        this.globalCreatureID++;
         this.selectionStatus = SelectionStatus.UNSELECTED;
         this.creatureStatus = CreatureStatus.ALIVE;
         this.direction = Direction.NO_DIRECTION;
@@ -44,10 +48,15 @@ public abstract class Creature implements Runnable, Serializable {
         this.damage = damage;
         this.defense = defense;
         this.speed = speed;
+
+//        this.attackFlag = false;
+//        this.attackTarget = null;
+//        this.clickPosX = 0;
+//        this.clickPosY = 0;
     }
 
     public int getCreatureId() {
-        return id;
+        return creatureID;
     }
 
     public CreatureStatus getCreatureStatus(){
@@ -117,6 +126,24 @@ public abstract class Creature implements Runnable, Serializable {
         setPos(tempPosX, tempPosY);
     }
 
+    public void move(Direction direction){
+        switch(direction){
+            case UP:
+                modifyPos(-1, 0);
+                break;
+            case LEFT:
+                modifyPos(0,-1);
+                break;
+            case DOWN:
+                modifyPos(1,0);
+                break;
+            case RIGHT:
+                modifyPos(0,1);
+                break;
+        }
+        this.direction = direction;
+    }
+
     public void setDefense(double defense){
         this.defense = defense;
     }
@@ -148,32 +175,20 @@ public abstract class Creature implements Runnable, Serializable {
     public void run(){
         while(this.creatureStatus == CreatureStatus.ALIVE && !Thread.interrupted()){
             if(this.selectionStatus == SelectionStatus.SELECTED){
-                System.out.println(Thread.currentThread().getId() + " is being selected");
+//                if(this.attackFlag == true){
+//                    Bullet bullet = attack();
+//                    if(bullet != null){
+//                        LocalGameController.getBattlefieldController().getBattlefield().addBullet(bullet);
+//                    }
+//                    this.attackFlag = false;//攻击完就不再攻击
+//                }
             }
             else if (this.selectionStatus == SelectionStatus.UNSELECTED){
                 // Select move direction
                 DirectionSelector directionSelector = new RandomDirectionSelector();
                 Direction moveDirection = directionSelector.selectDirection();
-                switch(moveDirection){
-                    case NO_DIRECTION:
-                    default:
-                        break;
-                    case UP:
-                        modifyPos(-1,0);
-                        break;
-                    case DOWN:
-                        modifyPos(1,0);
-                        break;
-                    case LEFT:
-                        modifyPos(0,-1);
-                        break;
-                    case RIGHT:
-                        modifyPos(0,1);
-                        break;
-                }
+                LocalGameController.requestCreatureMove(this, moveDirection);
                 // TODO: Select attack target and attack
-
-
 
                 try {
                     Thread.sleep(Configuration.DEFAULT_SLEEP_TIME);
@@ -188,19 +203,25 @@ public abstract class Creature implements Runnable, Serializable {
     }
 
 
-    private static int id = 0; // 全局唯一id
+    private static int globalCreatureID = 0; // 全局唯一id
+    private int creatureID = 0;
     private SelectionStatus selectionStatus;
     private CreatureStatus creatureStatus; // 是否存活
     private Direction direction; // 移动方向
 
     private String name; // 生物名字
-    private Image img; // 生物图片
+    private transient Image img; // 生物图片, 不可序列化，不用传输
     private double health; // 生命值
     private double damage; // 攻击力
     private double defense; //防御力
     private double speed; // 移动速度
     private int posX; // 当前位置x坐标
     private int posY; // 当前位置y坐标
+
+//    private boolean attackFlag; //是否需要进行攻击
+//    private Creature attackTarget; //攻击的目标
+//    private double clickPosX; //攻击点击的位置X
+//    private double clickPosY; //攻击点击的位置Y
 
     @Override
     public String toString(){

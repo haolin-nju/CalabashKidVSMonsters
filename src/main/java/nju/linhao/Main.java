@@ -14,6 +14,7 @@ import main.java.nju.linhao.battlefield.Battlefield;
 import main.java.nju.linhao.battlefield.BattlefieldController;
 import main.java.nju.linhao.controller.window.*;
 import main.java.nju.linhao.controller.logic.*;
+import main.java.nju.linhao.enums.Direction;
 import main.java.nju.linhao.enums.FormationRequest;
 import main.java.nju.linhao.enums.LocalGameStatus;
 import main.java.nju.linhao.io.Restorer;
@@ -49,24 +50,57 @@ public class Main extends Application {
                 hostServices);
 
         scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode() == KeyCode.SPACE) {
-                if (LocalGameController.getCurrentStatus() == LocalGameStatus.END) {
-                    LocalGameController.resetGame();
-                } else if (LocalGameController.getCurrentStatus() == LocalGameStatus.INIT) {
-                    LocalGameController.newGame();
-                }
-            }
-            else if (event.getCode() == KeyCode.L) {
-                if (LocalGameController.getCurrentStatus() == LocalGameStatus.END
-                        || LocalGameController.getCurrentStatus() == LocalGameStatus.READY) {
-                    Restorer.restore();
-                }
-            }
-            else if (event.getCode() == KeyCode.LEFT && LocalGameController.getCurrentStatus() == LocalGameStatus.READY){
-                LocalGameController.requestSetFormation(FormationRequest.BACKWARD);
-            }
-            else if(event.getCode() == KeyCode.RIGHT && LocalGameController.getCurrentStatus() == LocalGameStatus.READY){
-                LocalGameController.requestSetFormation(FormationRequest.FORWARD);
+            LocalGameStatus curGameStatus = LocalGameController.getCurrentStatus();
+            switch(event.getCode()){
+                case SPACE:
+                    if (curGameStatus == LocalGameStatus.END) {
+                        LocalGameController.resetGame();
+                    } else if (curGameStatus == LocalGameStatus.INIT) {
+                        LocalGameController.newGame();
+                    }
+                    break;
+                case L:
+                    if (curGameStatus == LocalGameStatus.END
+                            || curGameStatus == LocalGameStatus.READY) {
+                        Restorer.restore();
+                    }
+                    break;
+                case LEFT:
+                    if(curGameStatus == LocalGameStatus.READY){
+                        LocalGameController.requestSetFormation(FormationRequest.BACKWARD);
+                    }
+                    break;
+                case RIGHT:
+                    if(curGameStatus == LocalGameStatus.READY){
+                        LocalGameController.requestSetFormation(FormationRequest.FORWARD);
+                    }
+                    break;
+                case W:
+                    if(curGameStatus == LocalGameStatus.RUN){
+                        LocalGameController.requestCreatureMove(Direction.UP);
+                    }
+                    break;
+                case S:
+                    if(curGameStatus == LocalGameStatus.RUN){
+                        LocalGameController.requestCreatureMove(Direction.DOWN);
+                    }
+                    break;
+                case A:
+                    if(curGameStatus == LocalGameStatus.RUN){
+                        LocalGameController.requestCreatureMove(Direction.LEFT);
+                    }
+                    break;
+                case D:
+                    if(curGameStatus == LocalGameStatus.RUN){
+                        LocalGameController.requestCreatureMove(Direction.RIGHT);
+                    }
+                    break;
+//                case Q:
+//                    if(curGameStatus == LocalGameStatus.RUN){
+//                        LocalGameController.requestSetCurSelectedCreature()
+//                    }
+                default:
+                    break;
             }
         });
 

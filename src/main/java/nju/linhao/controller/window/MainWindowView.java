@@ -31,6 +31,8 @@ import main.java.nju.linhao.exception.OutofRangeException;
 import main.java.nju.linhao.io.Restorer;
 import main.java.nju.linhao.utils.Configuration;
 
+import static main.java.nju.linhao.utils.Configuration.DEFAULT_BULLET_RADIUS;
+
 public class MainWindowView {
     private HostServices hostServices;
 
@@ -193,15 +195,15 @@ public class MainWindowView {
         ArrayList<Monster> monsters = battlefield.getMonsterTeam().getTeamMemebers();
         paintCreatures(monsters, curPlayer == Player.PLAYER_2);
         ArrayList<HumanBullet> humanBullets = battlefield.getBulletManager().getHumanBullets();
-        paintBullets(humanBullets);
+        paintBullets(humanBullets, curPlayer == Player.PLAYER_1);
         ArrayList<MonsterBullet> monsterBullets = battlefield.getBulletManager().getMonsterBullets();
-        paintBullets(monsterBullets);
+        paintBullets(monsterBullets, curPlayer == Player.PLAYER_2);
     }
 
-    private void paintCreatures(ArrayList<? extends Creature> creatures, boolean ourTeam) {
+    private void paintCreatures(ArrayList<? extends Creature> creatures, boolean isCurrentPlayer) {
         int[] curCreaturePos;
         gc.save();
-        if(ourTeam){
+        if(isCurrentPlayer){
             gc.setFill(Color.BLUE);
         } else{
             gc.setFill(Color.RED);
@@ -243,8 +245,26 @@ public class MainWindowView {
         gc.restore();
     }
 
-    private static void paintBullets(ArrayList<? extends Bullet> bullets){
-
+    private void paintBullets(ArrayList<? extends Bullet> bullets, boolean isCurrentPlayer){
+        gc.save();
+        if(isCurrentPlayer){
+            gc.setFill(Color.BLUE);
+        } else{
+            gc.setFill(Color.RED);
+        }
+        for(Bullet bullet : bullets){
+            double[] bulletPos = bullet.getPos();
+            gc.setStroke(Color.BLACK);
+            gc.strokeOval(bulletPos[0] - DEFAULT_BULLET_RADIUS,
+                    bulletPos[1] - DEFAULT_BULLET_RADIUS,
+                    2 * DEFAULT_BULLET_RADIUS,
+                    2 * DEFAULT_BULLET_RADIUS);
+            gc.fillOval(bulletPos[0] - DEFAULT_BULLET_RADIUS,
+                    bulletPos[1] - DEFAULT_BULLET_RADIUS,
+                    2 * DEFAULT_BULLET_RADIUS,
+                    2 * DEFAULT_BULLET_RADIUS);
+        }
+        gc.restore();
     }
 
     @FXML

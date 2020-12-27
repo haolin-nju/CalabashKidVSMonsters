@@ -16,20 +16,20 @@ public class ImageLoader {
     public static Image loadImg(String name) {
         if (imgPath == null) {
             imgPath = new HashMap<>();
-            imgPath.put(Configuration.DEFAULT_GRANDPA_NAME, "/creatures/Grandpa.png");
-            imgPath.put(Configuration.DEFAULT_PANGOLIN_NAME, "/creatures/Pangolin.png");
-            imgPath.put(Configuration.DEFAULT_CALABASH_KID_1_NAME, "/creatures/CalabashKid1.png");
-            imgPath.put(Configuration.DEFAULT_CALABASH_KID_2_NAME, "/creatures/CalabashKid2.png");
-            imgPath.put(Configuration.DEFAULT_CALABASH_KID_3_NAME, "/creatures/CalabashKid3.png");
-            imgPath.put(Configuration.DEFAULT_CALABASH_KID_4_NAME, "/creatures/CalabashKid4.png");
-            imgPath.put(Configuration.DEFAULT_CALABASH_KID_5_NAME, "/creatures/CalabashKid5.png");
-            imgPath.put(Configuration.DEFAULT_CALABASH_KID_6_NAME, "/creatures/CalabashKid6.png");
-            imgPath.put(Configuration.DEFAULT_CALABASH_KID_7_NAME, "/creatures/CalabashKid7.png");
+            imgPath.put(Configuration.DEFAULT_GRANDPA_NAME, "/pictures/creatures/Grandpa.png");
+            imgPath.put(Configuration.DEFAULT_PANGOLIN_NAME, "/pictures/creatures/Pangolin.png");
+            imgPath.put(Configuration.DEFAULT_CALABASH_KID_1_NAME, "/pictures/creatures/CalabashKid1.png");
+            imgPath.put(Configuration.DEFAULT_CALABASH_KID_2_NAME, "/pictures/creatures/CalabashKid2.png");
+            imgPath.put(Configuration.DEFAULT_CALABASH_KID_3_NAME, "/pictures/creatures/CalabashKid3.png");
+            imgPath.put(Configuration.DEFAULT_CALABASH_KID_4_NAME, "/pictures/creatures/CalabashKid4.png");
+            imgPath.put(Configuration.DEFAULT_CALABASH_KID_5_NAME, "/pictures/creatures/CalabashKid5.png");
+            imgPath.put(Configuration.DEFAULT_CALABASH_KID_6_NAME, "/pictures/creatures/CalabashKid6.png");
+            imgPath.put(Configuration.DEFAULT_CALABASH_KID_7_NAME, "/pictures/creatures/CalabashKid7.png");
 
-            imgPath.put(Configuration.DEFAULT_SNAKE_ESSENCE_NAME, "/creatures/SnakeEssence.png");
-            imgPath.put(Configuration.DEFAULT_SCORPION_ESSENCE_NAME, "/creatures/ScorpionEssence.png");
-            imgPath.put(Configuration.DEFAULT_CENTIPEDE_ESSENCE_NAME, "/creatures/CentipedeEssence.png");
-            imgPath.put(Configuration.DEFAULT_MINION_NAME, "/creatures/Minion.png");
+            imgPath.put(Configuration.DEFAULT_SNAKE_ESSENCE_NAME, "/pictures/creatures/SnakeEssence.png");
+            imgPath.put(Configuration.DEFAULT_SCORPION_ESSENCE_NAME, "/pictures/creatures/ScorpionEssence.png");
+            imgPath.put(Configuration.DEFAULT_CENTIPEDE_ESSENCE_NAME, "/pictures/creatures/CentipedeEssence.png");
+            imgPath.put(Configuration.DEFAULT_MINION_NAME, "/pictures/creatures/Minion.png");
         }
         Image icon;
         icon = new Image(ImageLoader.class.getResourceAsStream(imgPath.get(name)));

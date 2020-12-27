@@ -9,6 +9,7 @@ import main.java.nju.linhao.creature.Monster;
 import main.java.nju.linhao.enums.CreatureEnum;
 import main.java.nju.linhao.enums.CreatureStatus;
 import main.java.nju.linhao.enums.Formation;
+import main.java.nju.linhao.enums.Player;
 import main.java.nju.linhao.exception.OutofRangeException;
 import main.java.nju.linhao.team.HumanTeam;
 import main.java.nju.linhao.team.MonsterTeam;
@@ -28,6 +29,8 @@ public class Battlefield implements Runnable {
     private static MonsterTeam monsterTeam;
     private static BulletManager bulletManager;
 
+    private ArrayList<Thread> bulletThreads;
+
     public Battlefield() {
         this(Configuration.DEFAULT_GRID_COLUMNS, Configuration.DEFAULT_GRID_ROWS, Configuration.DEFAULT_MINION_NUMS);
     }
@@ -46,6 +49,8 @@ public class Battlefield implements Runnable {
         monsterTeam = TeamBuilder.buildMonsterTeam(Configuration.DEFAULT_MINION_NUMS);
 
         bulletManager = new BulletManager();
+
+        bulletThreads = new ArrayList<>();
     }
 
     public int getColumns() {
@@ -56,13 +61,40 @@ public class Battlefield implements Runnable {
         return rows;
     }
 
-    public Creature getCreatureFromPos(double posX, double posY) throws OutofRangeException {
+    public Creature getCreatureFromClickPos(double posX, double posY) throws OutofRangeException {
         if(posX < 0 || posX >= Configuration.CANVAS_WIDTH || posY < 0 || posY >= Configuration.CANVAS_HEIGHT){
             throw new OutofRangeException("Out of Range!");
         }
         int rowIdx = (int) (posY / Configuration.DEFAULT_GRID_HEIGHT);
         int colIdx = (int) (posX / Configuration.DEFAULT_GRID_WIDTH);
         return creatureGrids[rowIdx][colIdx];
+    }
+
+    public Creature getCreatureFromPos(int rowIdx, int colIdx) throws OutofRangeException {
+        if(rowIdx < 0 || rowIdx >= Configuration.DEFAULT_GRID_ROWS || colIdx < 0 || colIdx >= Configuration.DEFAULT_GRID_COLUMNS){
+            throw new OutofRangeException("Out of Range!");
+        }
+        return creatureGrids[rowIdx][colIdx];
+    }
+
+    public Creature getCreatureFromId(Creature creature, Player curPlayer){
+        int creatureId = creature.getCreatureId();
+        if(curPlayer == Player.PLAYER_1){
+            ArrayList<Monster> monsters = monsterTeam.getTeamMembers();
+            for (Monster monster : monsters) {
+                if (creatureId == monster.getCreatureId()) {
+                    return monster;
+                }
+            }
+        } else if(curPlayer == Player.PLAYER_2) {
+            ArrayList<Human> humans = humanTeam.getTeamMembers();
+            for (Human human : humans) {
+                if (creatureId == human.getCreatureId()) {
+                    return human;
+                }
+            }
+        }
+        return null;
     }
 
     public HumanTeam getHumanTeam() {
@@ -73,7 +105,7 @@ public class Battlefield implements Runnable {
         return monsterTeam;
     }
 
-    public void updateCreatureGrids() {
+    public synchronized void updateCreatureGrids() {
         creatureGrids = new Creature[this.rows][this.columns];
         ArrayList<Human> humans = humanTeam.getTeamMembers();
         for (Human human : humans) {
@@ -87,8 +119,27 @@ public class Battlefield implements Runnable {
         }
     }
 
+//    public void startLocalCreatureThreads(Player player){
+//        if(player == Player.PLAYER_1){
+//            ArrayList<Human> humans = humanTeam.getTeamMembers();
+//            for(Human human : humans){
+//                Thread humanThread = new Thread(human);
+//                humanThread.start();
+//            }
+//        } else if(player == Player.PLAYER_2) {
+//            ArrayList<Monster> monsters = monsterTeam.getTeamMembers();
+//            for (Monster monster : monsters) {
+//                Thread monsterThread = new Thread(monster);
+//                monsterThread.start();
+//            }
+//        }
+//    }
+
     public void addBullet(Bullet bullet){
         bulletManager.addBullet(bullet);
+        Thread bulletThread = new Thread(bullet);
+        bulletThread.start();
+        bulletThreads.add(bulletThread);
     }
 
     public BulletManager getBulletManager(){

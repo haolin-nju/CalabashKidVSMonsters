@@ -18,7 +18,7 @@ public class Configuration {
     public static final double DEFAULT_DAMAGE = 20;
     public static final double DEFAULT_DEFENSE = 10;
     public static final double DEFAULT_CREATURE_SPEED = 1;
-    public static final long DEFAULT_SLEEP_TIME = 100;
+    public static final long DEFAULT_SLEEP_TIME = 1000;
 
     // for Human Name
     public static final String DEFAULT_GRANDPA_NAME = "爷爷";
@@ -40,6 +40,7 @@ public class Configuration {
     // for Bullet
     public static double DEFAULT_BULLET_DAMAGE = 20;
     public static double DEFAULT_BULLET_SPEED = 0.5;
+    public static double DEFAULT_BULLET_RADIUS = 3;
 
     // for Server Client
     public static int DEFAULT_PORT = 7777;
