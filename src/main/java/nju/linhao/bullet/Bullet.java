@@ -4,7 +4,7 @@ import main.java.nju.linhao.controller.logic.LocalGameController;
 import main.java.nju.linhao.utils.Configuration;
 import sun.security.krb5.Config;
 
-public class Bullet implements Runnable {
+public class Bullet {
     public Bullet(double angle, double posX, double posY) {
         this(Configuration.DEFAULT_BULLET_DAMAGE,
                 Configuration.DEFAULT_BULLET_SPEED,
@@ -25,6 +25,7 @@ public class Bullet implements Runnable {
         this.setAngle(angle);
         this.posX = posX;//行像素
         this.posY = posY;//列像素
+        this.toDestroy = false; //生成时还不需要消亡
     }
 
     public int getId() {
@@ -47,6 +48,10 @@ public class Bullet implements Runnable {
         return new double[]{posX, posY};
     }
 
+    public boolean getToDestroy(){
+        return toDestroy;
+    }
+
     public void setDamage(double damage) {
         this.damage = damage;
     }
@@ -60,11 +65,24 @@ public class Bullet implements Runnable {
         this.deno = 1 / Math.sqrt(1 + angle);;
     }
 
+    public void setToDestroy(boolean toDestroy){
+        this.toDestroy = toDestroy;
+    }
+
     public boolean isOutOfRange() {
         if (posX < 0 || posX >= Configuration.CANVAS_HEIGHT || posY < 0 || posY >= Configuration.CANVAS_WIDTH) {
             return true;
         }
         return false;
+    }
+
+    public double[] modifyPos(){
+        posX = posX + speed * angle * deno;
+        posY = posY + speed * deno;
+        if (isOutOfRange()) {
+            toDestroy = true; //可以消亡了
+        }
+        return new double[]{posX, posY};
     }
 
     private static int id = 0; // 全局唯一bullet id
@@ -75,14 +93,5 @@ public class Bullet implements Runnable {
     private double posX;
     private double posY;
 
-    @Override
-    public void run() {
-        while (true) {
-            if (isOutOfRange()) {
-                return;
-            }
-            posX = posX + speed * angle * deno;
-            posY = posY + speed * deno;
-        }
-    }
+    private boolean toDestroy;// 子弹需要消亡的标记
 }

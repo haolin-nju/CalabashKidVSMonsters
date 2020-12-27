@@ -3,6 +3,7 @@ package main.java.nju.linhao.controller.window;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javafx.application.HostServices;
 import javafx.event.ActionEvent;
@@ -194,9 +195,9 @@ public class MainWindowView {
         paintCreatures(humans, curPlayer == Player.PLAYER_1);
         ArrayList<Monster> monsters = battlefield.getMonsterTeam().getTeamMemebers();
         paintCreatures(monsters, curPlayer == Player.PLAYER_2);
-        ArrayList<HumanBullet> humanBullets = battlefield.getBulletManager().getHumanBullets();
+        CopyOnWriteArrayList<HumanBullet> humanBullets = battlefield.getBulletManager().getHumanBullets();
         paintBullets(humanBullets, curPlayer == Player.PLAYER_1);
-        ArrayList<MonsterBullet> monsterBullets = battlefield.getBulletManager().getMonsterBullets();
+        CopyOnWriteArrayList<MonsterBullet> monsterBullets = battlefield.getBulletManager().getMonsterBullets();
         paintBullets(monsterBullets, curPlayer == Player.PLAYER_2);
     }
 
@@ -245,7 +246,7 @@ public class MainWindowView {
         gc.restore();
     }
 
-    private void paintBullets(ArrayList<? extends Bullet> bullets, boolean isCurrentPlayer){
+    private void paintBullets(CopyOnWriteArrayList<? extends Bullet> bullets, boolean isCurrentPlayer){
         gc.save();
         if(isCurrentPlayer){
             gc.setFill(Color.BLUE);

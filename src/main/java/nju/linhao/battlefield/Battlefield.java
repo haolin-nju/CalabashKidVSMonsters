@@ -28,6 +28,7 @@ public class Battlefield implements Runnable {
     private static HumanTeam humanTeam;
     private static MonsterTeam monsterTeam;
     private static BulletManager bulletManager;
+    private static boolean isFirstBullet = true;
 
     public Battlefield() {
         this(Configuration.DEFAULT_GRID_COLUMNS, Configuration.DEFAULT_GRID_ROWS, Configuration.DEFAULT_MINION_NUMS);
@@ -55,6 +56,12 @@ public class Battlefield implements Runnable {
 
     public int getRows() {
         return rows;
+    }
+
+    public static Creature getCreatureFromBulletPos(double posX, double posY){ // 已经检查过位置的合法性了！
+        int rowIdx = (int) (posX / Configuration.DEFAULT_GRID_HEIGHT);
+        int colIdx = (int) (posY / Configuration.DEFAULT_GRID_WIDTH);
+        return creatureGrids[rowIdx][colIdx];
     }
 
     public Creature getCreatureFromClickPos(double posX, double posY) throws OutofRangeException {
@@ -132,9 +139,12 @@ public class Battlefield implements Runnable {
     }
 
     public void addBullet(Bullet bullet){
+        if(isFirstBullet == true){
+            Thread bulletManagerThread = new Thread(bulletManager);
+            bulletManagerThread.start();
+            isFirstBullet = false;
+        }
         bulletManager.addBullet(bullet);
-        Thread bulletThread = new Thread(bullet);
-        bulletThread.start();
     }
 
     public BulletManager getBulletManager(){

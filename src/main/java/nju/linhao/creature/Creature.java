@@ -180,6 +180,13 @@ public abstract class Creature implements Runnable, Serializable {
         this.attackFlag = true;
     }
 
+    public void injured(double damage){
+        this.health -= (damage - defense);
+        if(this.health <= 0){
+            creatureStatus = CreatureStatus.DEAD;
+        }
+    }
+
     @Override
     public void run(){
         while(this.creatureStatus == CreatureStatus.ALIVE && !Thread.interrupted()){

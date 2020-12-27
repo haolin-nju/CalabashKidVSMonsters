@@ -119,10 +119,11 @@ public class BattlefieldController {
                 curSelectedCreature = selectedCreature;
             } else if (selectedCreature instanceof Human
                     && curSelectedCreature instanceof Monster) {
-                Bullet bullet = curSelectedCreature.attack(selectedCreature, clickPosX, clickPosY);
-                if(bullet != null){
-                    battlefield.addBullet(bullet);
-                }
+                curSelectedCreature.setAttack(selectedCreature, clickPosX, clickPosY);
+//                Bullet bullet = curSelectedCreature.attack(selectedCreature, clickPosX, clickPosY);
+//                if(bullet != null){
+//                    battlefield.addBullet(bullet);
+//                }
                 //                LocalGameController.requestNetworkController();
                 LocalGameController.getInstance().requestLogMessages(curSelectedCreature.getCreatureName() + "攻击："
                         + selectedCreature.getCreatureName());
