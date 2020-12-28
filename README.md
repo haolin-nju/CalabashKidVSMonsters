@@ -1,14 +1,6 @@
 # CalabashKidVSMonsters
 葫芦娃大战妖精游戏
 
-## 客户端目录
-
-client
-
-## 服务端目录
-
-server
-
 ## 资源文件
 
 
@@ -16,6 +8,10 @@ server
 ## 类设计
 
 ### 设计模式：
+
+#### 单例模式
+
+LocalGameController，线程安全
 
 #### 工厂模式
 
@@ -40,7 +36,4 @@ BattlefieldController
 Battlefield
 
 MainWindowView
-
-## log
-Combine server and client to the same project.
 
