@@ -1,0 +1,10 @@
+#forCanvas{
+    -fx-background-image: url("/pictures/background.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+}
+
+#logTextArea{
+    -fx-background-color: gray;
+    -fx-font-size: 12px;
+}
