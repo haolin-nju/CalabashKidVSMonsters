@@ -255,12 +255,12 @@ public class MainWindowView {
         for (Bullet bullet : bullets) {
             double[] bulletPos = bullet.getPos();
             gc.setStroke(Color.BLACK);
-            gc.strokeOval(bulletPos[1] - DEFAULT_BULLET_RADIUS,
-                    bulletPos[0] - DEFAULT_BULLET_RADIUS,
+            gc.strokeOval(bulletPos[0] - DEFAULT_BULLET_RADIUS,
+                    bulletPos[1] - DEFAULT_BULLET_RADIUS,
                     2 * DEFAULT_BULLET_RADIUS,
                     2 * DEFAULT_BULLET_RADIUS);
-            gc.fillOval(bulletPos[1] - DEFAULT_BULLET_RADIUS,
-                    bulletPos[0] - DEFAULT_BULLET_RADIUS,
+            gc.fillOval(bulletPos[0] - DEFAULT_BULLET_RADIUS,
+                    bulletPos[1] - DEFAULT_BULLET_RADIUS,
                     2 * DEFAULT_BULLET_RADIUS,
                     2 * DEFAULT_BULLET_RADIUS);
         }

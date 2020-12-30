@@ -52,6 +52,10 @@ public class BulletFactory {
     }
 
     private final static double calculateRadian(double clickPosX, double clickPosY, double posX, double posY){
+        //System.out.println(clickPosX);
+        //System.out.println(clickPosY);
+        //System.out.println(posX);
+        //System.out.println(posY);
         double dx = clickPosX - posX;
         double dy = clickPosY - posY;
         double radian;
