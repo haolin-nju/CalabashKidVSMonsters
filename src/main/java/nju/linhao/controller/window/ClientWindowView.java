@@ -130,7 +130,7 @@ public class ClientWindowView {
                 }
                 else{
                     FormationRequest newFormationRequest = FormationRequest.values()[(int) newValue + 2];
-                    LocalGameController.getInstance().requestSetFormation(newFormationRequest);
+                    LocalGameController.getInstance().requestSwitchFormation(newFormationRequest);
                     readyToFightButton.setDisable(false);
                 }
             }

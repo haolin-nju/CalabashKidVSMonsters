@@ -15,6 +15,7 @@ import main.java.nju.linhao.battlefield.Battlefield;
 import main.java.nju.linhao.battlefield.BattlefieldController;
 import main.java.nju.linhao.controller.window.*;
 import main.java.nju.linhao.controller.logic.*;
+import main.java.nju.linhao.enums.CreatureSwitchRequest;
 import main.java.nju.linhao.enums.Direction;
 import main.java.nju.linhao.enums.FormationRequest;
 import main.java.nju.linhao.enums.LocalGameStatus;
@@ -68,12 +69,12 @@ public class Main extends Application {
                     break;
                 case LEFT:
                     if (curGameStatus == LocalGameStatus.READY) {
-                        LocalGameController.getInstance().requestSetFormation(FormationRequest.BACKWARD);
+                        LocalGameController.getInstance().requestSwitchFormation(FormationRequest.BACKWARD);
                     }
                     break;
                 case RIGHT:
                     if (curGameStatus == LocalGameStatus.READY) {
-                        LocalGameController.getInstance().requestSetFormation(FormationRequest.FORWARD);
+                        LocalGameController.getInstance().requestSwitchFormation(FormationRequest.FORWARD);
                     }
                     break;
                 case W:
@@ -96,10 +97,14 @@ public class Main extends Application {
                         LocalGameController.getInstance().requestCreatureMove(Direction.RIGHT);
                     }
                     break;
-//                case Q:
-//                    if(curGameStatus == LocalGameStatus.RUN){
-//                        LocalGameController.requestSetCurSelectedCreature()
-//                    }
+                case Q:
+                    if(curGameStatus == LocalGameStatus.RUN){
+                        LocalGameController.getInstance().requestSwitchCurSelectedCreature(CreatureSwitchRequest.FORWARD);
+                    }
+                case E:
+                    if(curGameStatus == LocalGameStatus.RUN){
+                        LocalGameController.getInstance().requestSwitchCurSelectedCreature(CreatureSwitchRequest.BACKWARD);
+                    }
                 default:
                     break;
             }

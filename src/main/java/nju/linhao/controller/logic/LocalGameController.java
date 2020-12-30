@@ -189,7 +189,7 @@ public class LocalGameController {
         mainWindowView.logMessages(log);
     }
 
-    public void requestSetFormation(FormationRequest formationRequest) {
+    public void requestSwitchFormation(FormationRequest formationRequest) {
         int curFormationIdx = battlefieldController.getFormationIdx();
         Formation[] formations = Formation.values();
         switch (formationRequest) {
@@ -213,6 +213,16 @@ public class LocalGameController {
         }
         battlefieldController.repaint();
         mainWindowView.logMessages(localPlayer + "更换阵型为：" + battlefieldController.getFormation().toString());
+    }
+
+    public void requestSwitchCurSelectedCreature(CreatureSwitchRequest forward) {
+        //TODO: implement creature selection to boost game experience
+        switch(forward){
+            case FORWARD:
+                System.out.println("向前选择生物");
+            case BACKWARD:
+                System.out.println("向后选择生物");
+        }
     }
 
     public void requestClearInfo() {
