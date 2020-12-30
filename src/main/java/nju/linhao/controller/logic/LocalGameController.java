@@ -6,6 +6,8 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import main.java.nju.linhao.battlefield.Battlefield;
 import main.java.nju.linhao.battlefield.BattlefieldController;
+import main.java.nju.linhao.bullet.Bullet;
+import main.java.nju.linhao.bullet.HumanBullet;
 import main.java.nju.linhao.controller.window.ClientWindowView;
 import main.java.nju.linhao.controller.window.MainWindowView;
 import main.java.nju.linhao.creature.Creature;
@@ -223,7 +225,8 @@ public class LocalGameController {
 
     public void requestMouseClick(double clickPosX, double clickPosY) throws OutofRangeException {
         // TODO: Mouse click event handle, including select a creature or attack. You can use Battlefirld.getCreatureFromPos() and utilize 泛型
-        battlefieldController.requestMouseClick(clickPosX, clickPosY, localPlayer);
+        if(currStatus == LocalGameStatus.RUN)
+            battlefieldController.requestMouseClick(clickPosX, clickPosY, localPlayer);
     }
 
     public Formation requestGetTeamFormation() {
@@ -263,7 +266,7 @@ public class LocalGameController {
         }
     }
 
-    public synchronized void requestCreatureMove(Creature creature, Direction direction) {
+    public void requestCreatureMove(Creature creature, Direction direction) {
         battlefieldController.letCreatureMove(creature, direction);
         battlefieldController.repaint();
         try {
@@ -276,10 +279,51 @@ public class LocalGameController {
     public void requestOthersCreatureMove(Creature creature) {
         Battlefield battlefield = battlefieldController.getBattlefield();
         synchronized (battlefield) {
-            Creature creatureToMove = battlefield.getCreatureFromId(creature, localPlayer);
+            Creature creatureToMove = battlefield.getOtherCreatureFromId(creature, localPlayer);
             int[] newPos = creature.getPos();
             creatureToMove.setPos(newPos[0], newPos[1]);
         }
         battlefieldController.repaint();
+    }
+
+    public void requestCreatureAttack(Bullet bullet) {
+        try{
+            networkController.sendMessage(MessageType.CREATURE_ATTACK, bullet);
+        } catch (IOException e){
+            requestLogMessages("当前攻击没有被另一端接收！");
+        }
+    }
+
+    public void requestOthersCreatureAttack(Bullet bullet){
+        battlefieldController.getBattlefield().addBullet(bullet);
+    }
+
+    public void requestSendCreatureRemainHealth(Creature creature) {
+        try{
+            networkController.sendMessage(MessageType.CREATURE_INJURED, creature);
+        } catch (IOException e){
+            requestLogMessages("当前伤害没有被另一端接收！");
+        }
+    }
+
+    public void requestLocalCreatureRemainHealth(Creature creature) {
+        Battlefield battlefield = battlefieldController.getBattlefield();
+        synchronized (battlefield){
+            Creature creatureToSetRemainHealth = battlefield.getLocalCreatureFromId(creature, localPlayer);
+            double remainHealth = creature.getHealth();
+            creatureToSetRemainHealth.setHealth(remainHealth);
+        }
+    }
+
+    public void requestSendBulletDestroy(Bullet bullet) {
+        try{
+            networkController.sendMessage(MessageType.BULLET_DESTROY, bullet);
+        }catch (IOException e){
+            requestLogMessages("当前伤害没有被另一端接收！");
+        }
+    }
+
+    public void requestLocalBulletDestroy(Bullet bullet) {
+        battlefieldController.getBattlefield().getBulletManager().removeBullet(bullet);
     }
 }

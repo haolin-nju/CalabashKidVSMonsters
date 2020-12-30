@@ -1,5 +1,6 @@
 package main.java.nju.linhao.controller.logic;
 
+import main.java.nju.linhao.bullet.Bullet;
 import main.java.nju.linhao.creature.Creature;
 import main.java.nju.linhao.enums.*;
 import main.java.nju.linhao.team.HumanTeam;
@@ -60,7 +61,7 @@ public class NetworkController implements Runnable {
         send(msgToSend);
     }
 
-    private void send(Message msgToSend) throws IOException {
+    private synchronized void send(Message msgToSend) throws IOException {
         ObjectOutputStream out = null;
         try {
             if (isCurrentClientServer) {//是服务器
@@ -121,6 +122,13 @@ public class NetworkController implements Runnable {
                 LocalGameController.getInstance().requestOthersCreatureMove((Creature) msgContent);
                 break;
             case CREATURE_ATTACK:
+                LocalGameController.getInstance().requestOthersCreatureAttack((Bullet) msgContent);
+                break;
+            case CREATURE_INJURED:// for consensus, always the attacker choose the answer
+                LocalGameController.getInstance().requestLocalCreatureRemainHealth((Creature) msgContent);
+                break;
+            case BULLET_DESTROY:// for consensus, always the attacker destroy the bullets
+                LocalGameController.getInstance().requestLocalBulletDestroy((Bullet) msgContent);
                 break;
             default:
         }

@@ -37,3 +37,10 @@ Battlefield
 
 MainWindowView
 
+## 学会了什么
+
+1. 设计模式
+2. 网络设计
+3. synchronized
+4. Reentrant Lock
+5. Consensus（有可能有子弹在我的客户端打到敌人，但是在敌人客户端因为延迟躲开了），所以用了简单的共识协议就是自己打到了敌人，敌人一定会被打到。

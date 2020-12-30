@@ -2,6 +2,7 @@ package main.java.nju.linhao;
 
 import javafx.application.Application;
 import javafx.application.HostServices;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -106,6 +107,7 @@ public class Main extends Application {
 
         scene.getStylesheets().add(Main.class.getResource("/css/Style.css").toExternalForm());
         primaryStage.setTitle("葫芦娃大战妖精");
+        primaryStage.setOnCloseRequest((event) -> Platform.exit());
         primaryStage.getIcons().add(icon);
         primaryStage.setResizable(false);
         primaryStage.setScene(scene);

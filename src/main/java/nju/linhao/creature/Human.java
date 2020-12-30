@@ -1,9 +1,11 @@
 package main.java.nju.linhao.creature;
 
+import main.java.nju.linhao.enums.Player;
+
 public class Human extends Creature{
 
     public Human(String name) {
-        super(name);
+        super(name, Player.PLAYER_1);
     }
 
     public Human(String name,
@@ -12,6 +14,7 @@ public class Human extends Creature{
                  double defense,
                  double speed){
         super(name,
+                Player.PLAYER_1,
                 health,
                 damage,
                 defense,

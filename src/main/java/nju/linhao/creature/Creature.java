@@ -12,19 +12,21 @@ import main.java.nju.linhao.bullet.BulletFactory;
 import main.java.nju.linhao.bullet.HumanBullet;
 import main.java.nju.linhao.bullet.MonsterBullet;
 import main.java.nju.linhao.controller.logic.LocalGameController;
-import main.java.nju.linhao.enums.CreatureStatus;
-import main.java.nju.linhao.enums.Direction;
+import main.java.nju.linhao.enums.*;
 
-import main.java.nju.linhao.enums.SelectionStatus;
 import main.java.nju.linhao.utils.Configuration;
 import main.java.nju.linhao.utils.ImageLoader;
 
 import java.io.Serializable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.concurrent.locks.ReentrantLock;
 
 public abstract class Creature implements Runnable, Serializable {
 
-    public Creature(String name) {
+    public Creature(String name, Player belongsTo) {
         this(name,
+                belongsTo,
                 Configuration.DEFAULT_HEALTH,
                 Configuration.DEFAULT_DAMAGE,
                 Configuration.DEFAULT_DEFENSE,
@@ -32,6 +34,7 @@ public abstract class Creature implements Runnable, Serializable {
     }
 
     public Creature(String name,
+                    Player belongsTo,
                     double health,
                     double damage,
                     double defense,
@@ -43,6 +46,7 @@ public abstract class Creature implements Runnable, Serializable {
         this.direction = Direction.NO_DIRECTION;
 
         this.name = name;
+        this.belongsTo = belongsTo;
         this.img = ImageLoader.loadImg(this.name);
         this.health = health;
         this.damage = damage;
@@ -53,6 +57,8 @@ public abstract class Creature implements Runnable, Serializable {
         this.attackTarget = null;
         this.clickPosX = 0;
         this.clickPosY = 0;
+
+        this.healthLock = new ReentrantLock();
     }
 
     public int getCreatureId() {
@@ -96,7 +102,15 @@ public abstract class Creature implements Runnable, Serializable {
     }
 
     public void setHealth(double health) {
-        this.health = health;
+        this.healthLock.lock();
+        try {
+            this.health = health;
+        } finally {
+            this.healthLock.unlock();
+        }
+        if(this.health <= 0){
+            this.creatureStatus = CreatureStatus.DEAD;
+        }
     }
 
     public void setDamage(double damage) {
@@ -181,7 +195,13 @@ public abstract class Creature implements Runnable, Serializable {
     }
 
     public void injured(double damage) {
-        this.health -= (damage - defense);
+        this.healthLock.lock();
+        try {
+            this.health -= (damage - defense);
+            LocalGameController.getInstance().requestSendCreatureRemainHealth(this);
+        } finally {
+            this.healthLock.unlock();
+        }
         if (this.health <= 0) {
             creatureStatus = CreatureStatus.DEAD;
         }
@@ -195,6 +215,7 @@ public abstract class Creature implements Runnable, Serializable {
                     Bullet bullet = attack(attackTarget, clickPosX, clickPosY);
                     if (bullet != null) {
                         LocalGameController.getInstance().getBattlefieldController().getBattlefield().addBullet(bullet);
+                        LocalGameController.getInstance().requestCreatureAttack(bullet);
                     }
                     this.attackFlag = false;//攻击完就不再攻击
                 }
@@ -202,16 +223,13 @@ public abstract class Creature implements Runnable, Serializable {
                 // Select move direction
                 DirectionSelector directionSelector = new RandomDirectionSelector();
                 Direction moveDirection = directionSelector.selectDirection();
+//                System.out.println(this.toString() + moveDirection);
                 LocalGameController.getInstance().requestCreatureMove(this, moveDirection);
-                // TODO: Select attack target and attack
-
                 try {
                     Thread.sleep(Configuration.CREATURE_DEFAULT_SLEEP_TIME);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            } else {
-                throw new NullPointerException("当前生物的选择状态不正确！");
             }
         }
     }
@@ -224,6 +242,7 @@ public abstract class Creature implements Runnable, Serializable {
     private Direction direction; // 移动方向
 
     private String name; // 生物名字
+    private Player belongsTo; //属于哪个阵营，PLAYER_1是人类，PLAYER_2是妖怪
     private transient Image img; // 生物图片, 不可序列化，不用传输
     private double health; // 生命值
     private double damage; // 攻击力
@@ -236,6 +255,8 @@ public abstract class Creature implements Runnable, Serializable {
     private Creature attackTarget; //攻击的目标
     private double clickPosX; //攻击点击的位置X
     private double clickPosY; //攻击点击的位置Y
+
+    private ReentrantLock healthLock; // 血量的锁
 
     @Override
     public String toString() {

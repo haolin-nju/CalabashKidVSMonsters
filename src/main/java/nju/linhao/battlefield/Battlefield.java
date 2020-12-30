@@ -64,8 +64,8 @@ public class Battlefield implements Runnable {
         }
         int rowIdx = (int) (posY / Configuration.DEFAULT_GRID_HEIGHT);
         int colIdx = (int) (posX / Configuration.DEFAULT_GRID_WIDTH);
-        System.out.println(rowIdx);
-        System.out.println(colIdx);
+//        System.out.println(rowIdx);
+//        System.out.println(colIdx);
         return creatureGrids[rowIdx][colIdx];
     }
 
@@ -85,7 +85,7 @@ public class Battlefield implements Runnable {
         return creatureGrids[rowIdx][colIdx];
     }
 
-    public Creature getCreatureFromId(Creature creature, Player curPlayer) {
+    public Creature getOtherCreatureFromId(Creature creature, Player curPlayer) {
         int creatureId = creature.getCreatureId();
         if (curPlayer == Player.PLAYER_1) {
             ArrayList<Monster> monsters = monsterTeam.getTeamMembers();
@@ -105,6 +105,26 @@ public class Battlefield implements Runnable {
         return null;
     }
 
+    public Creature getLocalCreatureFromId(Creature creature, Player curPlayer) {
+        int creatureId = creature.getCreatureId();
+        if (curPlayer == Player.PLAYER_1) {
+            ArrayList<Human> humans = humanTeam.getTeamMembers();
+            for (Human human : humans) {
+                if (creatureId == human.getCreatureId()) {
+                    return human;
+                }
+            }
+        } else if (curPlayer == Player.PLAYER_2) {
+            ArrayList<Monster> monsters = monsterTeam.getTeamMembers();
+            for (Monster monster : monsters) {
+                if (creatureId == monster.getCreatureId()) {
+                    return monster;
+                }
+            }
+        }
+        return null;
+    }
+
     public HumanTeam getHumanTeam() {
         return humanTeam;
     }
@@ -118,23 +138,27 @@ public class Battlefield implements Runnable {
         ArrayList<Human> humans = humanTeam.getTeamMembers();
         for (Human human : humans) {
             int[] pos = human.getPos();
-            creatureGrids[pos[0]][pos[1]] = human;
+            if(human.getCreatureStatus() == CreatureStatus.ALIVE) {
+                creatureGrids[pos[0]][pos[1]] = human;
+            }
         }
         ArrayList<Monster> monsters = monsterTeam.getTeamMembers();
         for (Monster monster : monsters) {
             int[] pos = monster.getPos();
-            creatureGrids[pos[0]][pos[1]] = monster;
+            if (monster.getCreatureStatus() == CreatureStatus.ALIVE) {
+                creatureGrids[pos[0]][pos[1]] = monster;
+            }
         }
     }
 
     public void startLocalCreatureThreads(Player player) {
-        if (player == Player.PLAYER_1) {
+        if(player == Player.PLAYER_1) {
             ArrayList<Human> humans = humanTeam.getTeamMembers();
             for (Human human : humans) {
                 Thread humanThread = new Thread(human);
                 humanThread.start();
             }
-        } else if (player == Player.PLAYER_2) {
+        } else if(player == Player.PLAYER_2) {
             ArrayList<Monster> monsters = monsterTeam.getTeamMembers();
             for (Monster monster : monsters) {
                 Thread monsterThread = new Thread(monster);

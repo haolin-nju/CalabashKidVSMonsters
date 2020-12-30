@@ -51,6 +51,7 @@ public class BattlefieldController {
 
     public void setLocalPlayer(Player player) {
         curPlayer = player;
+        battlefield.getBulletManager().setLocalPlayer(player);
     }
 
     public void setFormation(Formation formation) {
@@ -101,25 +102,19 @@ public class BattlefieldController {
                 LocalGameController.getInstance().requestLogMessages("当前选择生物：" + selectedCreature.getCreatureName());
                 curSelectedCreature = selectedCreature;
             } else if (selectedCreature instanceof Monster
-                    && curSelectedCreature instanceof Human) {
+                    && selectedCreature.getCreatureStatus() == CreatureStatus.ALIVE) {
                 curSelectedCreature.setAttack(selectedCreature, clickPosX, clickPosY);
-//                Bullet bullet = curSelectedCreature.attack(selectedCreature, clickPosX, clickPosY);
-//                if(bullet != null){
-//                    battlefield.addBullet(bullet);
-//                }
-//                LocalGameController.getInstance().requestNetworkController();
                 LocalGameController.getInstance().requestLogMessages(curSelectedCreature.getCreatureName() + "攻击："
                         + selectedCreature.getCreatureName());
             }
         } else if (localPlayer == Player.PLAYER_2) {
             if (selectedCreature instanceof Monster) {
                 curSelectedCreature.setUnselected();
-                ;
                 selectedCreature.setSelected();
                 LocalGameController.getInstance().requestLogMessages("当前选择生物：" + selectedCreature.getCreatureName());
                 curSelectedCreature = selectedCreature;
             } else if (selectedCreature instanceof Human
-                    && curSelectedCreature instanceof Monster) {
+                    && selectedCreature.getCreatureStatus() == CreatureStatus.ALIVE) {
                 curSelectedCreature.setAttack(selectedCreature, clickPosX, clickPosY);
 //                Bullet bullet = curSelectedCreature.attack(selectedCreature, clickPosX, clickPosY);
 //                if(bullet != null){

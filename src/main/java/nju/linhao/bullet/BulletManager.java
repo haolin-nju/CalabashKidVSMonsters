@@ -5,45 +5,85 @@ import main.java.nju.linhao.controller.logic.LocalGameController;
 import main.java.nju.linhao.creature.Creature;
 import main.java.nju.linhao.creature.Human;
 import main.java.nju.linhao.creature.Monster;
+import main.java.nju.linhao.enums.CreatureStatus;
 import main.java.nju.linhao.enums.Player;
 import main.java.nju.linhao.exception.OutofRangeException;
 import main.java.nju.linhao.utils.Configuration;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class BulletManager implements Runnable {
-    private CopyOnWriteArrayList<HumanBullet> humanBullets;
-    private CopyOnWriteArrayList<MonsterBullet> monsterBullets;
+    private LinkedList<HumanBullet> humanBullets;
+    private LinkedList<MonsterBullet> monsterBullets;
+    private Player localPlayer;
 
     public BulletManager() {
-        humanBullets = new CopyOnWriteArrayList<>();
-        monsterBullets = new CopyOnWriteArrayList<>();
+        humanBullets = new LinkedList<>();
+        monsterBullets = new LinkedList<>();
+
+        localPlayer = Player.PLAYER_1;
     }
 
     public void addBullet(Bullet bullet) {
         if (bullet instanceof HumanBullet) {
-            humanBullets.add((HumanBullet) bullet);
+            synchronized (humanBullets) {
+                humanBullets.add((HumanBullet) bullet);
+            }
         } else if (bullet instanceof MonsterBullet) {
-            monsterBullets.add((MonsterBullet) bullet);
+            synchronized (monsterBullets){
+                monsterBullets.add((MonsterBullet) bullet);
+            }
         } else {
             System.err.println("子弹不属于人类或妖怪！");
         }
     }
 
     public void removeBullets() {
-        for (HumanBullet humanBullet : humanBullets) {
-            if (humanBullet.getToDestroy() == true) {
-                humanBullets.remove(humanBullet);
+        synchronized (humanBullets){
+            Iterator<HumanBullet> humanBulletIterator = humanBullets.iterator();
+            while(humanBulletIterator.hasNext()){
+                if(humanBulletIterator.next().getToDestroy() == true){
+                    humanBulletIterator.remove();
+                }
             }
         }
-        for (MonsterBullet monsterBullet : monsterBullets) {
-            if (monsterBullet.getToDestroy() == true) {
-                monsterBullets.remove(monsterBullet);
+        synchronized (monsterBullets){
+            Iterator<MonsterBullet> monsterBulletIterator = monsterBullets.iterator();
+            while(monsterBulletIterator.hasNext()){
+                if(monsterBulletIterator.next().getToDestroy() == true){
+                    monsterBulletIterator.remove();
+                }
             }
         }
         return;
+    }
+
+    public void removeBullet(Bullet bullet){//只可能为了对方删除对方的bullet
+        if(localPlayer == Player.PLAYER_1){
+            synchronized (humanBullets){
+                Iterator<HumanBullet> humanBulletIterator = humanBullets.iterator();
+                while(humanBulletIterator.hasNext()){
+                    if(humanBulletIterator.next() == bullet){
+                        humanBulletIterator.remove();
+                        return;
+                    }
+                }
+            }
+        } else if(localPlayer == Player.PLAYER_2){
+            synchronized (monsterBullets){
+                Iterator<MonsterBullet> monsterBulletIterator = monsterBullets.iterator();
+                while(monsterBulletIterator.hasNext()){
+                    if(monsterBulletIterator.next() == bullet){
+                        monsterBulletIterator.remove();
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     public void clearBullets() {
@@ -51,47 +91,60 @@ public class BulletManager implements Runnable {
         monsterBullets.clear();
     }
 
-    public CopyOnWriteArrayList<HumanBullet> getHumanBullets() {
+    public synchronized LinkedList<HumanBullet> getHumanBullets() {
         return humanBullets;
     }
 
-    public CopyOnWriteArrayList<MonsterBullet> getMonsterBullets() {
+    public synchronized LinkedList<MonsterBullet> getMonsterBullets() {
         return monsterBullets;
     }
 
     @Override
     public void run() {
         while (true) {
-            for (HumanBullet humanBullet : humanBullets) {
-                if(humanBullet.modifyPos()){
-                    continue;
-                }
-                double[] humanBulletPos = humanBullet.getPos();
-                Creature creature = null;
-                try {
-                    creature = Battlefield.getCreatureFromBulletPos(humanBulletPos[0], humanBulletPos[1]);
-                    if (creature instanceof Monster){
-                        creature.injured(humanBullet.getDamage());
-                        humanBullet.setToDestroy(true); // 打到敌人，可以消亡
+            synchronized (humanBullets) {
+                for (HumanBullet humanBullet : humanBullets) {
+                    if (humanBullet.modifyPos()) {
+                        continue;
                     }
-                } catch (OutofRangeException e) {
+                    double[] humanBulletPos = humanBullet.getPos();
+                    Creature creature;
+                    try {
+                        creature = Battlefield.getCreatureFromBulletPos(humanBulletPos[0], humanBulletPos[1]);
+                        if (creature instanceof Monster
+                                && creature.getCreatureStatus() == CreatureStatus.ALIVE) {
+                            if (localPlayer == Player.PLAYER_1) {// 本地是人类阵营，需要计算所有打到妖怪的内容
+                                creature.injured(humanBullet.getDamage());
+                            }
+                            humanBullet.setToDestroy(true); // 打到敌人，可以消亡
+                            LocalGameController.getInstance().requestSendBulletDestroy(humanBullet);
+                        }
+                    } catch (OutofRangeException e) {
 
+                    }
                 }
             }
-            for (MonsterBullet monsterBullet : monsterBullets) {
-                if(monsterBullet.modifyPos()){
-                    continue;
-                }
-                double[] monsterBulletPos =monsterBullet.getPos();
-                Creature creature = null;
-                try {
-                    creature = Battlefield.getCreatureFromBulletPos(monsterBulletPos[0], monsterBulletPos[1]);
-                    if (creature instanceof Human) {
-                        creature.injured(monsterBullet.getDamage());
-                        monsterBullet.setToDestroy(true);// 打到敌人，可以消亡
+            synchronized (monsterBullets) {
+                for (MonsterBullet monsterBullet : monsterBullets) {
+                    if (monsterBullet.modifyPos()) {
+                        continue;
                     }
-                } catch (OutofRangeException e) {
+                    double[] monsterBulletPos = monsterBullet.getPos();
+                    Creature creature;
+                    try {
+                        creature = Battlefield.getCreatureFromBulletPos(monsterBulletPos[0], monsterBulletPos[1]);
+                        if (creature instanceof Human
+                                && creature.getCreatureStatus() == CreatureStatus.ALIVE) {
+                            if (localPlayer == Player.PLAYER_2) {// 本地是妖怪阵营，需要计算所有打到人类的内容
+                                creature.injured(monsterBullet.getDamage());
+                            }
+                            monsterBullet.setToDestroy(true);// 打到敌人，可以消亡
+                            LocalGameController.getInstance().requestSendBulletDestroy(monsterBullet);
+                        }
+                    } catch (OutofRangeException e) {
 
+
+                    }
                 }
             }
             removeBullets();
@@ -102,5 +155,9 @@ public class BulletManager implements Runnable {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void setLocalPlayer(Player player) {
+        localPlayer = player;
     }
 }

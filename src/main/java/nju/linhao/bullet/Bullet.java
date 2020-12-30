@@ -4,7 +4,9 @@ import main.java.nju.linhao.controller.logic.LocalGameController;
 import main.java.nju.linhao.utils.Configuration;
 import sun.security.krb5.Config;
 
-public class Bullet {
+import java.io.Serializable;
+
+public abstract class Bullet implements Serializable {
     public Bullet(double radian, double posX, double posY) {
         this(Configuration.DEFAULT_BULLET_DAMAGE,
                 Configuration.DEFAULT_BULLET_SPEED,
@@ -18,6 +20,7 @@ public class Bullet {
                   double radian,
                   double posX,
                   double posY) {
+        this.bulletID = this.id;
         this.id++;
 
         this.damage = damage;
@@ -81,6 +84,7 @@ public class Bullet {
     }
 
     private static int id = 0; // 全局唯一bullet id
+    private int bulletID = 0;
     private double damage;
     private double speed;
     private double radian;
