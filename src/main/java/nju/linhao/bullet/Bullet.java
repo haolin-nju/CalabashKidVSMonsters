@@ -23,7 +23,7 @@ public class Bullet {
         this.damage = damage;
         this.speed = speed;
         this.radian = radian;
-        this.posX = posX;//行像素
+        this.posX = posX;//行像素 //此posX应该是画布坐标
         this.posY = posY;//列像素
         this.toDestroy = false; //生成时还不需要消亡
     }

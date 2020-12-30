@@ -162,8 +162,8 @@ public abstract class Creature implements Runnable, Serializable {
 
     public Bullet attack(Creature attackTarget, double clickPosX, double clickPosY) {
         // TODO: Communication and attack!!
-        double doublePosX = (posX + 0.5) * Configuration.DEFAULT_GRID_HEIGHT;
-        double doublePosY = (posY + 0.5) * Configuration.DEFAULT_GRID_WIDTH;
+        double doublePosY = (posX + 0.5) * Configuration.DEFAULT_GRID_HEIGHT;
+        double doublePosX = (posY + 0.5) * Configuration.DEFAULT_GRID_WIDTH;
         if (attackTarget instanceof Monster) {
             return BulletFactory.createHumanBullet(clickPosX, clickPosY, doublePosX, doublePosY);
         } else if (attackTarget instanceof Human) {

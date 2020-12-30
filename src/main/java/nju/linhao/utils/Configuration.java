@@ -9,8 +9,8 @@ public class Configuration {
     public static final int DEFAULT_GRID_COLUMNS = 20;
     public static final int DEFAULT_GRID_ROWS = 15;
     public static final int DEFAULT_MINION_NUMS = 6;
-    public static final double DEFAULT_GRID_WIDTH = CANVAS_WIDTH / DEFAULT_GRID_COLUMNS;
-    public static final double DEFAULT_GRID_HEIGHT = CANVAS_HEIGHT / DEFAULT_GRID_ROWS;
+    public static final double DEFAULT_GRID_WIDTH = 38.4;
+    public static final double DEFAULT_GRID_HEIGHT = 34.34;
 
 
     // for Creture

@@ -64,6 +64,8 @@ public class Battlefield implements Runnable {
         }
         int rowIdx = (int) (posY / Configuration.DEFAULT_GRID_HEIGHT);
         int colIdx = (int) (posX / Configuration.DEFAULT_GRID_WIDTH);
+        System.out.println(rowIdx);
+        System.out.println(colIdx);
         return creatureGrids[rowIdx][colIdx];
     }
 
