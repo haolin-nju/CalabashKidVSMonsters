@@ -5,5 +5,5 @@ import main.java.nju.linhao.creature.Creature;
 import java.util.ArrayList;
 
 public interface TargetSelector {
-    Creature selectAttackTarget(ArrayList<Creature> toAttackCreatures);
+    Creature selectAttackTarget();
 }

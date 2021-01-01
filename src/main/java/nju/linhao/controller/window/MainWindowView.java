@@ -64,14 +64,14 @@ public class MainWindowView {
     @FXML // fx:id="openMenuItem"
     private MenuItem openMenuItem; // Value injected by FXMLLoader
 
-    @FXML // fx:id="continueMenuItem"
-    private MenuItem continueMenuItem; // Value injected by FXMLLoader
-
-    @FXML // fx:id="pauseMenuItem"
-    private MenuItem pauseMenuItem; // Value injected by FXMLLoader
-
-    @FXML // fx:id="stopMenuItem"
-    private MenuItem stopMenuItem; // Value injected by FXMLLoader
+//    @FXML // fx:id="continueMenuItem"
+//    private MenuItem continueMenuItem; // Value injected by FXMLLoader
+//
+//    @FXML // fx:id="pauseMenuItem"
+//    private MenuItem pauseMenuItem; // Value injected by FXMLLoader
+//
+//    @FXML // fx:id="stopMenuItem"
+//    private MenuItem stopMenuItem; // Value injected by FXMLLoader
 
     @FXML // fx:id="saveMenuItem"
     private MenuItem saveMenuItem; // Value injected by FXMLLoader
@@ -115,9 +115,9 @@ public class MainWindowView {
 
     @FXML
     void newGameMenuItemOnAction(ActionEvent event) {
-        continueMenuItem.setDisable(true);
-        pauseMenuItem.setDisable(false);
-        stopMenuItem.setDisable(false);
+//        continueMenuItem.setDisable(true);
+//        pauseMenuItem.setDisable(false);
+//        stopMenuItem.setDisable(false);
         LocalGameController.getInstance().newGame();
     }
 
@@ -126,19 +126,19 @@ public class MainWindowView {
         Restorer.restore();
     }
 
-    @FXML
-    void continueMenuItemOnAction(ActionEvent event) {
-        pauseMenuItem.setDisable(false);
-        LocalGameController.getInstance().continueGame();
-        continueMenuItem.setDisable(true);
-    }
-
-    @FXML
-    void pauseMenuItemOnAction(ActionEvent event) {
-        continueMenuItem.setDisable(false);
-        LocalGameController.getInstance().pauseGame();
-        pauseMenuItem.setDisable(true);
-    }
+//    @FXML
+//    void continueMenuItemOnAction(ActionEvent event) {
+//        pauseMenuItem.setDisable(false);
+//        LocalGameController.getInstance().continueGame();
+//        continueMenuItem.setDisable(true);
+//    }
+//
+//    @FXML
+//    void pauseMenuItemOnAction(ActionEvent event) {
+//        continueMenuItem.setDisable(false);
+//        LocalGameController.getInstance().pauseGame();
+//        pauseMenuItem.setDisable(true);
+//    }
 
     @FXML
     void quitMenuItemOnAction(ActionEvent event) {
@@ -154,15 +154,15 @@ public class MainWindowView {
     void saveMenuItemOnAction(ActionEvent event) {
         logMessages("保存");
     }
-
-    @FXML
-    void stopMenuItemOnAction(ActionEvent event) {
-        continueMenuItem.setDisable(true);
-        pauseMenuItem.setDisable(true);
-        stopMenuItem.setDisable(true);
-        LocalGameController.getInstance().endGame(LocalGameStatus.WE_LOSE);
-
-    }
+//
+//    @FXML
+//    void stopMenuItemOnAction(ActionEvent event) {
+//        continueMenuItem.setDisable(true);
+//        pauseMenuItem.setDisable(true);
+//        stopMenuItem.setDisable(true);
+//        LocalGameController.getInstance().endGame(LocalGameStatus.WE_LOSE);
+//
+//    }
 
 
     @FXML
@@ -284,9 +284,9 @@ public class MainWindowView {
     void initialize() {
         assert newGameMenuItem != null : "fx:id=\"newGameMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert openMenuItem != null : "fx:id=\"openMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert pauseMenuItem != null : "fx:id=\"pauseMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert continueMenuItem != null : "fx:id=\"continueMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert stopMenuItem != null : "fx:id=\"stopMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+//        assert pauseMenuItem != null : "fx:id=\"pauseMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+//        assert continueMenuItem != null : "fx:id=\"continueMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+//        assert stopMenuItem != null : "fx:id=\"stopMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert saveMenuItem != null : "fx:id=\"saveMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert saveAsMenuItem != null : "fx:id=\"saveAsMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert quitMenuItem != null : "fx:id=\"quitMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
@@ -295,10 +295,9 @@ public class MainWindowView {
         assert logTextArea != null : "fx:id=\"logTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert mainCanvas != null : "fx:id=\"mainCanvas\" was not injected: check your FXML file 'MainWindow.fxml'.";
 
-        System.out.println("111");
-        continueMenuItem.setDisable(true);
-        pauseMenuItem.setDisable(true);
-        stopMenuItem.setDisable(true);
+//        continueMenuItem.setDisable(true);
+//        pauseMenuItem.setDisable(true);
+//        stopMenuItem.setDisable(true);
 
         // for canvas
         gc = mainCanvas.getGraphicsContext2D();

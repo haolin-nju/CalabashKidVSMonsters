@@ -20,7 +20,9 @@ import main.java.nju.linhao.team.Team;
 import main.java.nju.linhao.utils.ImageLoader;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 
 public class LocalGameController {
@@ -34,8 +36,9 @@ public class LocalGameController {
     private ClientWindowView clientWindowView;
     private BattlefieldController battlefieldController;
     private NetworkController networkController;
-    private Thread threadBattleField;
+    private ArrayList<Thread> allThreads;
     private int localCreaturesAliveCnt;
+    private boolean isOtherLost;
     private Image statusImg;
 
     private static LocalGameController localGameController = new LocalGameController();
@@ -65,7 +68,7 @@ public class LocalGameController {
         mainWindowView.setHostServices(hostServices);
         currStatus = LocalGameStatus.INIT;
         localPlayer = Player.PLAYER_1;
-        threadBattleField = null;
+        allThreads = new ArrayList<>();
     }
 
     public LocalGameStatus getCurrentStatus() {
@@ -126,13 +129,11 @@ public class LocalGameController {
                 break;
             default:
                 break;
-
         }
     }
 
     // Basic Game Logic
     public void newGame() {
-//        changeFormation(Formation.LONG_SNAKE_FORMATION, Player.PLAYER_1); 我觉得这应该变成网络传输的内容
         getReady();
         mainWindowView.logMessages("开始新游戏！");
     }
@@ -152,11 +153,9 @@ public class LocalGameController {
         setCurrentStatus(LocalGameStatus.RUN);
     }
 
-    public void endGame(LocalGameStatus localGameStatus) {
+    public synchronized void endGame(LocalGameStatus localGameStatus) {
         mainWindowView.logMessages("游戏结束！");
         setCurrentStatus(localGameStatus);
-        statusImg = ImageLoader.getInstance().loadGameStatusImg(currStatus);
-        battlefieldController.repaint();
         if(localGameStatus == LocalGameStatus.WE_LOSE) {
             try {
                 networkController.sendMessage(MessageType.SOMEONE_LOSE);
@@ -164,7 +163,23 @@ public class LocalGameController {
                 requestLogMessages("失败信息没有被另一端接收！");
             }
         }
-        battlefieldController.interruptThreads();//中止所有线程，包括自己
+        statusImg = ImageLoader.getInstance().loadGameStatusImg(currStatus);
+        battlefieldController.repaint();
+        // 清除所有线程
+        Iterator<Thread> iterator = allThreads.iterator();
+        while(iterator.hasNext()){
+            Thread curThread = iterator.next();
+            while(!curThread.isInterrupted()){}
+            curThread.interrupt();
+        }
+        // 重新初始化所有不可重用的变量
+
+//        battlefieldController.destroyEverything();
+//        battlefieldController.interruptThreads();//中止所有生物线程
+    }
+
+    public void requestOtherLose() {
+        isOtherLost = true;
     }
 
     // Battlefield Logic
@@ -187,6 +202,7 @@ public class LocalGameController {
             battlefieldController.repaint();
             battlefieldController.setDefaultSelectedCreature();
             localCreaturesAliveCnt = battlefieldController.getLocalCreaturesAliveCnt();
+            isOtherLost = false;
             if(localCreaturesAliveCnt == -1){
                 mainWindowView.logMessages("初始化的本地生物数量有误！请检查！");
             }
@@ -205,6 +221,7 @@ public class LocalGameController {
         networkController.setDestIp(destIp);
         Thread networkThread = new Thread(networkController);
         networkThread.start();
+        allThreads.add(networkThread);
     }
 
     public void requestGameStart() {
@@ -225,6 +242,10 @@ public class LocalGameController {
 
     public Image getStatusImg(){
         return statusImg;
+    }
+
+    public boolean queryIsOtherLost(){
+        return this.isOtherLost;
     }
 
 
@@ -291,6 +312,7 @@ public class LocalGameController {
         else if(currStatus == LocalGameStatus.WE_LOSE || currStatus == LocalGameStatus.WE_WIN){
             setCurrentStatus(LocalGameStatus.END);
             battlefieldController.clear();
+            networkController.stop();
         }
     }
 
@@ -317,8 +339,9 @@ public class LocalGameController {
         battlefieldController.repaint();
     }
 
-    public void requestStartCreatureThreads() {
-        battlefieldController.getBattlefield().startLocalCreatureThreads(localPlayer);
+    public void requestStartCreatureAndBulletThreads() {
+        allThreads.addAll(battlefieldController.getBattlefield().startLocalCreatureThreads(localPlayer));
+        allThreads.add(battlefieldController.getBattlefield().startLocalBulletManagerThreads());
     }
 
     public void requestCreatureMove(Direction direction) {
@@ -390,5 +413,18 @@ public class LocalGameController {
 
     public void requestLocalBulletDestroy(Bullet bullet) {
         battlefieldController.getBattlefield().getBulletManager().removeBullet(bullet);
+    }
+
+    public void requestCheckLocalPlayer(Player player) {
+        Player[] players = Player.values();
+        if(player == localPlayer){
+            mainWindowView.logMessages("您选择了服务器选择的阵容！\n将自动为您切换到另一个阵营和初始阵型！");
+            for(Player curPlayer : players){
+                if(curPlayer != player){
+                    localPlayer = curPlayer;
+                    battlefieldController.setLocalPlayer(localPlayer);
+                }
+            }
+        }
     }
 }

@@ -106,35 +106,50 @@ public class NetworkController implements Runnable {
         Object msgContent = message.getMessageContent();
         switch (msgType) {
             case CLIENT_READY:// 服务器收到客户端建立连接请求
-                sendMessage(MessageType.SERVER_ACK);// 回送服务器ACK，这里故意不写break的！
+                System.out.println("CLIENT_READY");
+                sendMessage(MessageType.SERVER_ACK, LocalGameController.getInstance().getLocalPlayer());// 回送服务器ACK，这里故意不写break的！
             case SERVER_ACK:// 客户端收到服务器确认请求
+                System.out.println("SERVER_ACK");
                 // 给对方发送我方生物的Team信息，设置本地运行状态为RUN
+                Player player = (Player) msgContent;
+                LocalGameController.getInstance().requestCheckLocalPlayer(player);
                 LocalGameController.getInstance().setCurrentStatus(LocalGameStatus.RUN);
                 sendMessage(MessageType.TEAM_CREATE, LocalGameController.getInstance().requestGetTeamFormation());
                 connectionEstablished = true;
                 break;
             case TEAM_CREATE: //收到对方的创建对象的请求
+                System.out.println("TEAM_CREATE");
                 LocalGameController.getInstance().requestSetTeamFormation((Formation) msgContent);
-                LocalGameController.getInstance().requestStartCreatureThreads();//启动所有生物线程开始运行
+                LocalGameController.getInstance().requestStartCreatureAndBulletThreads();//启动所有生物线程开始运行
                 LocalGameController.getInstance().requestLogMessages("游戏开始！");
                 break;
             case CREATURE_MOVE:
+                System.out.println("CREATURE_MOVE");
                 LocalGameController.getInstance().requestOthersCreatureMove((Creature) msgContent);
                 break;
             case CREATURE_ATTACK:
+                System.out.println("CREATURE_ATTACK");
                 LocalGameController.getInstance().requestOthersCreatureAttack((Bullet) msgContent);
                 break;
             case CREATURE_INJURED:// for consensus, always the attacker choose the answer
+                System.out.println("CREATURE_INJURED");
                 LocalGameController.getInstance().requestLocalCreatureRemainHealth((Creature) msgContent);
                 break;
             case BULLET_DESTROY:// for consensus, always the attacker destroy the bullets
+                System.out.println("BULLET_DESTROY");
                 LocalGameController.getInstance().requestLocalBulletDestroy((Bullet) msgContent);
                 break;
             case SOMEONE_LOSE:// for game logic
-                LocalGameController.getInstance().endGame(LocalGameStatus.WE_WIN);
+                System.out.println("SOMEONE_LOSE");
+                LocalGameController.getInstance().requestOtherLose();//意味着我们赢了
                 break;
             default:
         }
+    }
+
+    public void stop(){
+        isCurrentClientServer = false;
+        connectionEstablished = false;
     }
 
     @Override
@@ -179,6 +194,16 @@ public class NetworkController implements Runnable {
             }
         } catch (IOException | ClassNotFoundException | InterruptedException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (isCurrentClientServer) {
+                    socketToClient.close();
+                } else {
+                    socketToServer.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

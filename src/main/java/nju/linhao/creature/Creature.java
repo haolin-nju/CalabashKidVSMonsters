@@ -18,6 +18,8 @@ import main.java.nju.linhao.utils.Configuration;
 import main.java.nju.linhao.utils.ImageLoader;
 
 import java.io.Serializable;
+import java.lang.annotation.Target;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.locks.ReentrantLock;
@@ -209,7 +211,27 @@ public abstract class Creature implements Runnable, Serializable {
 
     @Override
     public void run() {
-        while (this.creatureStatus == CreatureStatus.ALIVE && !Thread.interrupted()) {
+        boolean gameEnded = false;
+        DirectionSelector directionSelector = new RandomDirectionSelector();
+        ArrayList<? extends Creature> enemies = null;
+        Player localPlayer = LocalGameController.getInstance().getLocalPlayer();
+        if(localPlayer == Player.PLAYER_1){
+            enemies = LocalGameController
+                    .getInstance()
+                    .getBattlefieldController()
+                    .getBattlefield()
+                    .getMonsterTeam()
+                    .getTeamMembers();
+        } else {
+            enemies = LocalGameController
+                    .getInstance()
+                    .getBattlefieldController()
+                    .getBattlefield()
+                    .getHumanTeam()
+                    .getTeamMembers();
+        }
+        TargetSelector targetSelector = new RandomTargetSelector(enemies);
+        while (this.creatureStatus == CreatureStatus.ALIVE && !Thread.interrupted() && !gameEnded) {
             if (this.selectionStatus == SelectionStatus.SELECTED) {
                 if (this.attackFlag == true) {
                     Bullet bullet = attack(attackTarget, clickPosX, clickPosY);
@@ -220,10 +242,20 @@ public abstract class Creature implements Runnable, Serializable {
                     this.attackFlag = false;//攻击完就不再攻击
                 }
             } else if (this.selectionStatus == SelectionStatus.UNSELECTED) {
-                // Select move direction
-                DirectionSelector directionSelector = new RandomDirectionSelector();
+                this.attackTarget = targetSelector.selectAttackTarget();
+                if(this.attackTarget != null) {
+                    int[] attackTargetPos = attackTarget.getPos();
+                    this.attackFlag = true;
+                    Bullet bullet = attack(attackTarget,
+                            attackTargetPos[1] * Configuration.DEFAULT_GRID_WIDTH,
+                            attackTargetPos[0] * Configuration.DEFAULT_GRID_HEIGHT);
+                    if (bullet != null) {
+                        LocalGameController.getInstance().getBattlefieldController().getBattlefield().addBullet(bullet);
+                        LocalGameController.getInstance().requestCreatureAttack(bullet);
+                    }
+                    this.attackFlag = false;
+                }
                 Direction moveDirection = directionSelector.selectDirection();
-//                System.out.println(this.toString() + moveDirection);
                 LocalGameController.getInstance().requestCreatureMove(this, moveDirection);
                 try {
                     Thread.sleep(Configuration.CREATURE_DEFAULT_SLEEP_TIME);
@@ -231,10 +263,14 @@ public abstract class Creature implements Runnable, Serializable {
                     e.printStackTrace();
                 }
             }
+            gameEnded = LocalGameController.getInstance().queryIsOtherLost();
         }
         if(this.creatureStatus == CreatureStatus.DEAD
                 && LocalGameController.getInstance().localAliveCreaturesDec() <= 0){
             LocalGameController.getInstance().endGame(LocalGameStatus.WE_LOSE);
+        } else if (this.creatureStatus == CreatureStatus.ALIVE && isFirstToNotifyWinning == true) { //获胜一方的
+            LocalGameController.getInstance().endGame(LocalGameStatus.WE_WIN);
+            isFirstToNotifyWinning = false;
         }
     }
 
@@ -261,6 +297,7 @@ public abstract class Creature implements Runnable, Serializable {
     private double clickPosY; //攻击点击的位置Y
 
     private ReentrantLock healthLock; // 血量的锁
+    private static boolean isFirstToNotifyWinning = true;
 
     @Override
     public String toString() {

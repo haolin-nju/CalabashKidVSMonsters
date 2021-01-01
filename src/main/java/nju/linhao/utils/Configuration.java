@@ -14,8 +14,8 @@ public class Configuration {
 
 
     // for Creture
-    public static final double DEFAULT_HEALTH = 1;
-    public static final double DEFAULT_DAMAGE = 10000;
+    public static final double DEFAULT_HEALTH = 100;
+    public static final double DEFAULT_DAMAGE = 10;
     public static final double DEFAULT_DEFENSE = 10;
     public static final double DEFAULT_CREATURE_SPEED = 10;
     public static final long CREATURE_DEFAULT_SLEEP_TIME = 1000;
@@ -39,9 +39,9 @@ public class Configuration {
 
     // for Bullet
     public static final double DEFAULT_BULLET_DAMAGE = 20;
-    public static final double DEFAULT_BULLET_SPEED = 15;
+    public static final double DEFAULT_BULLET_SPEED = 3;
     public static final double DEFAULT_BULLET_RADIUS = 3;
-    public static final long BULLET_DEFAULT_SLEEP_TIME = 30;
+    public static final long BULLET_DEFAULT_SLEEP_TIME = 10;
 
     // for Server Client
     public static int DEFAULT_PORT = 7777;

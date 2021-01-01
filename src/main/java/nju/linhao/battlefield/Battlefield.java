@@ -29,6 +29,7 @@ public class Battlefield {
     private static MonsterTeam monsterTeam;
     private static BulletManager bulletManager;
     private static ArrayList<Thread> localCreatureThreads;
+    private static Thread bulletManagerThread;
     private static boolean isFirstBullet = true;
 
     public Battlefield() {
@@ -154,7 +155,7 @@ public class Battlefield {
         }
     }
 
-    public void startLocalCreatureThreads(Player player) {
+    public ArrayList<Thread> startLocalCreatureThreads(Player player) {
         if(player == Player.PLAYER_1) {
             ArrayList<Human> humans = humanTeam.getTeamMembers();
             for (Human human : humans) {
@@ -170,14 +171,16 @@ public class Battlefield {
                 localCreatureThreads.add(monsterThread);
             }
         }
+        return localCreatureThreads;
+    }
+
+    public Thread startLocalBulletManagerThreads() {
+        Thread bulletManagerThread = new Thread(bulletManager);
+        bulletManagerThread.start();
+        return bulletManagerThread;
     }
 
     public void addBullet(Bullet bullet) {
-        if (isFirstBullet == true) {
-            Thread bulletManagerThread = new Thread(bulletManager);
-            bulletManagerThread.start();
-            isFirstBullet = false;
-        }
         bulletManager.addBullet(bullet);
     }
 
@@ -201,6 +204,16 @@ public class Battlefield {
     }
 
     public void clearCreatureGrids() {
-        creatureGrids = new Creature[this.rows][this.columns];
+        creatureGrids = null;
+    }
+
+    public void destroyAllCreatures() {
+        humanTeam = TeamBuilder.buildHumanTeam();
+        monsterTeam = TeamBuilder.buildMonsterTeam(Configuration.DEFAULT_MINION_NUMS);
+        localCreatureThreads = new ArrayList<>();
+    }
+
+    public void destroyAllBullets() {
+        bulletManager = new BulletManager();
     }
 }

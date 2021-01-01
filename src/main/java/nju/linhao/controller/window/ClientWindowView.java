@@ -136,6 +136,6 @@ public class ClientWindowView {
             }
         });
 
-        System.out.println("333");
+//        System.out.println("333");
     }
 }

@@ -102,6 +102,8 @@ public class BattlefieldController {
 
     public void clear() {
         battlefield.clearCreatureGrids();
+        battlefield.destroyAllCreatures();
+        battlefield.destroyAllBullets();
         Platform.runLater(() -> battlefieldView.clearMainCanvas());
         curFormation = Formation.LONG_SNAKE_FORMATION;
         curFormationIdx = 0;
@@ -184,5 +186,10 @@ public class BattlefieldController {
 
     public void interruptThreads() {
         battlefield.endLocalCreatureThreads(curPlayer);
+    }
+
+    public void destroyEverything() {
+        battlefield.destroyAllCreatures();
+        battlefield.destroyAllBullets();
     }
 }
