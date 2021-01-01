@@ -68,6 +68,17 @@ public class BattlefieldController {
         curFormation = formation;
     }
 
+
+    public int getLocalCreaturesAliveCnt(){
+        if(curPlayer == Player.PLAYER_1){
+            return battlefield.getHumanTeam().getTeamMembers().size();
+        } else if(curPlayer == Player.PLAYER_2){
+            return battlefield.getMonsterTeam().getTeamMembers().size();
+        } else {
+            return -1;
+        }
+    }
+
     public void setDefaultSelectedCreature() {
         if (curPlayer == Player.PLAYER_1) {
             curSelectedCreature = battlefield.getHumanTeam().getGrandpa();
@@ -83,10 +94,14 @@ public class BattlefieldController {
             Platform.runLater(() -> battlefieldView.paintLocalMainCanvas(battlefield, curPlayer));
         } else if (localGameStatus == LocalGameStatus.RUN) {
             Platform.runLater(() -> battlefieldView.paintBothMainCanvas(battlefield, curPlayer));
+        } else if(localGameStatus == LocalGameStatus.WE_LOSE
+                || localGameStatus == LocalGameStatus.WE_WIN) {
+            Platform.runLater(() -> battlefieldView.paintEndMainCanvas(LocalGameController.getInstance().getStatusImg()));
         }
     }
 
     public void clear() {
+        battlefield.clearCreatureGrids();
         Platform.runLater(() -> battlefieldView.clearMainCanvas());
         curFormation = Formation.LONG_SNAKE_FORMATION;
         curFormationIdx = 0;
@@ -165,5 +180,9 @@ public class BattlefieldController {
                 return curSelectedCreature;
             }
         }
+    }
+
+    public void interruptThreads() {
+        battlefield.endLocalCreatureThreads(curPlayer);
     }
 }

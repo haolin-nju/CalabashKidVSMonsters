@@ -47,7 +47,7 @@ public abstract class Creature implements Runnable, Serializable {
 
         this.name = name;
         this.belongsTo = belongsTo;
-        this.img = ImageLoader.loadImg(this.name);
+        this.img = ImageLoader.getInstance().loadCreatureImg(this.name);
         this.health = health;
         this.damage = damage;
         this.defense = defense;
@@ -231,6 +231,10 @@ public abstract class Creature implements Runnable, Serializable {
                     e.printStackTrace();
                 }
             }
+        }
+        if(this.creatureStatus == CreatureStatus.DEAD
+                && LocalGameController.getInstance().localAliveCreaturesDec() <= 0){
+            LocalGameController.getInstance().endGame(LocalGameStatus.WE_LOSE);
         }
     }
 

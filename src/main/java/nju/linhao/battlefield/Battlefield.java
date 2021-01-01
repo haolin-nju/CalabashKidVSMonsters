@@ -21,13 +21,14 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Battlefield implements Runnable {
+public class Battlefield {
     private static int columns;
     private static int rows;
     private static Creature[][] creatureGrids;
     private static HumanTeam humanTeam;
     private static MonsterTeam monsterTeam;
     private static BulletManager bulletManager;
+    private static ArrayList<Thread> localCreatureThreads;
     private static boolean isFirstBullet = true;
 
     public Battlefield() {
@@ -46,6 +47,8 @@ public class Battlefield implements Runnable {
 
         humanTeam = TeamBuilder.buildHumanTeam();
         monsterTeam = TeamBuilder.buildMonsterTeam(Configuration.DEFAULT_MINION_NUMS);
+
+        localCreatureThreads = new ArrayList<>();
 
         bulletManager = new BulletManager();
     }
@@ -157,12 +160,14 @@ public class Battlefield implements Runnable {
             for (Human human : humans) {
                 Thread humanThread = new Thread(human);
                 humanThread.start();
+                localCreatureThreads.add(humanThread);
             }
         } else if(player == Player.PLAYER_2) {
             ArrayList<Monster> monsters = monsterTeam.getTeamMembers();
             for (Monster monster : monsters) {
                 Thread monsterThread = new Thread(monster);
                 monsterThread.start();
+                localCreatureThreads.add(monsterThread);
             }
         }
     }
@@ -180,9 +185,22 @@ public class Battlefield implements Runnable {
         return bulletManager;
     }
 
-    @Override
-    public void run() {
-
+    // 结束游戏相关逻辑
+    public void endLocalCreatureThreads(Player player){
+        if(player == Player.PLAYER_1) {
+            for(Thread humanThread : localCreatureThreads) {
+                while(!humanThread.isInterrupted()) {}// 线程没有sleep的时候反复执行
+                humanThread.interrupt();
+            }
+        } else if(player == Player.PLAYER_2) {
+            for(Thread monsterThread : localCreatureThreads) {
+                while(!monsterThread.isInterrupted()) {}// 线程没有sleep的时候反复执行
+                monsterThread.interrupt();
+            }
+        }
     }
 
+    public void clearCreatureGrids() {
+        creatureGrids = new Creature[this.rows][this.columns];
+    }
 }

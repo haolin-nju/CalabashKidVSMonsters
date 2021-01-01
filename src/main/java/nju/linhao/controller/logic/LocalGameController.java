@@ -1,6 +1,7 @@
 package main.java.nju.linhao.controller.logic;
 
 import javafx.application.HostServices;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
@@ -16,8 +17,10 @@ import main.java.nju.linhao.exception.OutofRangeException;
 import main.java.nju.linhao.team.HumanTeam;
 import main.java.nju.linhao.team.MonsterTeam;
 import main.java.nju.linhao.team.Team;
+import main.java.nju.linhao.utils.ImageLoader;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 
 public class LocalGameController {
@@ -32,6 +35,8 @@ public class LocalGameController {
     private BattlefieldController battlefieldController;
     private NetworkController networkController;
     private Thread threadBattleField;
+    private int localCreaturesAliveCnt;
+    private Image statusImg;
 
     private static LocalGameController localGameController = new LocalGameController();
 
@@ -97,7 +102,28 @@ public class LocalGameController {
                 } else {
                     System.err.println("未定义的状态机！原状态：" + currStatus + "目标状态：RUN");
                 }
-                // TODO: add more state machine
+                break;
+            case WE_LOSE:
+                if (currStatus == LocalGameStatus.RUN || currStatus == LocalGameStatus.PAUSE){
+                    currStatus = LocalGameStatus.WE_LOSE;
+                } else {
+                    System.err.println("未定义的状态机！原状态：" + currStatus + "目标状态：WE_LOSE");
+                }
+                break;
+            case WE_WIN:
+                if (currStatus == LocalGameStatus.RUN || currStatus == LocalGameStatus.PAUSE){
+                    currStatus = LocalGameStatus.WE_WIN;
+                } else {
+                    System.err.println("未定义的状态机！原状态：" + currStatus + "目标状态：WE_WIN");
+                }
+                break;
+            case END:
+                if(currStatus == LocalGameStatus.WE_LOSE || currStatus == LocalGameStatus.WE_WIN) {
+                    currStatus = LocalGameStatus.END;
+                } else {
+                    System.err.println("未定义的状态机！原状态：" + currStatus + "目标状态：END" );
+                }
+                break;
             default:
                 break;
 
@@ -113,22 +139,32 @@ public class LocalGameController {
 
     public void resetGame() {
         mainWindowView.logMessages("重置游戏！！");
-        currStatus = LocalGameStatus.READY;
+        setCurrentStatus(LocalGameStatus.READY);
     }
 
     public void pauseGame() {
         mainWindowView.logMessages("暂停游戏！！");
-        currStatus = LocalGameStatus.PAUSE;
+        setCurrentStatus(LocalGameStatus.PAUSE);
     }
 
     public void continueGame() {
         mainWindowView.logMessages("继续游戏！！");
-        currStatus = LocalGameStatus.RUN;
+        setCurrentStatus(LocalGameStatus.RUN);
     }
 
-    public void endGame() {
-        mainWindowView.logMessages("停止游戏！");
-        currStatus = LocalGameStatus.END;
+    public void endGame(LocalGameStatus localGameStatus) {
+        mainWindowView.logMessages("游戏结束！");
+        setCurrentStatus(localGameStatus);
+        statusImg = ImageLoader.getInstance().loadGameStatusImg(currStatus);
+        battlefieldController.repaint();
+        if(localGameStatus == LocalGameStatus.WE_LOSE) {
+            try {
+                networkController.sendMessage(MessageType.SOMEONE_LOSE);
+            } catch (IOException e) {
+                requestLogMessages("失败信息没有被另一端接收！");
+            }
+        }
+        battlefieldController.interruptThreads();//中止所有线程，包括自己
     }
 
     // Battlefield Logic
@@ -150,8 +186,19 @@ public class LocalGameController {
             mainWindowView.logMessages("您还可以按'⬅''➡'键切换阵型！");
             battlefieldController.repaint();
             battlefieldController.setDefaultSelectedCreature();
+            localCreaturesAliveCnt = battlefieldController.getLocalCreaturesAliveCnt();
+            if(localCreaturesAliveCnt == -1){
+                mainWindowView.logMessages("初始化的本地生物数量有误！请检查！");
+            }
         });
         clientStage.show();
+    }
+
+    public synchronized int localAliveCreaturesDec() {
+        if(localCreaturesAliveCnt > 0){
+            --localCreaturesAliveCnt;
+        }
+        return localCreaturesAliveCnt;
     }
 
     public void requestNetworkController(MessageType messageType, String destIp) {
@@ -174,6 +221,10 @@ public class LocalGameController {
 
     public BattlefieldController getBattlefieldController() {
         return battlefieldController;
+    }
+
+    public Image getStatusImg(){
+        return statusImg;
     }
 
 
@@ -237,6 +288,10 @@ public class LocalGameController {
         // TODO: Mouse click event handle, including select a creature or attack. You can use Battlefirld.getCreatureFromPos() and utilize 泛型
         if(currStatus == LocalGameStatus.RUN)
             battlefieldController.requestMouseClick(clickPosX, clickPosY, localPlayer);
+        else if(currStatus == LocalGameStatus.WE_LOSE || currStatus == LocalGameStatus.WE_WIN){
+            setCurrentStatus(LocalGameStatus.END);
+            battlefieldController.clear();
+        }
     }
 
     public Formation requestGetTeamFormation() {

@@ -130,6 +130,9 @@ public class NetworkController implements Runnable {
             case BULLET_DESTROY:// for consensus, always the attacker destroy the bullets
                 LocalGameController.getInstance().requestLocalBulletDestroy((Bullet) msgContent);
                 break;
+            case SOMEONE_LOSE:// for game logic
+                LocalGameController.getInstance().endGame(LocalGameStatus.WE_WIN);
+                break;
             default:
         }
     }

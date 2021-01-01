@@ -11,7 +11,9 @@ public enum MessageType {
     CREATURE_ATTACK("CREATURE_ATTACK"),
     CREATURE_INJURED("CREATURE_INJURED"),
 
-    BULLET_DESTROY("BULLET_DESTROY");
+    BULLET_DESTROY("BULLET_DESTROY"),
+
+    SOMEONE_LOSE("SOMEONE_LOSE");
 
     private String description;
 

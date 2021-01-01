@@ -15,6 +15,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.MenuItem;
 
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
 import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -27,6 +28,7 @@ import main.java.nju.linhao.creature.Creature;
 import main.java.nju.linhao.creature.Human;
 import main.java.nju.linhao.creature.Monster;
 import main.java.nju.linhao.enums.CreatureStatus;
+import main.java.nju.linhao.enums.LocalGameStatus;
 import main.java.nju.linhao.enums.Player;
 import main.java.nju.linhao.enums.SelectionStatus;
 import main.java.nju.linhao.exception.OutofRangeException;
@@ -158,7 +160,8 @@ public class MainWindowView {
         continueMenuItem.setDisable(true);
         pauseMenuItem.setDisable(true);
         stopMenuItem.setDisable(true);
-        LocalGameController.getInstance().endGame();
+        LocalGameController.getInstance().endGame(LocalGameStatus.WE_LOSE);
+
     }
 
 
@@ -199,6 +202,14 @@ public class MainWindowView {
         paintBullets(humanBullets, curPlayer == Player.PLAYER_1);
         LinkedList<MonsterBullet> monsterBullets = battlefield.getBulletManager().getMonsterBullets();
         paintBullets(monsterBullets, curPlayer == Player.PLAYER_2);
+    }
+
+    public void paintEndMainCanvas(Image statusImg){
+        gc.drawImage(statusImg,
+                204,
+                198,
+                360,
+                120);
     }
 
     private void paintCreatures(ArrayList<? extends Creature> creatures, boolean isCurrentPlayer) {
