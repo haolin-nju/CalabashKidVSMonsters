@@ -188,21 +188,6 @@ public class Battlefield {
         return bulletManager;
     }
 
-    // 结束游戏相关逻辑
-    public void endLocalCreatureThreads(Player player){
-        if(player == Player.PLAYER_1) {
-            for(Thread humanThread : localCreatureThreads) {
-                while(!humanThread.isInterrupted()) {}// 线程没有sleep的时候反复执行
-                humanThread.interrupt();
-            }
-        } else if(player == Player.PLAYER_2) {
-            for(Thread monsterThread : localCreatureThreads) {
-                while(!monsterThread.isInterrupted()) {}// 线程没有sleep的时候反复执行
-                monsterThread.interrupt();
-            }
-        }
-    }
-
     public void clearCreatureGrids() {
         creatureGrids = null;
     }

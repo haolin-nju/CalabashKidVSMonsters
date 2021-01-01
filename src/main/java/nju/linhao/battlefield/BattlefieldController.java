@@ -184,12 +184,4 @@ public class BattlefieldController {
         }
     }
 
-    public void interruptThreads() {
-        battlefield.endLocalCreatureThreads(curPlayer);
-    }
-
-    public void destroyEverything() {
-        battlefield.destroyAllCreatures();
-        battlefield.destroyAllBullets();
-    }
 }

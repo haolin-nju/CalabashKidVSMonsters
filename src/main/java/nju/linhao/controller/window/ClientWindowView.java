@@ -62,7 +62,7 @@ public class ClientWindowView {
     void readyToFightButtonOnClicked(MouseEvent event) {
         String srcIp = LocalGameController.getInstance().getLocalIp();
         LocalGameController.getInstance().setCurrentStatus(LocalGameStatus.CONNECTING);
-        LocalGameController.getInstance().requestNetworkController(MessageType.CLIENT_READY, destIp);
+        LocalGameController.getInstance().requestNetworkController(destIp);
         LocalGameController.getInstance().setCurrentStatus(LocalGameStatus.READY);
         ((Stage) readyToFightButton.getScene().getWindow()).close();
     }

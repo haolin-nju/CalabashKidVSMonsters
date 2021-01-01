@@ -14,10 +14,12 @@ import main.java.nju.linhao.controller.window.MainWindowView;
 import main.java.nju.linhao.creature.Creature;
 import main.java.nju.linhao.enums.*;
 import main.java.nju.linhao.exception.OutofRangeException;
+import main.java.nju.linhao.io.Recorder;
 import main.java.nju.linhao.team.HumanTeam;
 import main.java.nju.linhao.team.MonsterTeam;
 import main.java.nju.linhao.team.Team;
 import main.java.nju.linhao.utils.ImageLoader;
+import main.java.nju.linhao.utils.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,6 +42,8 @@ public class LocalGameController {
     private int localCreaturesAliveCnt;
     private boolean isOtherLost;
     private Image statusImg;
+    private boolean isLocalServer;
+    private Recorder recorder;
 
     private static LocalGameController localGameController = new LocalGameController();
 
@@ -69,6 +73,7 @@ public class LocalGameController {
         currStatus = LocalGameStatus.INIT;
         localPlayer = Player.PLAYER_1;
         allThreads = new ArrayList<>();
+        isLocalServer = false;
     }
 
     public LocalGameStatus getCurrentStatus() {
@@ -79,7 +84,9 @@ public class LocalGameController {
         // state machine
         switch (status) {
             case INIT:
-                if (currStatus == LocalGameStatus.END || currStatus == LocalGameStatus.CONNECTING) {
+                if (currStatus == LocalGameStatus.INIT
+                        || currStatus == LocalGameStatus.END
+                        || currStatus == LocalGameStatus.CONNECTING) {
                     currStatus = LocalGameStatus.INIT;
                 } else {
                     System.err.println("未定义的状态机！原状态：" + currStatus + "目标状态：INIT");
@@ -116,6 +123,7 @@ public class LocalGameController {
             case WE_WIN:
                 if (currStatus == LocalGameStatus.RUN || currStatus == LocalGameStatus.PAUSE){
                     currStatus = LocalGameStatus.WE_WIN;
+                    recorder.writeLog();
                 } else {
                     System.err.println("未定义的状态机！原状态：" + currStatus + "目标状态：WE_WIN");
                 }
@@ -134,6 +142,7 @@ public class LocalGameController {
 
     // Basic Game Logic
     public void newGame() {
+        setCurrentStatus(LocalGameStatus.INIT);
         getReady();
         mainWindowView.logMessages("开始新游戏！");
     }
@@ -153,7 +162,7 @@ public class LocalGameController {
         setCurrentStatus(LocalGameStatus.RUN);
     }
 
-    public synchronized void endGame(LocalGameStatus localGameStatus) {
+    public void endGame(LocalGameStatus localGameStatus) {
         mainWindowView.logMessages("游戏结束！");
         setCurrentStatus(localGameStatus);
         if(localGameStatus == LocalGameStatus.WE_LOSE) {
@@ -171,6 +180,7 @@ public class LocalGameController {
             Thread curThread = iterator.next();
             while(!curThread.isInterrupted()){}
             curThread.interrupt();
+            iterator.remove();
         }
         // 重新初始化所有不可重用的变量
 
@@ -193,18 +203,24 @@ public class LocalGameController {
         clientStage.getIcons().add(localIcon);
         clientStage.setResizable(false);
         clientStage.setOnHidden(event -> {
-            if (localPlayer == Player.PLAYER_1) {
-                mainWindowView.logMessages("本机阵营：人类阵营");
-            } else {
-                mainWindowView.logMessages("本机阵营：妖怪阵营");
-            }
-            mainWindowView.logMessages("您还可以按'⬅''➡'键切换阵型！");
-            battlefieldController.repaint();
-            battlefieldController.setDefaultSelectedCreature();
-            localCreaturesAliveCnt = battlefieldController.getLocalCreaturesAliveCnt();
-            isOtherLost = false;
-            if(localCreaturesAliveCnt == -1){
-                mainWindowView.logMessages("初始化的本地生物数量有误！请检查！");
+            if(currStatus == LocalGameStatus.READY) {
+                if (localPlayer == Player.PLAYER_1) {
+                    mainWindowView.logMessages("本机阵营：人类阵营");
+                } else {
+                    mainWindowView.logMessages("本机阵营：妖怪阵营");
+                }
+                mainWindowView.logMessages("您还可以按'⬅''➡'键切换阵型！");
+                battlefieldController.repaint();
+                battlefieldController.setDefaultSelectedCreature();
+                localCreaturesAliveCnt = battlefieldController.getLocalCreaturesAliveCnt();
+                isOtherLost = false;
+                if (localCreaturesAliveCnt == -1) {
+                    mainWindowView.logMessages("初始化的本地生物数量有误！请检查！");
+                }
+                recorder = new Recorder();
+                if(isLocalServer == true){
+                    recorder.recordLog(new Log(LogType.FORMATION, battlefieldController.getFormation().toString()));
+                }
             }
         });
         clientStage.show();
@@ -217,7 +233,7 @@ public class LocalGameController {
         return localCreaturesAliveCnt;
     }
 
-    public void requestNetworkController(MessageType messageType, String destIp) {
+    public void requestNetworkController(String destIp) {
         networkController.setDestIp(destIp);
         Thread networkThread = new Thread(networkController);
         networkThread.start();
@@ -246,6 +262,10 @@ public class LocalGameController {
 
     public boolean queryIsOtherLost(){
         return this.isOtherLost;
+    }
+
+    public void setIsLocalServer(boolean isLocalServer){
+        this.isLocalServer = isLocalServer;
     }
 
 

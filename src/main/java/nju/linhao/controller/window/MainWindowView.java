@@ -123,7 +123,7 @@ public class MainWindowView {
 
     @FXML
     void openMenuItemOnAction(ActionEvent event) {
-        Restorer.restore();
+        Restorer.getInstance().restore();
     }
 
 //    @FXML

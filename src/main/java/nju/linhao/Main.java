@@ -64,7 +64,7 @@ public class Main extends Application {
                 case L:
                     if (curGameStatus == LocalGameStatus.END
                             || curGameStatus == LocalGameStatus.READY) {
-                        Restorer.restore();
+                        Restorer.getInstance().restore();
                     }
                     break;
                 case LEFT:

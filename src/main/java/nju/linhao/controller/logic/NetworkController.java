@@ -84,6 +84,7 @@ public class NetworkController implements Runnable {
         }
         connectionEstablished = true;
         LocalGameController.getInstance().requestLogMessages("本机同时作为服务器进行游戏");
+        LocalGameController.getInstance().setIsLocalServer(true);
     }
 
     private Message recvMessage() throws IOException, ClassNotFoundException {
