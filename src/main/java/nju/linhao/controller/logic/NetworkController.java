@@ -3,9 +3,6 @@ package main.java.nju.linhao.controller.logic;
 import main.java.nju.linhao.bullet.Bullet;
 import main.java.nju.linhao.creature.Creature;
 import main.java.nju.linhao.enums.*;
-import main.java.nju.linhao.team.HumanTeam;
-import main.java.nju.linhao.team.MonsterTeam;
-import main.java.nju.linhao.team.Team;
 import main.java.nju.linhao.utils.Configuration;
 import main.java.nju.linhao.utils.Message;
 
@@ -77,6 +74,8 @@ public class NetworkController implements Runnable {
     }
 
     private void serveAsServer() throws IOException, ClassNotFoundException, InterruptedException {
+        // 设置本地记录器
+        LocalGameController.getInstance().setIsLocalServer(true);
         // 建立连接
         ServerSocket serverSocket = new ServerSocket(Configuration.DEFAULT_PORT);
         while(socketToClient == null){
@@ -84,7 +83,6 @@ public class NetworkController implements Runnable {
         }
         connectionEstablished = true;
         LocalGameController.getInstance().requestLogMessages("本机同时作为服务器进行游戏");
-        LocalGameController.getInstance().setIsLocalServer(true);
     }
 
     private Message recvMessage() throws IOException, ClassNotFoundException {
@@ -116,6 +114,8 @@ public class NetworkController implements Runnable {
                 LocalGameController.getInstance().requestCheckLocalPlayer(player);
                 LocalGameController.getInstance().setCurrentStatus(LocalGameStatus.RUN);
                 sendMessage(MessageType.TEAM_CREATE, LocalGameController.getInstance().requestGetTeamFormation());
+                LocalGameController.getInstance().requestRecordLog(LogType.TEAM_CREATE,
+                        LocalGameController.getInstance().getBattlefieldController().getFormation());
                 connectionEstablished = true;
                 break;
             case TEAM_CREATE: //收到对方的创建对象的请求
@@ -195,16 +195,6 @@ public class NetworkController implements Runnable {
             }
         } catch (IOException | ClassNotFoundException | InterruptedException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (isCurrentClientServer) {
-                    socketToClient.close();
-                } else {
-                    socketToServer.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 }

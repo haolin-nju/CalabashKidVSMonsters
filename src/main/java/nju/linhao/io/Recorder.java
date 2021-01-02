@@ -1,8 +1,8 @@
 package main.java.nju.linhao.io;
 
+import main.java.nju.linhao.creature.Human;
+import main.java.nju.linhao.enums.LogType;
 import main.java.nju.linhao.utils.Configuration;
-import main.java.nju.linhao.utils.Log;
-import main.java.nju.linhao.utils.Message;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -13,66 +13,124 @@ import java.util.concurrent.locks.ReentrantLock;
 
 // 注意：所有记录只有服务器负责保存！
 public class Recorder {
-    private File logFile;
-    private String logDirectory;
-    private static LinkedList<Log> logs;
-
+    private LinkedList<Log> logs;
     private ReentrantLock logsLock;
 
-    public Recorder(){
+    private File logFile;
+    private String logDirectory;
+
+    private long timeMilliseconds;
+    private ReentrantLock timeMillisecondsLock;
+
+    ObjectOutputStream out = null;
+
+    public Recorder() {
         this(Configuration.DEFAULT_RECORD_DIR_PATH);
     }
 
-    public Recorder(String path){
+    public Recorder(String path) {
+        this.logs = new LinkedList<>();
+        this.logsLock = new ReentrantLock();
         this.logDirectory = path;
+        timeMilliseconds = 0;
+        timeMillisecondsLock = new ReentrantLock();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
         this.logFile = new File(this.logDirectory, simpleDateFormat.format(new Date()) + ".txt");
-        try{
-            if(!logFile.getParentFile().exists()){
+        try {
+            if (!logFile.getParentFile().exists()) {
                 logFile.getParentFile().mkdir();
             }
-            if(!logFile.exists()){
+            if (!logFile.exists()) {
                 logFile.createNewFile();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        logsLock = new ReentrantLock();
-        logs = new LinkedList<>();
     }
 
     public void recordLog(Log log) {
-        logsLock.lock();
-        try{
-            logs.add(log);
-        } finally {
-            logsLock.unlock();
-        }
-    }
-
-    public void recordLogs(LinkedList<Log> logLinkedList){
-        logsLock.lock();
-        try{
-            logs.addAll(logLinkedList);
-        } finally {
-            logsLock.unlock();
-        }
-    }
-
-    public void writeLog() {
-        logsLock.lock();
+        timeMillisecondsLock.lock();
         try {
-            OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(logFile), "UTF-8");
-            Iterator<Log> logIterator = logs.iterator();
-            while (logIterator.hasNext()) {
-                Log nextLog = logIterator.next();
-                out.write(nextLog.toString());
-                logIterator.remove();
+            if (timeMilliseconds == 0) {
+                timeMilliseconds = System.currentTimeMillis();
+            } else {
+                long currentTimeMilliseconds = System.currentTimeMillis();
+                log.setTimeMilliseconds(currentTimeMilliseconds - timeMilliseconds);
+                timeMilliseconds = currentTimeMilliseconds;
+            }
+        } finally {
+            timeMillisecondsLock.unlock();
+        }
+        try {
+            if (out == null) {
+                out = new ObjectOutputStream(new FileOutputStream(logFile, true));
+            }
+            out.writeObject(log);
+            out.flush();
+            if (log.getLogType() == LogType.SOMEONE_LOSE) {
+                out.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            logsLock.unlock();
         }
     }
 }
+
+//    public void recordLog(Log log) {
+//        timeMillisecondsLock.lock();
+//        try {
+//            if (timeMilliseconds == 0) {
+//                timeMilliseconds = System.currentTimeMillis();
+//            } else {
+//                long currentTimeMilliseconds = System.currentTimeMillis();
+//                log.setTimeMilliseconds(currentTimeMilliseconds - timeMilliseconds);
+//                timeMilliseconds = currentTimeMilliseconds;
+//            }
+//        } finally {
+//            timeMillisecondsLock.unlock();
+//        }
+//        logsLock.lock();
+//        try{
+//            logs.add(log);
+//        } finally{
+//            logsLock.unlock();
+//        }
+//    }
+//
+//    public void writeLog() {
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+//        this.logFile = new File(this.logDirectory, simpleDateFormat.format(new Date()) + ".txt");
+//        try{
+//            if(!logFile.getParentFile().exists()){
+//                logFile.getParentFile().mkdir();
+//            }
+//            if(!logFile.exists()){
+//                logFile.createNewFile();
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        logsLock.lock();
+//        try {
+//            out = new ObjectOutputStream(new FileOutputStream(logFile, true));
+//            Iterator<Log> iterator = logs.iterator();
+//            while(iterator.hasNext()){
+//                Log log = iterator.next();
+//                out.writeObject(log);
+//                out.flush();
+//                iterator.remove();
+//            }
+//        } catch(IOException e) {
+//            e.printStackTrace();
+//        }finally{
+//            logsLock.unlock();
+//            if(out!=null) {
+//                try {
+//                    out.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//    }
+//}

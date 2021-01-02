@@ -60,6 +60,7 @@ public class ClientWindowView {
 
     @FXML
     void readyToFightButtonOnClicked(MouseEvent event) {
+        LocalGameController.getInstance().requestBuildRecorder();
         String srcIp = LocalGameController.getInstance().getLocalIp();
         LocalGameController.getInstance().setCurrentStatus(LocalGameStatus.CONNECTING);
         LocalGameController.getInstance().requestNetworkController(destIp);

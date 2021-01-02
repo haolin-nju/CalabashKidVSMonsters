@@ -7,7 +7,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
@@ -19,8 +18,11 @@ import main.java.nju.linhao.enums.CreatureSwitchRequest;
 import main.java.nju.linhao.enums.Direction;
 import main.java.nju.linhao.enums.FormationRequest;
 import main.java.nju.linhao.enums.LocalGameStatus;
+import main.java.nju.linhao.utils.Displayer;
 import main.java.nju.linhao.io.Restorer;
-import sun.nio.ch.Net;
+import main.java.nju.linhao.io.Log;
+
+import java.util.LinkedList;
 
 public class Main extends Application {
 
@@ -42,10 +44,11 @@ public class Main extends Application {
 
         Image icon = new Image(curClass.getResourceAsStream("/icon/CalabashKidsVSMonstersIcon.png"));
         MainWindowView mainWindowView = mainWindowLoader.getController();
+        BattlefieldController battlefieldController = new BattlefieldController(new Battlefield(), mainWindowView);
         LocalGameController.getInstance().init(
                 mainWindowView,
                 clientWindowLoader.getController(),
-                new BattlefieldController(new Battlefield(), mainWindowView),
+                battlefieldController,
                 new NetworkController(),
                 clientScene,
                 icon,
@@ -55,16 +58,20 @@ public class Main extends Application {
             LocalGameStatus curGameStatus = LocalGameController.getInstance().getCurrentStatus();
             switch (event.getCode()) {
                 case SPACE:
-                    if (curGameStatus == LocalGameStatus.END) {
-                        LocalGameController.getInstance().resetGame();
-                    } else if (curGameStatus == LocalGameStatus.INIT) {
+                    if (curGameStatus == LocalGameStatus.INIT) {
                         LocalGameController.getInstance().newGame();
                     }
+//                    else if (curGameStatus == LocalGameStatus.END) {
+//                        LocalGameController.getInstance().resetGame();
+//                    }
                     break;
                 case L:
                     if (curGameStatus == LocalGameStatus.END
-                            || curGameStatus == LocalGameStatus.READY) {
-                        Restorer.getInstance().restore();
+                            || curGameStatus == LocalGameStatus.INIT) {
+                        LinkedList<Log> logs = Restorer.getInstance().restore();
+                        Displayer.getInstance().init(new BattlefieldController(new Battlefield(), mainWindowView), logs);
+                        Thread displayThread = new Thread(Displayer.getInstance());
+                        displayThread.start();
                     }
                     break;
                 case LEFT:

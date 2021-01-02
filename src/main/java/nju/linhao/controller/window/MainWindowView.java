@@ -4,7 +4,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javafx.application.HostServices;
 import javafx.event.ActionEvent;
@@ -16,9 +15,9 @@ import javafx.scene.control.MenuItem;
 
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
-import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import main.java.nju.linhao.battlefield.Battlefield;
 import main.java.nju.linhao.bullet.Bullet;
 import main.java.nju.linhao.bullet.HumanBullet;
@@ -28,12 +27,13 @@ import main.java.nju.linhao.creature.Creature;
 import main.java.nju.linhao.creature.Human;
 import main.java.nju.linhao.creature.Monster;
 import main.java.nju.linhao.enums.CreatureStatus;
-import main.java.nju.linhao.enums.LocalGameStatus;
 import main.java.nju.linhao.enums.Player;
 import main.java.nju.linhao.enums.SelectionStatus;
 import main.java.nju.linhao.exception.OutofRangeException;
+import main.java.nju.linhao.utils.Displayer;
 import main.java.nju.linhao.io.Restorer;
 import main.java.nju.linhao.utils.Configuration;
+import main.java.nju.linhao.io.Log;
 
 import static main.java.nju.linhao.utils.Configuration.DEFAULT_BULLET_RADIUS;
 
@@ -61,8 +61,8 @@ public class MainWindowView {
     @FXML // fx:id="newGameMenuItem"
     private MenuItem newGameMenuItem; // Value injected by FXMLLoader
 
-    @FXML // fx:id="openMenuItem"
-    private MenuItem openMenuItem; // Value injected by FXMLLoader
+//    @FXML // fx:id="openMenuItem"
+//    private MenuItem openMenuItem; // Value injected by FXMLLoader
 
 //    @FXML // fx:id="continueMenuItem"
 //    private MenuItem continueMenuItem; // Value injected by FXMLLoader
@@ -76,8 +76,8 @@ public class MainWindowView {
     @FXML // fx:id="saveMenuItem"
     private MenuItem saveMenuItem; // Value injected by FXMLLoader
 
-    @FXML // fx:id="saveAsMenuItem"
-    private MenuItem saveAsMenuItem; // Value injected by FXMLLoader
+//    @FXML // fx:id="saveAsMenuItem"
+//    private MenuItem saveAsMenuItem; // Value injected by FXMLLoader
 
     @FXML // fx:id="quitMenuItem"
     private MenuItem quitMenuItem; // Value injected by FXMLLoader
@@ -121,10 +121,17 @@ public class MainWindowView {
         LocalGameController.getInstance().newGame();
     }
 
-    @FXML
-    void openMenuItemOnAction(ActionEvent event) {
-        Restorer.getInstance().restore();
+    public void setNewGameDisable() {
+        newGameMenuItem.setDisable(true);
     }
+//
+//    @FXML
+//    void openMenuItemOnAction(ActionEvent event) {
+//        LinkedList<Log> logs = Restorer.getInstance().restore();
+//        assert(logs != null);
+//        Displayer displayer = new Displayer(logs);
+//        displayer.display();
+//    }
 
 //    @FXML
 //    void continueMenuItemOnAction(ActionEvent event) {
@@ -142,17 +149,19 @@ public class MainWindowView {
 
     @FXML
     void quitMenuItemOnAction(ActionEvent event) {
+        ((Stage) mainCanvas.getScene().getWindow()).close();
         logMessages("退出游戏！");
     }
 
-    @FXML
-    void saveAsMenuItemOnAction(ActionEvent event) {
-        logMessages("保存为");
-    }
+//    @FXML
+//    void saveAsMenuItemOnAction(ActionEvent event) {
+//        logMessages("保存为");
+//    }
 
     @FXML
     void saveMenuItemOnAction(ActionEvent event) {
         logMessages("保存");
+        LocalGameController.getInstance().requestSaveRecord();
     }
 //
 //    @FXML
@@ -190,6 +199,18 @@ public class MainWindowView {
             ArrayList<Monster> monsters = battlefield.getMonsterTeam().getTeamMemebers();
             paintCreatures(monsters, true);
         }
+    }
+
+    public void paintBothMainCanvas(Battlefield battlefield){
+        gc.clearRect(0, 0, Configuration.CANVAS_WIDTH, Configuration.CANVAS_HEIGHT);
+        ArrayList<Human> humans = battlefield.getHumanTeam().getTeamMembers();
+        paintCreatures(humans, true);
+        ArrayList<Monster> monsters = battlefield.getMonsterTeam().getTeamMemebers();
+        paintCreatures(monsters, false);
+        LinkedList<HumanBullet> humanBullets = battlefield.getBulletDisplayer().getHumanBullets();
+        paintBullets(humanBullets, true);
+        LinkedList<MonsterBullet> monsterBullets = battlefield.getBulletDisplayer().getMonsterBullets();
+        paintBullets(monsterBullets, false);
     }
 
     public void paintBothMainCanvas(Battlefield battlefield, Player curPlayer) {
@@ -264,17 +285,19 @@ public class MainWindowView {
         } else {
             gc.setFill(Color.RED);
         }
-        for (Bullet bullet : bullets) {
-            double[] bulletPos = bullet.getPos();
-            gc.setStroke(Color.BLACK);
-            gc.strokeOval(bulletPos[0] - DEFAULT_BULLET_RADIUS,
-                    bulletPos[1] - DEFAULT_BULLET_RADIUS,
-                    2 * DEFAULT_BULLET_RADIUS,
-                    2 * DEFAULT_BULLET_RADIUS);
-            gc.fillOval(bulletPos[0] - DEFAULT_BULLET_RADIUS,
-                    bulletPos[1] - DEFAULT_BULLET_RADIUS,
-                    2 * DEFAULT_BULLET_RADIUS,
-                    2 * DEFAULT_BULLET_RADIUS);
+        synchronized (bullets) {
+            for (Bullet bullet : bullets) {
+                double[] bulletPos = bullet.getPos();
+                gc.setStroke(Color.BLACK);
+                gc.strokeOval(bulletPos[0] - DEFAULT_BULLET_RADIUS,
+                        bulletPos[1] - DEFAULT_BULLET_RADIUS,
+                        2 * DEFAULT_BULLET_RADIUS,
+                        2 * DEFAULT_BULLET_RADIUS);
+                gc.fillOval(bulletPos[0] - DEFAULT_BULLET_RADIUS,
+                        bulletPos[1] - DEFAULT_BULLET_RADIUS,
+                        2 * DEFAULT_BULLET_RADIUS,
+                        2 * DEFAULT_BULLET_RADIUS);
+            }
         }
         gc.restore();
     }
@@ -283,12 +306,12 @@ public class MainWindowView {
         // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert newGameMenuItem != null : "fx:id=\"newGameMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert openMenuItem != null : "fx:id=\"openMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+//        assert openMenuItem != null : "fx:id=\"openMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
 //        assert pauseMenuItem != null : "fx:id=\"pauseMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
 //        assert continueMenuItem != null : "fx:id=\"continueMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
 //        assert stopMenuItem != null : "fx:id=\"stopMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert saveMenuItem != null : "fx:id=\"saveMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert saveAsMenuItem != null : "fx:id=\"saveAsMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+//        assert saveAsMenuItem != null : "fx:id=\"saveAsMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert quitMenuItem != null : "fx:id=\"quitMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert instructionsMenuItem != null : "fx:id=\"instructionsMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert aboutMenuItem != null : "fx:id=\"aboutMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";

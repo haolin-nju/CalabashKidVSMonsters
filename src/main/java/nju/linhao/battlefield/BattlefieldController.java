@@ -100,6 +100,12 @@ public class BattlefieldController {
         }
     }
 
+    public synchronized void repaint(LocalGameStatus localGameStatus){
+        if(localGameStatus == LocalGameStatus.RUN || localGameStatus == LocalGameStatus.INIT) {
+            Platform.runLater(() -> battlefieldView.paintBothMainCanvas(battlefield));
+        }
+    }
+
     public void clear() {
         battlefield.clearCreatureGrids();
         battlefield.destroyAllCreatures();

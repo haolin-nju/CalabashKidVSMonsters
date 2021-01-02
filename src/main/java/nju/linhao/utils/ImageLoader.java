@@ -41,7 +41,9 @@ public class ImageLoader {
             creatureImgPath.put(Configuration.DEFAULT_SNAKE_ESSENCE_NAME, "/pictures/creatures/SnakeEssence.png");
             creatureImgPath.put(Configuration.DEFAULT_SCORPION_ESSENCE_NAME, "/pictures/creatures/ScorpionEssence.png");
             creatureImgPath.put(Configuration.DEFAULT_CENTIPEDE_ESSENCE_NAME, "/pictures/creatures/CentipedeEssence.png");
-            creatureImgPath.put(Configuration.DEFAULT_MINION_NAME, "/pictures/creatures/Minion.png");
+            for(int i=0;i<Configuration.DEFAULT_MINION_NUMS;++i) {
+                creatureImgPath.put(Configuration.DEFAULT_MINION_NAME + i, "/pictures/creatures/Minion.png");
+            }
         }
         Image creatureImg = new Image(ImageLoader.class.getResourceAsStream(creatureImgPath.get(name)));
         return creatureImg;

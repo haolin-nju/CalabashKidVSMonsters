@@ -1,29 +1,23 @@
 package main.java.nju.linhao.controller.logic;
 
 import javafx.application.HostServices;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import main.java.nju.linhao.battlefield.Battlefield;
 import main.java.nju.linhao.battlefield.BattlefieldController;
 import main.java.nju.linhao.bullet.Bullet;
-import main.java.nju.linhao.bullet.HumanBullet;
 import main.java.nju.linhao.controller.window.ClientWindowView;
 import main.java.nju.linhao.controller.window.MainWindowView;
 import main.java.nju.linhao.creature.Creature;
 import main.java.nju.linhao.enums.*;
 import main.java.nju.linhao.exception.OutofRangeException;
 import main.java.nju.linhao.io.Recorder;
-import main.java.nju.linhao.team.HumanTeam;
-import main.java.nju.linhao.team.MonsterTeam;
-import main.java.nju.linhao.team.Team;
 import main.java.nju.linhao.utils.ImageLoader;
-import main.java.nju.linhao.utils.Log;
+import main.java.nju.linhao.io.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 
 
@@ -32,6 +26,7 @@ public class LocalGameController {
     private Scene localClientScene;
     private Image localIcon;
     private Player localPlayer;
+    private Player otherPlayer;
     private Creature currCreatureSelected;
     private HostServices hostServices;
     private MainWindowView mainWindowView;
@@ -44,6 +39,7 @@ public class LocalGameController {
     private Image statusImg;
     private boolean isLocalServer;
     private Recorder recorder;
+
 
     private static LocalGameController localGameController = new LocalGameController();
 
@@ -88,6 +84,7 @@ public class LocalGameController {
                         || currStatus == LocalGameStatus.END
                         || currStatus == LocalGameStatus.CONNECTING) {
                     currStatus = LocalGameStatus.INIT;
+                    recorder = null;
                 } else {
                     System.err.println("未定义的状态机！原状态：" + currStatus + "目标状态：INIT");
                 }
@@ -123,7 +120,6 @@ public class LocalGameController {
             case WE_WIN:
                 if (currStatus == LocalGameStatus.RUN || currStatus == LocalGameStatus.PAUSE){
                     currStatus = LocalGameStatus.WE_WIN;
-                    recorder.writeLog();
                 } else {
                     System.err.println("未定义的状态机！原状态：" + currStatus + "目标状态：WE_WIN");
                 }
@@ -152,15 +148,15 @@ public class LocalGameController {
         setCurrentStatus(LocalGameStatus.READY);
     }
 
-    public void pauseGame() {
-        mainWindowView.logMessages("暂停游戏！！");
-        setCurrentStatus(LocalGameStatus.PAUSE);
-    }
-
-    public void continueGame() {
-        mainWindowView.logMessages("继续游戏！！");
-        setCurrentStatus(LocalGameStatus.RUN);
-    }
+//    public void pauseGame() {
+//        mainWindowView.logMessages("暂停游戏！！");
+//        setCurrentStatus(LocalGameStatus.PAUSE);
+//    }
+//
+//    public void continueGame() {
+//        mainWindowView.logMessages("继续游戏！！");
+//        setCurrentStatus(LocalGameStatus.RUN);
+//    }
 
     public void endGame(LocalGameStatus localGameStatus) {
         mainWindowView.logMessages("游戏结束！");
@@ -171,25 +167,15 @@ public class LocalGameController {
             } catch (IOException e) {
                 requestLogMessages("失败信息没有被另一端接收！");
             }
+            requestRecordLog(LogType.SOMEONE_LOSE, null);
         }
         statusImg = ImageLoader.getInstance().loadGameStatusImg(currStatus);
         battlefieldController.repaint();
-        // 清除所有线程
-        Iterator<Thread> iterator = allThreads.iterator();
-        while(iterator.hasNext()){
-            Thread curThread = iterator.next();
-            while(!curThread.isInterrupted()){}
-            curThread.interrupt();
-            iterator.remove();
-        }
-        // 重新初始化所有不可重用的变量
-
-//        battlefieldController.destroyEverything();
-//        battlefieldController.interruptThreads();//中止所有生物线程
     }
 
     public void requestOtherLose() {
         isOtherLost = true;
+        otherRequestRecordLog(LogType.SOMEONE_LOSE, null);
     }
 
     // Battlefield Logic
@@ -206,20 +192,19 @@ public class LocalGameController {
             if(currStatus == LocalGameStatus.READY) {
                 if (localPlayer == Player.PLAYER_1) {
                     mainWindowView.logMessages("本机阵营：人类阵营");
+                    otherPlayer = Player.PLAYER_2;
                 } else {
                     mainWindowView.logMessages("本机阵营：妖怪阵营");
+                    otherPlayer = Player.PLAYER_1;
                 }
                 mainWindowView.logMessages("您还可以按'⬅''➡'键切换阵型！");
+                mainWindowView.setNewGameDisable();
                 battlefieldController.repaint();
                 battlefieldController.setDefaultSelectedCreature();
                 localCreaturesAliveCnt = battlefieldController.getLocalCreaturesAliveCnt();
                 isOtherLost = false;
                 if (localCreaturesAliveCnt == -1) {
                     mainWindowView.logMessages("初始化的本地生物数量有误！请检查！");
-                }
-                recorder = new Recorder();
-                if(isLocalServer == true){
-                    recorder.recordLog(new Log(LogType.FORMATION, battlefieldController.getFormation().toString()));
                 }
             }
         });
@@ -357,6 +342,7 @@ public class LocalGameController {
             System.err.println("意料之外的阵营！");
         }
         battlefieldController.repaint();
+        otherRequestRecordLog(LogType.TEAM_CREATE, formation);
     }
 
     public void requestStartCreatureAndBulletThreads() {
@@ -372,6 +358,7 @@ public class LocalGameController {
         } catch (IOException e) {
             requestLogMessages("当前移动没有被另一端接收！");
         }
+        requestRecordLog(LogType.CREATURE_MOVE, curSelectedCreature);
     }
 
     public void requestCreatureMove(Creature creature, Direction direction) {
@@ -382,16 +369,19 @@ public class LocalGameController {
         } catch (IOException e) {
             requestLogMessages("当前移动没有被另一端接收！");
         }
+        requestRecordLog(LogType.CREATURE_MOVE, creature);
     }
 
     public void requestOthersCreatureMove(Creature creature) {
         Battlefield battlefield = battlefieldController.getBattlefield();
+        Creature creatureToMove = null;
         synchronized (battlefield) {
-            Creature creatureToMove = battlefield.getOtherCreatureFromId(creature, localPlayer);
+            creatureToMove = battlefield.getOtherCreatureFromId(creature, localPlayer);
             int[] newPos = creature.getPos();
             creatureToMove.setPos(newPos[0], newPos[1]);
         }
         battlefieldController.repaint();
+        otherRequestRecordLog(LogType.CREATURE_MOVE, creatureToMove);
     }
 
     public void requestCreatureAttack(Bullet bullet) {
@@ -400,10 +390,12 @@ public class LocalGameController {
         } catch (IOException e){
             requestLogMessages("当前攻击没有被另一端接收！");
         }
+        requestRecordLog(LogType.BULLET_CREATE, bullet);// 记录生物攻击信息
     }
 
     public void requestOthersCreatureAttack(Bullet bullet){
         battlefieldController.getBattlefield().addBullet(bullet);
+        otherRequestRecordLog(LogType.BULLET_CREATE, bullet);
     }
 
     public void requestSendCreatureRemainHealth(Creature creature) {
@@ -412,6 +404,7 @@ public class LocalGameController {
         } catch (IOException e){
             requestLogMessages("当前伤害没有被另一端接收！");
         }
+//        requestRecordLog(LogType.CREATURE_INJURED, creature);
     }
 
     public void requestLocalCreatureRemainHealth(Creature creature) {
@@ -420,6 +413,7 @@ public class LocalGameController {
             Creature creatureToSetRemainHealth = battlefield.getLocalCreatureFromId(creature, localPlayer);
             double remainHealth = creature.getHealth();
             creatureToSetRemainHealth.setHealth(remainHealth);
+//            otherRequestRecordLog(LogType.CREATURE_INJURED, creature);
         }
     }
 
@@ -429,10 +423,12 @@ public class LocalGameController {
         }catch (IOException e){
             requestLogMessages("当前伤害没有被另一端接收！");
         }
+//        requestRecordLog(LogType.BULLET_DESTROY, bullet);
     }
 
     public void requestLocalBulletDestroy(Bullet bullet) {
         battlefieldController.getBattlefield().getBulletManager().removeBullet(bullet);
+//        otherRequestRecordLog(LogType.BULLET_DESTROY, bullet);
     }
 
     public void requestCheckLocalPlayer(Player player) {
@@ -446,5 +442,39 @@ public class LocalGameController {
                 }
             }
         }
+    }
+
+    public void requestBuildRecorder(){
+        if(recorder == null){
+            recorder = new Recorder();
+        }
+    }
+
+    public void requestRecordLog(LogType logType, Object logContent){
+        if(logType == LogType.CREATURE_MOVE){
+            Creature tempCreature = (Creature) logContent;
+            int[] posArray = tempCreature.getPos();
+            recorder.recordLog(new Log(localPlayer,
+                    logType,
+                    tempCreature.getCreatureName() + ":" + posArray[0] + "," + posArray[1]));
+        } else {
+            recorder.recordLog(new Log(localPlayer, logType, logContent));
+        }
+    }
+
+    public void otherRequestRecordLog(LogType logType, Object logContent) {
+        if(logType == LogType.CREATURE_MOVE){
+            Creature tempCreature = (Creature) logContent;
+            int[] posArray = tempCreature.getPos();
+            recorder.recordLog(new Log(localPlayer,
+                    logType,
+                    tempCreature.getCreatureName() + ":" + posArray[0] + "," + posArray[1]));
+        } else {
+            recorder.recordLog(new Log(otherPlayer, logType, logContent));
+        }
+    }
+
+    public void requestSaveRecord(){
+//        recorder.writeLog();
     }
 }

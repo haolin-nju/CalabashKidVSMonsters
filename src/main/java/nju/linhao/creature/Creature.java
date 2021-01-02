@@ -5,12 +5,8 @@ import main.java.nju.linhao.ai.attack.RandomTargetSelector;
 import main.java.nju.linhao.ai.attack.TargetSelector;
 import main.java.nju.linhao.ai.direction.DirectionSelector;
 import main.java.nju.linhao.ai.direction.RandomDirectionSelector;
-import main.java.nju.linhao.battlefield.Battlefield;
-import main.java.nju.linhao.battlefield.BattlefieldController;
 import main.java.nju.linhao.bullet.Bullet;
 import main.java.nju.linhao.bullet.BulletFactory;
-import main.java.nju.linhao.bullet.HumanBullet;
-import main.java.nju.linhao.bullet.MonsterBullet;
 import main.java.nju.linhao.controller.logic.LocalGameController;
 import main.java.nju.linhao.enums.*;
 
@@ -18,10 +14,7 @@ import main.java.nju.linhao.utils.Configuration;
 import main.java.nju.linhao.utils.ImageLoader;
 
 import java.io.Serializable;
-import java.lang.annotation.Target;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.concurrent.locks.ReentrantLock;
 
 public abstract class Creature implements Runnable, Serializable {
@@ -200,7 +193,6 @@ public abstract class Creature implements Runnable, Serializable {
         this.healthLock.lock();
         try {
             this.health -= (damage - defense);
-            LocalGameController.getInstance().requestSendCreatureRemainHealth(this);
         } finally {
             this.healthLock.unlock();
         }
@@ -266,7 +258,8 @@ public abstract class Creature implements Runnable, Serializable {
             gameEnded = LocalGameController.getInstance().queryIsOtherLost();
         }
         if(this.creatureStatus == CreatureStatus.DEAD
-                && LocalGameController.getInstance().localAliveCreaturesDec() <= 0){
+                && LocalGameController.getInstance().localAliveCreaturesDec() <= 0
+                && LocalGameController.getInstance().queryIsOtherLost() == false){
             LocalGameController.getInstance().endGame(LocalGameStatus.WE_LOSE);
         } else if (this.creatureStatus == CreatureStatus.ALIVE && isFirstToNotifyWinning == true) { //获胜一方的
             LocalGameController.getInstance().endGame(LocalGameStatus.WE_WIN);
@@ -274,7 +267,7 @@ public abstract class Creature implements Runnable, Serializable {
         }
     }
 
-
+    private static final long serialVersionUID = 726374138698742258L;
     private static int globalCreatureID = 0; // 全局唯一id
     private int creatureID = 0;
     private SelectionStatus selectionStatus;

@@ -1,15 +1,13 @@
 package main.java.nju.linhao.battlefield;
 
 import main.java.nju.linhao.bullet.Bullet;
+import main.java.nju.linhao.bullet.BulletDisplayer;
 import main.java.nju.linhao.bullet.BulletManager;
 import main.java.nju.linhao.bullet.HumanBullet;
 import main.java.nju.linhao.creature.Creature;
 import main.java.nju.linhao.creature.Human;
 import main.java.nju.linhao.creature.Monster;
-import main.java.nju.linhao.enums.CreatureEnum;
-import main.java.nju.linhao.enums.CreatureStatus;
-import main.java.nju.linhao.enums.Formation;
-import main.java.nju.linhao.enums.Player;
+import main.java.nju.linhao.enums.*;
 import main.java.nju.linhao.exception.OutofRangeException;
 import main.java.nju.linhao.team.HumanTeam;
 import main.java.nju.linhao.team.MonsterTeam;
@@ -30,6 +28,7 @@ public class Battlefield {
     private static BulletManager bulletManager;
     private static ArrayList<Thread> localCreatureThreads;
     private static Thread bulletManagerThread;
+    private static BulletDisplayer bulletDisplayer;
     private static boolean isFirstBullet = true;
 
     public Battlefield() {
@@ -52,6 +51,7 @@ public class Battlefield {
         localCreatureThreads = new ArrayList<>();
 
         bulletManager = new BulletManager();
+        bulletDisplayer = new BulletDisplayer();
     }
 
     public int getColumns() {
@@ -180,8 +180,23 @@ public class Battlefield {
         return bulletManagerThread;
     }
 
+    public Thread startGlobalBulletDisplayerThreads(LocalGameStatus localGameStatus){
+        bulletDisplayer.setLocalGameStatus(localGameStatus);
+        Thread bulletDisplayerThread = new Thread(bulletDisplayer);
+        bulletDisplayerThread.start();
+        return bulletDisplayerThread;
+    }
+
+    public BulletDisplayer getBulletDisplayer(){
+        return bulletDisplayer;
+    }
+
     public void addBullet(Bullet bullet) {
         bulletManager.addBullet(bullet);
+    }
+
+    public void addBulletToDisplayer(Bullet bullet){
+        bulletDisplayer.addBullet(bullet);
     }
 
     public BulletManager getBulletManager() {

@@ -17,8 +17,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class BulletManager implements Runnable {
-    private LinkedList<HumanBullet> humanBullets;
-    private LinkedList<MonsterBullet> monsterBullets;
+    protected LinkedList<HumanBullet> humanBullets;
+    protected LinkedList<MonsterBullet> monsterBullets;
     private Player localPlayer;
 
     public BulletManager() {
@@ -115,6 +115,7 @@ public class BulletManager implements Runnable {
                                 && creature.getCreatureStatus() == CreatureStatus.ALIVE) {
                             if (localPlayer == Player.PLAYER_1) {// 本地是人类阵营，需要计算所有打到妖怪的内容
                                 creature.injured(humanBullet.getDamage());
+                                LocalGameController.getInstance().requestSendCreatureRemainHealth(creature);
                             }
                             humanBullet.setToDestroy(true); // 打到敌人，可以消亡
                             LocalGameController.getInstance().requestSendBulletDestroy(humanBullet);
@@ -137,12 +138,12 @@ public class BulletManager implements Runnable {
                                 && creature.getCreatureStatus() == CreatureStatus.ALIVE) {
                             if (localPlayer == Player.PLAYER_2) {// 本地是妖怪阵营，需要计算所有打到人类的内容
                                 creature.injured(monsterBullet.getDamage());
+                                LocalGameController.getInstance().requestSendCreatureRemainHealth(creature);
                             }
                             monsterBullet.setToDestroy(true);// 打到敌人，可以消亡
                             LocalGameController.getInstance().requestSendBulletDestroy(monsterBullet);
                         }
                     } catch (OutofRangeException e) {
-
 
                     }
                 }

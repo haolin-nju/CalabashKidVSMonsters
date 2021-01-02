@@ -17,15 +17,15 @@
         <Menu mnemonicParsing="false" text="游戏">
           <items>
             <MenuItem fx:id="newGameMenuItem" mnemonicParsing="false" onAction="#newGameMenuItemOnAction" text="新游戏" />
-            <MenuItem fx:id="openMenuItem" mnemonicParsing="false" onAction="#openMenuItemOnAction" text="打开…" />
+<!--            <MenuItem fx:id="openMenuItem" mnemonicParsing="false" onAction="#openMenuItemOnAction" text="打开…" />-->
             <SeparatorMenuItem mnemonicParsing="false" />
 <!--                  <MenuItem fx:id="continueMenuItem" mnemonicParsing="false" onAction="#continueMenuItemOnAction" text="继续" />-->
 <!--            <MenuItem fx:id="pauseMenuItem" mnemonicParsing="false" onAction="#pauseMenuItemOnAction" text="暂停" />-->
 <!--                  <MenuItem fx:id="stopMenuItem" mnemonicParsing="false" onAction="#stopMenuItemOnAction" text="停止" />-->
 <!--                  <SeparatorMenuItem mnemonicParsing="false" />-->
             <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#saveMenuItemOnAction" text="保存" />
-            <MenuItem fx:id="saveAsMenuItem" mnemonicParsing="false" onAction="#saveAsMenuItemOnAction" text="保存为…" />
-            <SeparatorMenuItem mnemonicParsing="false" />
+<!--            <MenuItem fx:id="saveAsMenuItem" mnemonicParsing="false" onAction="#saveAsMenuItemOnAction" text="保存为…" />-->
+<!--            <SeparatorMenuItem mnemonicParsing="false" />-->
             <MenuItem fx:id="quitMenuItem" mnemonicParsing="false" onAction="#quitMenuItemOnAction" text="退出" />
           </items>
         </Menu>
