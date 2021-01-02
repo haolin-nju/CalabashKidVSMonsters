@@ -76,6 +76,10 @@ public class LocalGameController {
         return currStatus;
     }
 
+    public void setCurrentStatusWithoutCondition(LocalGameStatus status){
+        this.currStatus = status;
+    }
+
     public void setCurrentStatus(LocalGameStatus status) {
         // state machine
         switch (status) {
@@ -85,51 +89,60 @@ public class LocalGameController {
                         || currStatus == LocalGameStatus.CONNECTING) {
                     currStatus = LocalGameStatus.INIT;
                     recorder = null;
-                } else {
-                    System.err.println("未定义的状态机！原状态：" + currStatus + "目标状态：INIT");
                 }
+//                else {
+//                    System.out.println("未定义的状态机！原状态：" + currStatus + "目标状态：INIT");
+//                }
                 break;
             case CONNECTING:
                 if (currStatus == LocalGameStatus.INIT) {
                     currStatus = LocalGameStatus.CONNECTING;
-                } else {
-                    System.err.println("未定义的状态机！原状态：" + currStatus + "目标状态：CONNECTING");
                 }
+//                else {
+//                    System.out.println("未定义的状态机！原状态：" + currStatus + "目标状态：CONNECTING");
+//                }
                 break;
             case READY:
                 if (currStatus == LocalGameStatus.CONNECTING) {
                     currStatus = LocalGameStatus.READY;
-                } else {
-                    System.err.println("未定义的状态机！原状态：" + currStatus + "目标状态：READY");
                 }
+//                else {
+//                    System.out.println("未定义的状态机！原状态：" + currStatus + "目标状态：READY");
+//                }
                 break;
             case RUN:
                 if (currStatus == LocalGameStatus.READY) {
                     currStatus = LocalGameStatus.RUN;
-                } else {
-                    System.err.println("未定义的状态机！原状态：" + currStatus + "目标状态：RUN");
                 }
+//                else {
+//                    System.out.println("未定义的状态机！原状态：" + currStatus + "目标状态：RUN");
+//                }
                 break;
             case WE_LOSE:
-                if (currStatus == LocalGameStatus.RUN || currStatus == LocalGameStatus.PAUSE){
+                if (currStatus == LocalGameStatus.RUN) {
+//                        || currStatus == LocalGameStatus.PAUSE){
                     currStatus = LocalGameStatus.WE_LOSE;
-                } else {
-                    System.err.println("未定义的状态机！原状态：" + currStatus + "目标状态：WE_LOSE");
                 }
+//                else {
+//                    System.out.println("未定义的状态机！原状态：" + currStatus + "目标状态：WE_LOSE");
+//                }
                 break;
             case WE_WIN:
-                if (currStatus == LocalGameStatus.RUN || currStatus == LocalGameStatus.PAUSE){
+                if (currStatus == LocalGameStatus.RUN) {
+//                        || currStatus == LocalGameStatus.PAUSE){
                     currStatus = LocalGameStatus.WE_WIN;
-                } else {
-                    System.err.println("未定义的状态机！原状态：" + currStatus + "目标状态：WE_WIN");
                 }
+//                else {
+//                    System.out.println("未定义的状态机！原状态：" + currStatus + "目标状态：WE_WIN");
+//                }
                 break;
             case END:
                 if(currStatus == LocalGameStatus.WE_LOSE || currStatus == LocalGameStatus.WE_WIN) {
                     currStatus = LocalGameStatus.END;
-                } else {
-                    System.err.println("未定义的状态机！原状态：" + currStatus + "目标状态：END" );
                 }
+//                else {
+//                    System.out.println("未定义的状态机！原状态：" + currStatus + "目标状态：END" );
+//                }
                 break;
             default:
                 break;

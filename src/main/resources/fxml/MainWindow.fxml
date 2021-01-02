@@ -17,7 +17,7 @@
         <Menu mnemonicParsing="false" text="游戏">
           <items>
             <MenuItem fx:id="newGameMenuItem" mnemonicParsing="false" onAction="#newGameMenuItemOnAction" text="新游戏" />
-<!--            <MenuItem fx:id="openMenuItem" mnemonicParsing="false" onAction="#openMenuItemOnAction" text="打开…" />-->
+            <MenuItem fx:id="openMenuItem" mnemonicParsing="false" onAction="#openMenuItemOnAction" text="打开…" />
             <SeparatorMenuItem mnemonicParsing="false" />
 <!--                  <MenuItem fx:id="continueMenuItem" mnemonicParsing="false" onAction="#continueMenuItemOnAction" text="继续" />-->
 <!--            <MenuItem fx:id="pauseMenuItem" mnemonicParsing="false" onAction="#pauseMenuItemOnAction" text="暂停" />-->

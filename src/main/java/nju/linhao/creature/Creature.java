@@ -28,6 +28,29 @@ public abstract class Creature implements Runnable, Serializable {
                 Configuration.DEFAULT_CREATURE_SPEED);
     }
 
+    public Creature(boolean forTest,
+                    String name,
+                    double health,
+                    double damage,
+                    double defense,
+                    double speed){
+        if(forTest == true){
+            this.creatureID = this.globalCreatureID;
+            this.globalCreatureID++;
+            this.selectionStatus = SelectionStatus.UNSELECTED;
+            this.creatureStatus = CreatureStatus.ALIVE;
+            this.direction = Direction.NO_DIRECTION;
+
+            this.name = name;
+            this.health = health;
+            this.damage = damage;
+            this.defense = defense;
+            this.speed = speed;
+
+            this.healthLock = new ReentrantLock();
+        }
+    }
+
     public Creature(String name,
                     Player belongsTo,
                     double health,

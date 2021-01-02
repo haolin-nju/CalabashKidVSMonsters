@@ -53,6 +53,7 @@ public class Main extends Application {
                 clientScene,
                 icon,
                 hostServices);
+        Displayer.getInstance().initBattlefieldController(new BattlefieldController(new Battlefield(), mainWindowView));
 
         scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             LocalGameStatus curGameStatus = LocalGameController.getInstance().getCurrentStatus();
@@ -69,9 +70,11 @@ public class Main extends Application {
                     if (curGameStatus == LocalGameStatus.END
                             || curGameStatus == LocalGameStatus.INIT) {
                         LinkedList<Log> logs = Restorer.getInstance().restore();
-                        Displayer.getInstance().init(new BattlefieldController(new Battlefield(), mainWindowView), logs);
-                        Thread displayThread = new Thread(Displayer.getInstance());
-                        displayThread.start();
+                        if(logs != null) {
+                            Displayer.getInstance().initLogs(logs);
+                            Thread displayThread = new Thread(Displayer.getInstance());
+                            displayThread.start();
+                        }
                     }
                     break;
                 case LEFT:

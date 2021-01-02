@@ -61,8 +61,8 @@ public class MainWindowView {
     @FXML // fx:id="newGameMenuItem"
     private MenuItem newGameMenuItem; // Value injected by FXMLLoader
 
-//    @FXML // fx:id="openMenuItem"
-//    private MenuItem openMenuItem; // Value injected by FXMLLoader
+    @FXML // fx:id="openMenuItem"
+    private MenuItem openMenuItem; // Value injected by FXMLLoader
 
 //    @FXML // fx:id="continueMenuItem"
 //    private MenuItem continueMenuItem; // Value injected by FXMLLoader
@@ -128,9 +128,11 @@ public class MainWindowView {
     @FXML
     void openMenuItemOnAction(ActionEvent event) {
         LinkedList<Log> logs = Restorer.getInstance().restore();
-        assert(logs != null);
-        Displayer displayer = new Displayer(logs);
-        displayer.display();
+        if(logs != null) {
+            Displayer.getInstance().initLogs(logs);
+            Thread displayThread = new Thread(Displayer.getInstance());
+            displayThread.start();
+        }
     }
 
 //    @FXML
@@ -306,7 +308,7 @@ public class MainWindowView {
         // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert newGameMenuItem != null : "fx:id=\"newGameMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-//        assert openMenuItem != null : "fx:id=\"openMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+        assert openMenuItem != null : "fx:id=\"openMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
 //        assert pauseMenuItem != null : "fx:id=\"pauseMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
 //        assert continueMenuItem != null : "fx:id=\"continueMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
 //        assert stopMenuItem != null : "fx:id=\"stopMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";

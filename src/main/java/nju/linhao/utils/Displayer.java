@@ -42,13 +42,15 @@ public class Displayer implements Runnable{
         return displayer;
     }
 
-    public void init(BattlefieldController battlefieldController, LinkedList<Log> logLinkedList){
-        this.logs = logLinkedList;
+    public void initBattlefieldController(BattlefieldController battlefieldController){
         humanTeam = null;
         monsterTeam = null;
         localGameStatus = LocalGameStatus.INIT;
-
         this.battlefieldController = battlefieldController;
+    }
+
+    public void initLogs(LinkedList<Log> logLinkedList){
+        this.logs = logLinkedList;
     }
 
     public BattlefieldController getBattlefieldController(){
