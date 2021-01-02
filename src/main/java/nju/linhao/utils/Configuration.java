@@ -14,8 +14,8 @@ public class Configuration {
 
 
     // for Creture
-    public static final double DEFAULT_HEALTH = 1;
-    public static final double DEFAULT_DAMAGE = 10000;
+    public static final double DEFAULT_HEALTH = 100;
+    public static final double DEFAULT_DAMAGE = 10;
     public static final double DEFAULT_DEFENSE = 10;
     public static final double DEFAULT_CREATURE_SPEED = 10;
     public static final long CREATURE_DEFAULT_SLEEP_TIME = 1000;

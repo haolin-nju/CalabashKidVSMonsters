@@ -12,6 +12,7 @@ import main.java.nju.linhao.exception.OutofRangeException;
 import main.java.nju.linhao.utils.Configuration;
 import main.java.nju.linhao.utils.Displayer;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 
 public class BulletDisplayer extends BulletManager implements Runnable {
@@ -19,6 +20,27 @@ public class BulletDisplayer extends BulletManager implements Runnable {
 
     public void setLocalGameStatus(LocalGameStatus localGameStatus){
         this.localGameStatus = localGameStatus;
+    }
+
+    public void removeBulletFromDisplayer(Bullet bullet) {
+        synchronized (humanBullets){
+            Iterator<HumanBullet> humanBulletIterator = humanBullets.iterator();
+            while(humanBulletIterator.hasNext()){
+                if(humanBulletIterator.next() == bullet){
+                    humanBulletIterator.remove();
+                    return;
+                }
+            }
+        }
+        synchronized (monsterBullets){
+            Iterator<MonsterBullet> monsterBulletIterator = monsterBullets.iterator();
+            while(monsterBulletIterator.hasNext()){
+                if(monsterBulletIterator.next() == bullet){
+                    monsterBulletIterator.remove();
+                    return;
+                }
+            }
+        }
     }
 
     @Override
@@ -39,7 +61,6 @@ public class BulletDisplayer extends BulletManager implements Runnable {
                                 .getCreatureFromBulletPos(humanBulletPos[0], humanBulletPos[1]);
                         if (creature instanceof Monster
                                 && creature.getCreatureStatus() == CreatureStatus.ALIVE) {
-                            creature.injured(humanBullet.getDamage());
                             humanBullet.setToDestroy(true); // 打到敌人，可以消亡
                         }
                     } catch (OutofRangeException e) {
@@ -62,7 +83,6 @@ public class BulletDisplayer extends BulletManager implements Runnable {
                                 .getCreatureFromBulletPos(monsterBulletPos[0], monsterBulletPos[1]);
                         if (creature instanceof Human
                                 && creature.getCreatureStatus() == CreatureStatus.ALIVE) {
-                            creature.injured(monsterBullet.getDamage());
                             monsterBullet.setToDestroy(true);// 打到敌人，可以消亡
                         }
                     } catch (OutofRangeException e) {

@@ -199,6 +199,10 @@ public class Battlefield {
         bulletDisplayer.addBullet(bullet);
     }
 
+    public void removeBulletFromDisplayer(Bullet bullet) {
+        bulletDisplayer.removeBulletFromDisplayer(bullet);
+    }
+
     public BulletManager getBulletManager() {
         return bulletManager;
     }
@@ -216,4 +220,5 @@ public class Battlefield {
     public void destroyAllBullets() {
         bulletManager = new BulletManager();
     }
+
 }

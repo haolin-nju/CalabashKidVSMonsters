@@ -103,6 +103,8 @@ public class BattlefieldController {
     public synchronized void repaint(LocalGameStatus localGameStatus){
         if(localGameStatus == LocalGameStatus.RUN || localGameStatus == LocalGameStatus.INIT) {
             Platform.runLater(() -> battlefieldView.paintBothMainCanvas(battlefield));
+        } else if(localGameStatus == LocalGameStatus.END) {
+            Platform.runLater(() -> battlefieldView.paintEndMainCanvas(LocalGameController.getInstance().getStatusImg()));
         }
     }
 

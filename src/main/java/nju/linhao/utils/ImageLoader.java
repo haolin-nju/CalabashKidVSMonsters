@@ -54,6 +54,7 @@ public class ImageLoader {
             gameStatusImgPath = new HashMap<>();
             gameStatusImgPath.put(LocalGameStatus.WE_LOSE, "/pictures/youlose.png");
             gameStatusImgPath.put(LocalGameStatus.WE_WIN, "/pictures/youwin.png");
+            gameStatusImgPath.put(LocalGameStatus.END, "/pictures/gameover.png");
         }
         Image gameStatusImg = new Image(ImageLoader.class.getResourceAsStream(gameStatusImgPath.get(localGameStatus)));
         return gameStatusImg;

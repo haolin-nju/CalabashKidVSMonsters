@@ -167,7 +167,7 @@ public class LocalGameController {
             } catch (IOException e) {
                 requestLogMessages("失败信息没有被另一端接收！");
             }
-            requestRecordLog(LogType.SOMEONE_LOSE, null);
+            requestRecordLog(LogType.SOMEONE_LOSE, "null");
         }
         statusImg = ImageLoader.getInstance().loadGameStatusImg(currStatus);
         battlefieldController.repaint();
@@ -175,7 +175,7 @@ public class LocalGameController {
 
     public void requestOtherLose() {
         isOtherLost = true;
-        otherRequestRecordLog(LogType.SOMEONE_LOSE, null);
+        otherRequestRecordLog(LogType.SOMEONE_LOSE, "null");
     }
 
     // Battlefield Logic
@@ -239,6 +239,10 @@ public class LocalGameController {
 
     public BattlefieldController getBattlefieldController() {
         return battlefieldController;
+    }
+
+    public void setStatusImg(Image statusImg){
+        this.statusImg = statusImg;
     }
 
     public Image getStatusImg(){
@@ -381,7 +385,7 @@ public class LocalGameController {
             creatureToMove.setPos(newPos[0], newPos[1]);
         }
         battlefieldController.repaint();
-        otherRequestRecordLog(LogType.CREATURE_MOVE, creatureToMove);
+        otherRequestRecordLog(LogType.CREATURE_MOVE, creature);
     }
 
     public void requestCreatureAttack(Bullet bullet) {
@@ -404,7 +408,7 @@ public class LocalGameController {
         } catch (IOException e){
             requestLogMessages("当前伤害没有被另一端接收！");
         }
-//        requestRecordLog(LogType.CREATURE_INJURED, creature);
+        requestRecordLog(LogType.CREATURE_INJURED, creature);
     }
 
     public void requestLocalCreatureRemainHealth(Creature creature) {
@@ -413,7 +417,7 @@ public class LocalGameController {
             Creature creatureToSetRemainHealth = battlefield.getLocalCreatureFromId(creature, localPlayer);
             double remainHealth = creature.getHealth();
             creatureToSetRemainHealth.setHealth(remainHealth);
-//            otherRequestRecordLog(LogType.CREATURE_INJURED, creature);
+            otherRequestRecordLog(LogType.CREATURE_INJURED, creature);
         }
     }
 
@@ -423,12 +427,12 @@ public class LocalGameController {
         }catch (IOException e){
             requestLogMessages("当前伤害没有被另一端接收！");
         }
-//        requestRecordLog(LogType.BULLET_DESTROY, bullet);
+        requestRecordLog(LogType.BULLET_DESTROY, bullet);
     }
 
     public void requestLocalBulletDestroy(Bullet bullet) {
         battlefieldController.getBattlefield().getBulletManager().removeBullet(bullet);
-//        otherRequestRecordLog(LogType.BULLET_DESTROY, bullet);
+        otherRequestRecordLog(LogType.BULLET_DESTROY, bullet);
     }
 
     public void requestCheckLocalPlayer(Player player) {
@@ -457,6 +461,12 @@ public class LocalGameController {
             recorder.recordLog(new Log(localPlayer,
                     logType,
                     tempCreature.getCreatureName() + ":" + posArray[0] + "," + posArray[1]));
+        } else if(logType == LogType.CREATURE_INJURED) {
+            Creature tempCreature = (Creature) logContent;
+            double restHealth = tempCreature.getHealth();
+            recorder.recordLog(new Log(localPlayer,
+                    logType,
+                    tempCreature.getCreatureName() + ":" + restHealth));
         } else {
             recorder.recordLog(new Log(localPlayer, logType, logContent));
         }
@@ -466,9 +476,15 @@ public class LocalGameController {
         if(logType == LogType.CREATURE_MOVE){
             Creature tempCreature = (Creature) logContent;
             int[] posArray = tempCreature.getPos();
-            recorder.recordLog(new Log(localPlayer,
+            recorder.recordLog(new Log(otherPlayer,
                     logType,
                     tempCreature.getCreatureName() + ":" + posArray[0] + "," + posArray[1]));
+        } else if(logType == LogType.CREATURE_INJURED) {
+            Creature tempCreature = (Creature) logContent;
+            double restHealth = tempCreature.getHealth();
+            recorder.recordLog(new Log(otherPlayer,
+                    logType,
+                    tempCreature.getCreatureName() + ":" + restHealth));
         } else {
             recorder.recordLog(new Log(otherPlayer, logType, logContent));
         }

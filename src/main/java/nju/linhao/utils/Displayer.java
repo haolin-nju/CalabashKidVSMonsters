@@ -113,6 +113,35 @@ public class Displayer implements Runnable{
                 }
                 battlefieldController.getBattlefield().addBulletToDisplayer((Bullet) logContent);
                 break;
+            case CREATURE_INJURED:
+                String creatureInjuredInfo = (String) logContent;
+                String[] nameAndHealthArr = creatureInjuredInfo.split(":");
+                String curCreatureName_1 = nameAndHealthArr[0];
+                double health = Double.parseDouble(nameAndHealthArr[1]);
+                if(player == Player.PLAYER_1) {
+                    for (Monster monster : monsters) {
+                        if(monster.getCreatureName().equals(curCreatureName_1)) {
+                            monster.setHealth(health);
+                            break;
+                        }
+                    }
+                } else if(player == Player.PLAYER_2) {
+                    for (Human human : humans) {
+                        if(human.getCreatureName().equals(curCreatureName_1)){
+                            human.setHealth(health);
+                            break;
+                        }
+                    }
+                }
+                break;
+            case BULLET_DESTROY:
+                battlefieldController.getBattlefield().removeBulletFromDisplayer((Bullet) logContent);
+                break;
+            case SOMEONE_LOSE:
+                stateChange(LocalGameStatus.END);
+                LocalGameController.getInstance().setStatusImg(ImageLoader.getInstance().loadGameStatusImg(localGameStatus));
+                battlefieldController.repaint(LocalGameStatus.END);
+                break;
             default:
         }
     }
@@ -126,6 +155,11 @@ public class Displayer implements Runnable{
                 } else {
                     System.err.println("状态转换出错！原状态：" + localGameStatus + "目标状态：RUN");
                     assert(false);
+                }
+            case END:
+                if(localGameStatus == LocalGameStatus.RUN) {
+                    localGameStatus = targetState;
+                    return true;
                 }
         }
         return false;

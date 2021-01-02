@@ -33,7 +33,7 @@ public class CreatureFactory {
     public static ArrayList<Minion> createMinions(int minionNum){
         ArrayList<Minion> minions = new ArrayList<>();
         for(int idx = 0; idx < minionNum; ++idx){
-            minions.add(new Minion(DEFAULT_MINION_NAME + "1"));
+            minions.add(new Minion(DEFAULT_MINION_NAME + idx));
         }
         return minions;
     }

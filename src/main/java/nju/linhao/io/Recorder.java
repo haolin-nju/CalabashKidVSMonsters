@@ -43,9 +43,11 @@ public class Recorder {
             if (!logFile.exists()) {
                 logFile.createNewFile();
             }
+            out = new ObjectOutputStream(new FileOutputStream(logFile, true));
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     public void recordLog(Log log) {
@@ -62,13 +64,12 @@ public class Recorder {
             timeMillisecondsLock.unlock();
         }
         try {
-            if (out == null) {
-                out = new ObjectOutputStream(new FileOutputStream(logFile, true));
-            }
-            out.writeObject(log);
-            out.flush();
-            if (log.getLogType() == LogType.SOMEONE_LOSE) {
-                out.close();
+            synchronized (out) {
+                out.writeObject(log);
+                out.flush();
+                if (log.getLogType() == LogType.SOMEONE_LOSE) {
+                    out.close();
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

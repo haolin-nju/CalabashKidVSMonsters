@@ -125,13 +125,13 @@ public class MainWindowView {
         newGameMenuItem.setDisable(true);
     }
 //
-//    @FXML
-//    void openMenuItemOnAction(ActionEvent event) {
-//        LinkedList<Log> logs = Restorer.getInstance().restore();
-//        assert(logs != null);
-//        Displayer displayer = new Displayer(logs);
-//        displayer.display();
-//    }
+    @FXML
+    void openMenuItemOnAction(ActionEvent event) {
+        LinkedList<Log> logs = Restorer.getInstance().restore();
+        assert(logs != null);
+        Displayer displayer = new Displayer(logs);
+        displayer.display();
+    }
 
 //    @FXML
 //    void continueMenuItemOnAction(ActionEvent event) {

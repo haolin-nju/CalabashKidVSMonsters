@@ -17,14 +17,14 @@ public class RandomTargetSelector implements TargetSelector {
     @Override
     public Creature selectAttackTarget() {
         Random rand = new Random();
-        if(rand.nextInt(3) < 3) {
+        if(rand.nextInt(3) == 0) {
             int creaturesNumber = toAttackCreatures.size();
             Creature attackTarget;
             int selectCount = 0;
             do {
                 attackTarget = toAttackCreatures.get(rand.nextInt(creaturesNumber));
                 selectCount++;
-            } while (attackTarget.getCreatureStatus() == CreatureStatus.DEAD && selectCount < 3);
+            } while (attackTarget.getCreatureStatus() == CreatureStatus.DEAD && selectCount < 2);
             return attackTarget;
         } else {
             return null;
