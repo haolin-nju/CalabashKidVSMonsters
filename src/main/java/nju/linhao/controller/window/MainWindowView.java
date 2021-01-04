@@ -27,13 +27,14 @@ import main.java.nju.linhao.creature.Creature;
 import main.java.nju.linhao.creature.Human;
 import main.java.nju.linhao.creature.Monster;
 import main.java.nju.linhao.enums.CreatureStatus;
+import main.java.nju.linhao.enums.LocalGameStatus;
 import main.java.nju.linhao.enums.Player;
 import main.java.nju.linhao.enums.SelectionStatus;
 import main.java.nju.linhao.exception.OutofRangeException;
 import main.java.nju.linhao.utils.Displayer;
 import main.java.nju.linhao.io.Restorer;
 import main.java.nju.linhao.utils.Configuration;
-import main.java.nju.linhao.io.Log;
+import main.java.nju.linhao.utils.Log;
 
 import static main.java.nju.linhao.utils.Configuration.DEFAULT_BULLET_RADIUS;
 
@@ -82,8 +83,8 @@ public class MainWindowView {
     @FXML // fx:id="quitMenuItem"
     private MenuItem quitMenuItem; // Value injected by FXMLLoader
 
-    @FXML // fx:id="instructionsMenuItem"
-    private MenuItem instructionsMenuItem; // Value injected by FXMLLoader
+//    @FXML // fx:id="instructionsMenuItem"
+//    private MenuItem instructionsMenuItem; // Value injected by FXMLLoader
 
     @FXML // fx:id="aboutMenuItem"
     private MenuItem aboutMenuItem; // Value injected by FXMLLoader
@@ -105,13 +106,14 @@ public class MainWindowView {
         alert.showAndWait();
     }
 
-    @FXML
-    void instructionsMenuItemOnAction(ActionEvent event) {
-        String filePath = getClass().getResource("/docs/CalabashKids VS Monsters Guide.pdf").toString();
-        System.out.println(filePath);
-        hostServices.showDocument(filePath);
-        System.out.println("打开游戏指南");
-    }
+//    @FXML
+//    void instructionsMenuItemOnAction(ActionEvent event) {
+//        try {
+//            File myFile = new File(getServletContext().getRealPath("/filename.pdf"));
+//        } catch (IOException e) {
+//            logMessages("欲打开的帮助文档已经不存在！");
+//        }
+//    }
 
     @FXML
     void newGameMenuItemOnAction(ActionEvent event) {
@@ -127,11 +129,18 @@ public class MainWindowView {
 //
     @FXML
     void openMenuItemOnAction(ActionEvent event) {
-        LinkedList<Log> logs = Restorer.getInstance().restore();
-        if(logs != null) {
-            Displayer.getInstance().initLogs(logs);
-            Thread displayThread = new Thread(Displayer.getInstance());
-            displayThread.start();
+        LocalGameStatus localGameStatus = LocalGameController.getInstance().getCurrentStatus();
+        if(localGameStatus == LocalGameStatus.WE_LOSE || localGameStatus == LocalGameStatus.WE_WIN){
+            LocalGameController.getInstance().requestLogMessages("请先点击屏幕结束游戏，\n再打开想观看的战斗记录！");
+            return;
+        }
+        if(localGameStatus == LocalGameStatus.INIT || localGameStatus == LocalGameStatus.END) {
+            LinkedList<Log> logs = Restorer.getInstance().restore();
+            if (logs != null) {
+                Displayer.getInstance().initLogs(logs);
+                Thread displayThread = new Thread(Displayer.getInstance());
+                displayThread.start();
+            }
         }
     }
 
@@ -315,7 +324,7 @@ public class MainWindowView {
         assert saveMenuItem != null : "fx:id=\"saveMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
 //        assert saveAsMenuItem != null : "fx:id=\"saveAsMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert quitMenuItem != null : "fx:id=\"quitMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
-        assert instructionsMenuItem != null : "fx:id=\"instructionsMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
+//        assert instructionsMenuItem != null : "fx:id=\"instructionsMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert aboutMenuItem != null : "fx:id=\"aboutMenuItem\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert logTextArea != null : "fx:id=\"logTextArea\" was not injected: check your FXML file 'MainWindow.fxml'.";
         assert mainCanvas != null : "fx:id=\"mainCanvas\" was not injected: check your FXML file 'MainWindow.fxml'.";

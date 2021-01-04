@@ -31,8 +31,8 @@
         </Menu>
         <Menu mnemonicParsing="false" text="帮助">
           <items>
-                  <MenuItem fx:id="instructionsMenuItem" mnemonicParsing="false" onAction="#instructionsMenuItemOnAction" text="指南" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
+<!--                  <MenuItem fx:id="instructionsMenuItem" mnemonicParsing="false" onAction="#instructionsMenuItemOnAction" text="指南" />-->
+<!--                  <SeparatorMenuItem mnemonicParsing="false" />-->
             <MenuItem fx:id="aboutMenuItem" mnemonicParsing="false" onAction="#aboutMenuItemOnAction" text="关于" />
           </items>
         </Menu>

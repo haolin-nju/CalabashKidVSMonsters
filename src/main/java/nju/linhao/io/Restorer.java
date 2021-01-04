@@ -1,7 +1,7 @@
 package main.java.nju.linhao.io;
 
 import javafx.stage.FileChooser;
-import main.java.nju.linhao.creature.Human;
+import main.java.nju.linhao.utils.Log;
 
 import java.io.*;
 import java.util.LinkedList;

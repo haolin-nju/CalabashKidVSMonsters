@@ -13,12 +13,12 @@ import main.java.nju.linhao.creature.Creature;
 import main.java.nju.linhao.enums.*;
 import main.java.nju.linhao.exception.OutofRangeException;
 import main.java.nju.linhao.io.Recorder;
+import main.java.nju.linhao.utils.Configuration;
 import main.java.nju.linhao.utils.ImageLoader;
-import main.java.nju.linhao.io.Log;
+import main.java.nju.linhao.utils.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 
 public class LocalGameController {
@@ -88,7 +88,7 @@ public class LocalGameController {
                         || currStatus == LocalGameStatus.END
                         || currStatus == LocalGameStatus.CONNECTING) {
                     currStatus = LocalGameStatus.INIT;
-                    recorder = null;
+                    recorder = Recorder.getInstance();
                 }
 //                else {
 //                    System.out.println("未定义的状态机！原状态：" + currStatus + "目标状态：INIT");
@@ -212,8 +212,8 @@ public class LocalGameController {
                 }
                 mainWindowView.logMessages("您还可以按'⬅''➡'键切换阵型！");
                 mainWindowView.setNewGameDisable();
-                battlefieldController.repaint();
                 battlefieldController.setDefaultSelectedCreature();
+                battlefieldController.repaint();
                 localCreaturesAliveCnt = battlefieldController.getLocalCreaturesAliveCnt();
                 isOtherLost = false;
                 if (localCreaturesAliveCnt == -1) {
@@ -462,26 +462,24 @@ public class LocalGameController {
     }
 
     public void requestBuildRecorder(){
-        if(recorder == null){
-            recorder = new Recorder();
-        }
+        recorder.init(Configuration.DEFAULT_RECORD_DIR_PATH);
     }
 
     public void requestRecordLog(LogType logType, Object logContent){
         if(logType == LogType.CREATURE_MOVE){
             Creature tempCreature = (Creature) logContent;
             int[] posArray = tempCreature.getPos();
-            recorder.recordLog(new Log(localPlayer,
+            Recorder.getInstance().recordLog(new Log(localPlayer,
                     logType,
                     tempCreature.getCreatureName() + ":" + posArray[0] + "," + posArray[1]));
         } else if(logType == LogType.CREATURE_INJURED) {
             Creature tempCreature = (Creature) logContent;
             double restHealth = tempCreature.getHealth();
-            recorder.recordLog(new Log(localPlayer,
+            Recorder.getInstance().recordLog(new Log(localPlayer,
                     logType,
                     tempCreature.getCreatureName() + ":" + restHealth));
         } else {
-            recorder.recordLog(new Log(localPlayer, logType, logContent));
+            Recorder.getInstance().recordLog(new Log(localPlayer, logType, logContent));
         }
     }
 
@@ -489,17 +487,17 @@ public class LocalGameController {
         if(logType == LogType.CREATURE_MOVE){
             Creature tempCreature = (Creature) logContent;
             int[] posArray = tempCreature.getPos();
-            recorder.recordLog(new Log(otherPlayer,
+            Recorder.getInstance().recordLog(new Log(otherPlayer,
                     logType,
                     tempCreature.getCreatureName() + ":" + posArray[0] + "," + posArray[1]));
         } else if(logType == LogType.CREATURE_INJURED) {
             Creature tempCreature = (Creature) logContent;
             double restHealth = tempCreature.getHealth();
-            recorder.recordLog(new Log(otherPlayer,
+            Recorder.getInstance().recordLog(new Log(otherPlayer,
                     logType,
                     tempCreature.getCreatureName() + ":" + restHealth));
         } else {
-            recorder.recordLog(new Log(otherPlayer, logType, logContent));
+            Recorder.getInstance().recordLog(new Log(otherPlayer, logType, logContent));
         }
     }
 
