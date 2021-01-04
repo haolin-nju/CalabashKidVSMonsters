@@ -9,6 +9,7 @@ import main.java.nju.linhao.enums.Formation;
 import main.java.nju.linhao.enums.LocalGameStatus;
 import main.java.nju.linhao.enums.LogType;
 import main.java.nju.linhao.enums.Player;
+import main.java.nju.linhao.io.Log;
 import main.java.nju.linhao.team.HumanTeam;
 import main.java.nju.linhao.team.MonsterTeam;
 

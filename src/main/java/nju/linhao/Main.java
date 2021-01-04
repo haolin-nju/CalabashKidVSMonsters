@@ -14,12 +14,13 @@ import main.java.nju.linhao.battlefield.Battlefield;
 import main.java.nju.linhao.battlefield.BattlefieldController;
 import main.java.nju.linhao.controller.window.*;
 import main.java.nju.linhao.controller.logic.*;
+import main.java.nju.linhao.enums.CreatureSwitchRequest;
 import main.java.nju.linhao.enums.Direction;
 import main.java.nju.linhao.enums.FormationRequest;
 import main.java.nju.linhao.enums.LocalGameStatus;
 import main.java.nju.linhao.utils.Displayer;
 import main.java.nju.linhao.io.Restorer;
-import main.java.nju.linhao.utils.Log;
+import main.java.nju.linhao.io.Log;
 
 import java.util.LinkedList;
 
@@ -106,14 +107,14 @@ public class Main extends Application {
                         LocalGameController.getInstance().requestCreatureMove(Direction.RIGHT);
                     }
                     break;
-//                case Q:
-//                    if(curGameStatus == LocalGameStatus.RUN){
-//                        LocalGameController.getInstance().requestSwitchCurSelectedCreature(CreatureSwitchRequest.FORWARD);
-//                    }
-//                case E:
-//                    if(curGameStatus == LocalGameStatus.RUN){
-//                        LocalGameController.getInstance().requestSwitchCurSelectedCreature(CreatureSwitchRequest.BACKWARD);
-//                    }
+                case Q:
+                    if(curGameStatus == LocalGameStatus.RUN){
+                        LocalGameController.getInstance().requestSwitchCurSelectedCreature(CreatureSwitchRequest.FORWARD);
+                    }
+                case E:
+                    if(curGameStatus == LocalGameStatus.RUN){
+                        LocalGameController.getInstance().requestSwitchCurSelectedCreature(CreatureSwitchRequest.BACKWARD);
+                    }
                 default:
                     break;
             }

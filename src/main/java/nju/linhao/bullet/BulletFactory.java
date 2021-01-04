@@ -1,10 +1,6 @@
 package main.java.nju.linhao.bullet;
 
-import main.java.nju.linhao.utils.RadianCalculater;
-
 public class BulletFactory {
-    private RadianCalculater radianCalculater = new RadianCalculater();
-
     private BulletFactory(){}
 
     public static HumanBullet createHumanBullet(double clickPosX,
@@ -12,7 +8,7 @@ public class BulletFactory {
                                                 double posX,
                                                 double posY){
         return new HumanBullet(
-                RadianCalculater.calculateRadian(clickPosX, clickPosY, posX, posY),
+                calculateRadian(clickPosX, clickPosY, posX, posY),
                 posX,
                 posY);
     }
@@ -26,7 +22,7 @@ public class BulletFactory {
         return new HumanBullet(
                 damage,
                 speed,
-                RadianCalculater.calculateRadian(clickPosX, clickPosY, posX, posY),
+                calculateRadian(clickPosX, clickPosY, posX, posY),
                 posX,
                 posY);
     }
@@ -36,7 +32,7 @@ public class BulletFactory {
                                                     double posX,
                                                     double posY){
         return new MonsterBullet(
-                RadianCalculater.calculateRadian(clickPosX, clickPosY, posX, posY),
+                calculateRadian(clickPosX, clickPosY, posX, posY),
                 posX,
                 posY);
     }
@@ -50,8 +46,24 @@ public class BulletFactory {
         return new MonsterBullet(
                 damage,
                 speed,
-                RadianCalculater.calculateRadian(clickPosX, clickPosY, posX, posY),
+                calculateRadian(clickPosX, clickPosY, posX, posY),
                 posX,
                 posY);
+    }
+
+    private final static double calculateRadian(double clickPosX, double clickPosY, double posX, double posY){
+        double dx = clickPosX - posX;
+        double dy = clickPosY - posY;
+        double radian;
+        if (dx > 0) {
+            radian = Math.atan(dy / dx);
+        } else if (dx < 0) {
+            radian = Math.PI - Math.atan(dy / -dx);
+        } else {
+            radian = dy > 0 ? Math.toRadians(90.0) : Math.toRadians(-90.0);
+            if (dy == 0)
+                radian = 0;
+        }
+        return radian;
     }
 }

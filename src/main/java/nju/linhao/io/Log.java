@@ -1,4 +1,4 @@
-package main.java.nju.linhao.utils;
+package main.java.nju.linhao.io;
 
 import main.java.nju.linhao.enums.LogType;
 import main.java.nju.linhao.enums.MessageType;

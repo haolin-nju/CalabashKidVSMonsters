@@ -1,7 +1,7 @@
 package main.java.nju.linhao.io;
 
 import main.java.nju.linhao.enums.LogType;
-import main.java.nju.linhao.utils.Log;
+import main.java.nju.linhao.utils.Configuration;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -22,16 +22,11 @@ public class Recorder {
 
     ObjectOutputStream out = null;
 
-    private static Recorder recorder = new Recorder();
-
-    private Recorder(){
+    public Recorder() {
+        this(Configuration.DEFAULT_RECORD_DIR_PATH);
     }
 
-    public static Recorder getInstance(){
-        return recorder;
-    }
-
-    public void init(String path) {
+    public Recorder(String path) {
         this.logs = new LinkedList<>();
         this.logsLock = new ReentrantLock();
         this.logDirectory = path;
@@ -50,6 +45,7 @@ public class Recorder {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     public void recordLog(Log log) {

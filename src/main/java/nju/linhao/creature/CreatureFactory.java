@@ -1,7 +1,5 @@
 package main.java.nju.linhao.creature;
 
-import main.java.nju.linhao.utils.RadianCalculater;
-
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
