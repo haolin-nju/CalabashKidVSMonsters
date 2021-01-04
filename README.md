@@ -526,7 +526,7 @@ public class CreatureTest {
 
 ### 1. 游戏界面
 
-<img src="README.assets/游戏界面-1609771130492.PNG" alt="游戏界面" style="zoom:67%;" />
+<img src="README.assets/游戏界面.PNG" alt="游戏界面" style="zoom:67%;" />
 
 ### 2. 游戏准备
 
@@ -542,7 +542,7 @@ public class CreatureTest {
 
 ### 5. 战斗回放
 
-<img src="README.assets/战斗回放-1609771141960.PNG" alt="战斗回放" style="zoom:67%;" />
+<img src="README.assets/战斗回放.PNG" alt="战斗回放" style="zoom:67%;" />
 
 ## 七、未来开发计划
 
